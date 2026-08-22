@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--  base y fondo -->
+    <color name="bg_dark">#0D1B2A</color>
+    <color name="surface_dark">#142436</color>
+    <color name="surface_card">#1B2A4A</color>
+    <color name="input_bg">#112233</color>
+
+    <!-- Neón -->
+    <color name="neon_cyan">#00C2CB</color>
+    <color name="electric_purple">#7B2CBF</color>
+    <color name="trophy_gold">#FFD166</color>
+    <color name="status_green">#00E676</color>
+
+    <!-- Textos -->
+    <color name="text_white">#FFFFFF</color>
+    <color name="text_gray">#8D99AE</color>
+    <color name="text_hint">#5C6B73</color>
+</resources>
