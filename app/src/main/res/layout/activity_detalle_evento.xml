@@ -7,7 +7,6 @@
     android:background="@color/bg_dark"
     tools:context=".Detalle_Evento">
 
-    <!-- CONTENIDO SCROLLABLE -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -20,7 +19,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- HERO IMAGE / BANNER SUPERIOR -->
+            <!-- BANNER -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="240dp"
@@ -44,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:layout_marginTop="24dp"
-                    android:background="@drawable/bg_badge_xp"
+                    android:background="@drawable/badge"
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="6dp"
                     android:text="+450 XP"
@@ -55,7 +54,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- DETALLES DEL EVENTO -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -66,7 +65,7 @@
                     android:id="@+id/tvDetailTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Neon Beats Festival 2026"
+                    android:text="Fiesta de la longaniza 2026"
                     android:textColor="@color/text_white"
                     android:textSize="22sp"
                     android:textStyle="bold" />
@@ -75,16 +74,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="📅 Sáb, 18 Octubre • 20:00  |  📍 Dome Cyber, CDMX"
+                    android:text=" Sáb, 22 Octubre • 20:00  |  Chillán"
                     android:textColor="@color/text_gray"
                     android:textSize="13sp" />
 
-                <!-- PESTAÑAS (SEGMENTED TABS) -->
+                <!-- PESTAÑAS -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="42dp"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/bg_input"
+                    android:background="@drawable/input"
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:padding="4dp">
@@ -102,9 +101,9 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/bg_chip_category"
+                        android:background="@drawable/categoria"
                         android:gravity="center"
-                        android:text="Avisos Host"
+                        android:text="Avisos"
                         android:textColor="@color/neon_cyan"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -119,12 +118,12 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
-                <!-- CAJA DE AVISO URGENTE (HOST) -->
+                <!-- AVISO -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:background="@drawable/bg_notice_card"
+                    android:background="@drawable/tarjeta"
                     android:orientation="vertical"
                     android:padding="16dp">
 
@@ -140,12 +139,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Cambio de escenario: el DJ set se mueve al Stage B a las 22:00. ¡No te pierdas el drop holográfico!"
+                        android:text="¡Se cerro la avenida libertad!"
                         android:textColor="@color/text_white"
                         android:textSize="13sp" />
                 </LinearLayout>
 
-                <!-- SECCIÓN COMENTARIOS DESTACADOS -->
+                <!-- COMENTARIOS  -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -159,7 +158,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/bg_input"
+                    android:background="@drawable/input"
                     android:orientation="vertical"
                     android:padding="12dp">
 
@@ -184,12 +183,12 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- BARRA INFERIOR DE VALIDACIÓN GPS -->
+    <!-- VALIDACIÓN GPS -->
     <LinearLayout
         android:id="@+id/bottomGpsSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_bottom_nav"
+        android:background="@drawable/nav"
         android:orientation="vertical"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -209,7 +208,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/btn_gps_active"
+            android:background="@drawable/btn_gps"
             android:text="Reclamar Asistencia por GPS  ➔"
             android:textAllCaps="false"
             android:textColor="@color/status_green"

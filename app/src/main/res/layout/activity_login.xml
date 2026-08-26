@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:padding="24dp">
 
-        <!-- LOGO Y TÍTULO -->
+        <!-- TÍTULO -->
         <TextView
             android:id="@+id/tvLogo"
             android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvLogo" />
 
-        <!-- CAMPO CORREO -->
+        <!--CORREO -->
         <TextView
             android:id="@+id/tvLabelEmail"
             android:layout_width="wrap_content"
@@ -57,7 +57,7 @@
             android:layout_width="0dp"
             android:layout_height="52dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/bg_input"
+            android:background="@drawable/input"
             android:hint="ejemplo@nexura.gg"
             android:inputType="textEmailAddress"
             android:paddingHorizontal="16dp"
@@ -68,7 +68,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvLabelEmail" />
 
-        <!-- CAMPO CONTRASEÑA -->
+        <!-- CONTRASEÑA -->
         <TextView
             android:id="@+id/tvLabelPassword"
             android:layout_width="wrap_content"
@@ -85,7 +85,7 @@
             android:layout_width="0dp"
             android:layout_height="52dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/bg_input"
+            android:background="@drawable/input"
             android:hint="••••••••••••"
             android:inputType="textPassword"
             android:paddingHorizontal="16dp"
@@ -108,13 +108,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/etPassword" />
 
-        <!-- BOTÓN INICIAR SESIÓN -->
+        <!-- INICIAR SESIÓN -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnLogin"
             android:layout_width="0dp"
             android:layout_height="54dp"
             android:layout_marginTop="28dp"
-            android:background="@drawable/btn_gradient"
+            android:background="@drawable/boton_gradiante"
             android:text="Iniciar Sesión"
             android:textAllCaps="false"
             android:textColor="@color/text_white"
@@ -124,7 +124,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvForgotPassword" />
 
-        <!-- DIVISOR SOCIAL -->
+
         <TextView
             android:id="@+id/tvOr"
             android:layout_width="wrap_content"
@@ -137,7 +137,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnLogin" />
 
-        <!-- BOTONES SOCIALES -->
+        <!-- BOTONES  -->
         <LinearLayout
             android:id="@+id/layoutSocial"
             android:layout_width="wrap_content"
@@ -153,7 +153,7 @@
                 android:layout_width="60dp"
                 android:layout_height="50dp"
                 android:layout_marginEnd="12dp"
-                android:background="@drawable/bg_social_btn"
+                android:background="@drawable/boton_social"
                 android:text="G"
                 android:textColor="@color/text_white"
                 android:textSize="16sp"
@@ -164,7 +164,7 @@
                 android:layout_width="60dp"
                 android:layout_height="50dp"
                 android:layout_marginEnd="12dp"
-                android:background="@drawable/bg_social_btn"
+                android:background="@drawable/boton_social"
                 android:text=""
                 android:textColor="@color/text_white"
                 android:textSize="16sp" />
@@ -173,7 +173,7 @@
                 android:id="@+id/btnSocialDiscord"
                 android:layout_width="60dp"
                 android:layout_height="50dp"
-                android:background="@drawable/bg_social_btn"
+                android:background="@drawable/boton_social"
                 android:text="D"
                 android:textColor="@color/neon_cyan"
                 android:textSize="16sp"

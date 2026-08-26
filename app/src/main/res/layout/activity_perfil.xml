@@ -40,13 +40,12 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- AVATAR CENTRADO CON MARCO NEÓN -->
             <FrameLayout
                 android:layout_width="96dp"
                 android:layout_height="96dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="-48dp"
-                android:background="@drawable/bg_avatar_frame"
+                android:background="@drawable/avatar"
                 android:padding="4dp">
 
                 <View
@@ -55,14 +54,14 @@
                     android:background="@color/electric_purple" />
             </FrameLayout>
 
-            <!-- NOMBRE Y TÍTULO EQUIPADO -->
+            <!-- NOMBRE Y TÍTULO -->
             <TextView
                 android:id="@+id/tvUsername"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="12dp"
-                android:text="ValkiriaX"
+                android:text="thegoat"
                 android:textColor="@color/text_white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -73,15 +72,15 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="6dp"
-                android:background="@drawable/bg_tag_title"
+                android:background="@drawable/titulo"
                 android:paddingHorizontal="14dp"
                 android:paddingVertical="4dp"
-                android:text="👑 [RARO] CONQUISTADOR DE FESTIVALES"
+                android:text=" [RARO] FRIKI"
                 android:textColor="@color/trophy_gold"
                 android:textSize="11sp"
                 android:textStyle="bold" />
 
-            <!-- BARRA DE NIVEL Y PROGRESO -->
+            <!-- NIVEL -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -122,7 +121,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/bg_vitrina_box"
+                android:background="@drawable/vitrina"
                 android:orientation="horizontal"
                 android:paddingVertical="14dp">
 
@@ -136,7 +135,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="87"
+                        android:text="67"
                         android:textColor="@color/text_white"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -196,13 +195,13 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- VITRINA DE INSIGNIAS DESTACADAS (SHOWCASE) -->
+            <!-- VITRINA  -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="24dp"
-                android:text="Mi Vitrina de Logros"
+                android:text="Mis Logros"
                 android:textColor="@color/text_white"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -219,9 +218,9 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_chip_category"
+                    android:background="@drawable/categoria"
                     android:gravity="center"
-                    android:text="🎖️\nVIP"
+                    android:text="\nVIP"
                     android:textColor="@color/neon_cyan"
                     android:textSize="11sp"
                     android:textStyle="bold" />
@@ -230,7 +229,7 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_chip_category"
+                    android:background="@drawable/categoria"
                     android:gravity="center"
                     android:text="⚡\nRave"
                     android:textColor="@color/trophy_gold"
@@ -241,7 +240,7 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_chip_category"
+                    android:background="@drawable/categoria"
                     android:gravity="center"
                     android:text="🎧\nDJ Set"
                     android:textColor="@color/neon_cyan"
@@ -251,7 +250,7 @@
                 <TextView
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:background="@drawable/bg_chip_category"
+                    android:background="@drawable/categoria"
                     android:gravity="center"
                     android:text="🌐\nLocal"
                     android:textColor="@color/text_gray"
@@ -259,15 +258,15 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- BOTÓN EDITAR VITRINA / FONDOS -->
+            <!-- EDITAR VITRINA  -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnEditCosmetics"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="24dp"
-                android:background="@drawable/bg_vitrina_box"
-                android:text="⚙ Editar Vitrina y Cosméticos"
+                android:background="@drawable/vitrina"
+                android:text="⚙ Editar perfil"
                 android:textAllCaps="false"
                 android:textColor="@color/neon_cyan"
                 android:textSize="13sp"

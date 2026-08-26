@@ -7,7 +7,7 @@
     android:background="@color/bg_dark"
     tools:context=".Home">
 
-    <!-- HEADER / APP BAR -->
+    <!-- HEADER  -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
@@ -34,14 +34,14 @@
             android:id="@+id/ivAvatarHeader"
             android:layout_width="38dp"
             android:layout_height="38dp"
-            android:background="@drawable/bg_chip_category"
+            android:background="@drawable/categoria"
             android:padding="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- CONTENIDO SCROLLABLE -->
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -62,14 +62,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/bg_input"
+                android:background="@drawable/input"
                 android:hint="Buscar eventos, artistas, lugares..."
                 android:paddingHorizontal="16dp"
                 android:textColor="@color/text_white"
                 android:textColorHint="@color/text_hint"
                 android:textSize="13sp" />
 
-            <!-- CATEGORÍAS -->
+            <!-- CATEGORIAS -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/bg_chip_category"
+                        android:background="@drawable/categoria"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="8dp"
                         android:text="✦ Festivales"
@@ -106,7 +106,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/bg_input"
+                        android:background="@drawable/input"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="8dp"
                         android:text="Conferencias"
@@ -116,7 +116,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_input"
+                        android:background="@drawable/input"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="8dp"
                         android:text="Deportes"
@@ -125,7 +125,6 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <!-- EVENTO DESTACADO (TARJETA GRANDE) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -149,12 +148,12 @@
                     android:layout_height="match_parent"
                     android:padding="16dp">
 
-                    <!-- XP BADGE -->
+                    <!-- XP -->
                     <TextView
                         android:id="@+id/tvXpReward"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_badge_xp"
+                        android:background="@drawable/badge"
                         android:paddingHorizontal="10dp"
                         android:paddingVertical="4dp"
                         android:text="+450 XP"
@@ -168,7 +167,7 @@
                         android:id="@+id/tvFeaturedTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Neon Beats Festival"
+                        android:text="Fiesta de la Longaniza"
                         android:textColor="@color/text_white"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -181,7 +180,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        android:text="📍 A 1.2 km • Tech Arena"
+                        android:text=" A 1.2 km • Plaza Chillán"
                         android:textColor="@color/neon_cyan"
                         android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -192,12 +191,12 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- BARRA DE NAVEGACIÓN INFERIOR -->
+    <!-- BARRA DE NAVEGACIÓN  -->
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:background="@drawable/bg_bottom_nav"
+        android:background="@drawable/nav"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
