@@ -19,7 +19,7 @@ public class Registro extends AppCompatActivity {
         setContentView(R.layout.activity_registro);
 
         TextView btnBackRegister = findViewById(R.id.btnBackRegister);
-        TextView tvBackToLogin = findViewById(R.id.tvBackToLogin);
+        TextView tvBackToLogin = findViewById(R.id.tvGoToLogin);
         EditText etRegisterUsername = findViewById(R.id.etRegisterUsername);
         EditText etRegisterEmail = findViewById(R.id.etRegisterEmail);
         EditText etRegisterPassword = findViewById(R.id.etRegisterPassword);

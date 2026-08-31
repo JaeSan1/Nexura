@@ -135,7 +135,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="📅 Sáb, 22 Oct • Plaza Chillán"
+                            android:text="Sáb, 22 Oct • Plaza Chillán"
                             android:textColor="@color/neon_cyan"
                             android:textSize="12sp"
                             app:layout_constraintStart_toStartOf="parent"

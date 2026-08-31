@@ -11,30 +11,32 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp">
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="32dp">
 
+        <!-- BOTÓN VOLVER -->
         <TextView
             android:id="@+id/btnBackRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:gravity="center"
             android:text="←"
             android:textColor="@color/text_white"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            android:textSize="22sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- TÍTULO Y SUBTÍTULO -->
         <TextView
             android:id="@+id/tvRegisterTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="28dp"
+            android:letterSpacing="0.05"
             android:text="CREAR CUENTA"
             android:textColor="@color/text_white"
-            android:textSize="26sp"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:letterSpacing="0.1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnBackRegister" />
 
@@ -49,12 +51,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvRegisterTitle" />
 
-        <!-- GAMERTAG / NOMBRE DE USUARIO -->
+        <!-- CAMPO: USERNAME / GAMERTAG -->
         <TextView
-            android:id="@+id/tvLabelUsername"
+            android:id="@+id/lblRegisterUsername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="28dp"
             android:text="Nombre de usuario (Gamertag)"
             android:textColor="@color/text_gray"
             android:textSize="13sp"
@@ -63,23 +65,21 @@
 
         <EditText
             android:id="@+id/etRegisterUsername"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="6dp"
             android:background="@drawable/input"
-            android:hint="Ej. TheGoat99"
+            android:hint="TheGoat99"
             android:inputType="textPersonName"
             android:paddingHorizontal="16dp"
             android:textColor="@color/text_white"
             android:textColorHint="@color/text_hint"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvLabelUsername" />
+            app:layout_constraintTop_toBottomOf="@id/lblRegisterUsername" />
 
-        <!-- CORREO ELECTRÓNICO -->
+        <!-- CAMPO: CORREO ELECTRÓNICO -->
         <TextView
-            android:id="@+id/tvLabelRegEmail"
+            android:id="@+id/lblRegisterEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -91,9 +91,9 @@
 
         <EditText
             android:id="@+id/etRegisterEmail"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="6dp"
             android:background="@drawable/input"
             android:hint="tu_correo@nexura.gg"
             android:inputType="textEmailAddress"
@@ -101,13 +101,11 @@
             android:textColor="@color/text_white"
             android:textColorHint="@color/text_hint"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvLabelRegEmail" />
+            app:layout_constraintTop_toBottomOf="@id/lblRegisterEmail" />
 
-        <!-- CONTRASEÑA -->
+        <!-- CAMPO: CONTRASEÑA -->
         <TextView
-            android:id="@+id/tvLabelRegPass"
+            android:id="@+id/lblRegisterPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -119,9 +117,9 @@
 
         <EditText
             android:id="@+id/etRegisterPassword"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="6dp"
             android:background="@drawable/input"
             android:hint="Mínimo 6 caracteres"
             android:inputType="textPassword"
@@ -129,13 +127,11 @@
             android:textColor="@color/text_white"
             android:textColorHint="@color/text_hint"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvLabelRegPass" />
+            app:layout_constraintTop_toBottomOf="@id/lblRegisterPassword" />
 
-        <!-- CONFIRMAR CONTRASEÑA -->
+        <!-- CAMPO: CONFIRMAR CONTRASEÑA -->
         <TextView
-            android:id="@+id/tvLabelConfirmPass"
+            android:id="@+id/lblConfirmPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -147,9 +143,9 @@
 
         <EditText
             android:id="@+id/etConfirmPassword"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="6dp"
             android:background="@drawable/input"
             android:hint="Repite tu contraseña"
             android:inputType="textPassword"
@@ -157,15 +153,13 @@
             android:textColor="@color/text_white"
             android:textColorHint="@color/text_hint"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvLabelConfirmPass" />
+            app:layout_constraintTop_toBottomOf="@id/lblConfirmPassword" />
 
-        <!-- BOTÓN CREAR CUENTA -->
+        <!-- BOTÓN REGISTRARSE -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnDoRegister"
-            android:layout_width="0dp"
-            android:layout_height="54dp"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
             android:layout_marginTop="28dp"
             android:background="@drawable/boton_gradiante"
             android:text="Registrarse"
@@ -173,18 +167,16 @@
             android:textColor="@color/text_white"
             android:textSize="15sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/etConfirmPassword" />
 
-        <!-- VOLVER A LOGIN -->
+        <!-- ENLACE VOLVER AL LOGIN -->
         <TextView
-            android:id="@+id/tvBackToLogin"
+            android:id="@+id/tvGoToLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="16dp"
-            android:text="¿Ya tienes cuenta? Inicia Sesión"
+            android:layout_marginTop="20dp"
+            android:padding="8dp"
+            android:text="¿Ya tienes cuenta? Inicia sesión"
             android:textColor="@color/neon_cyan"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:padding="24dp">
 
-    <!-- BARRA INDICADORA SUPERIOR (TIRADOR) -->
+    <!-- BARRA -->
     <View
         android:layout_width="40dp"
         android:layout_height="4dp"
@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="📍 Región o Ciudad"
+        android:text="Región o Ciudad"
         android:textColor="@color/neon_cyan"
         android:textSize="13sp"
         android:textStyle="bold" />
@@ -70,7 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="📅 Fecha del Evento"
+        android:text="Fecha del Evento"
         android:textColor="@color/neon_cyan"
         android:textSize="13sp"
         android:textStyle="bold" />
@@ -112,7 +112,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="📡 Radio de Distancia Máxima"
+        android:text="Radio de Distancia Máxima"
         android:textColor="@color/neon_cyan"
         android:textSize="13sp"
         android:textStyle="bold" />

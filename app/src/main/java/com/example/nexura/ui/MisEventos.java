@@ -68,7 +68,7 @@ public class MisEventos extends AppCompatActivity {
         }
         if (navExplore != null) {
             navExplore.setOnClickListener(v -> {
-                startActivity(new Intent(MisEventos.this, ExplorarMapa.class));
+                startActivity(new Intent(MisEventos.this, Explorar.class));
                 finish();
             });
         }
