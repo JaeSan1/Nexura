@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_dark"
-    tools:context=".Home">
+    tools:context=".ui.Home">
 
-    <!-- HEADER  -->
+    <!-- HEADER CON LOGO, BOTÓN DE NOTIFICACIONES Y AVATAR -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
@@ -21,15 +21,43 @@
             android:id="@+id/tvHomeLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:letterSpacing="0.1"
             android:text="NEXURA"
             android:textColor="@color/text_white"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:letterSpacing="0.1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- BOTÓN NOTIFICACIONES (CAMPANA CON BADGE ROJO) -->
+        <FrameLayout
+            android:id="@+id/btnNotificationsHeader"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/input"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ivAvatarHeader"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="🔔"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/badge" />
+        </FrameLayout>
+
+        <!-- AVATAR HEADER -->
         <ImageView
             android:id="@+id/ivAvatarHeader"
             android:layout_width="38dp"
@@ -41,7 +69,7 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+    <!-- CONTENIDO SCROLLABLE -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -54,9 +82,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="20dp"
-            android:paddingBottom="24dp">
+            android:paddingBottom="80dp">
 
-            <!-- BUSCADOR -->
+            <!-- BUSCADOR RÁPIDO -->
             <EditText
                 android:id="@+id/etSearch"
                 android:layout_width="match_parent"
@@ -69,7 +97,7 @@
                 android:textColorHint="@color/text_hint"
                 android:textSize="13sp" />
 
-            <!-- CATEGORIAS -->
+            <!-- CATEGORÍAS RÁPIDAS -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -91,6 +119,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/chipFestivales"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
@@ -103,6 +132,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/chipConferencias"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
@@ -114,6 +144,7 @@
                         android:textSize="12sp" />
 
                     <TextView
+                        android:id="@+id/chipDeportes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/input"
@@ -125,6 +156,7 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
+            <!-- TÍTULO CARRUSEL DESTACADOS -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -134,64 +166,200 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardFeaturedEvent"
+            <!-- CARRUSEL HORIZONTAL DESLIZABLE -->
+            <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="220dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:cardBackgroundColor="@color/surface_card"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="4dp">
+                android:clipToPadding="false"
+                android:scrollbars="none">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="16dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                    <!-- XP -->
-                    <TextView
-                        android:id="@+id/tvXpReward"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/badge"
-                        android:paddingHorizontal="10dp"
-                        android:paddingVertical="4dp"
-                        android:text="+450 XP"
-                        android:textColor="@color/trophy_gold"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                    <!-- TARJETA 1 -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardFeaturedEvent1"
+                        android:layout_width="280dp"
+                        android:layout_height="200dp"
+                        android:layout_marginEnd="16dp"
+                        app:cardBackgroundColor="@color/surface_card"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="4dp">
 
-                    <TextView
-                        android:id="@+id/tvFeaturedTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="Fiesta de la Longaniza"
-                        android:textColor="@color/text_white"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toTopOf="@id/tvFeaturedLocation"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="16dp">
 
-                    <TextView
-                        android:id="@+id/tvFeaturedLocation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:text=" A 1.2 km • Plaza Chillán"
-                        android:textColor="@color/neon_cyan"
-                        android:textSize="12sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/badge"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="4dp"
+                                android:text="+450 XP"
+                                android:textColor="@color/trophy_gold"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tvTitle1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="Fiesta de la Longaniza"
+                                android:textColor="@color/text_white"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toTopOf="@id/tvLoc1"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tvLoc1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="A 1.2 km • Plaza Chillán"
+                                android:textColor="@color/neon_cyan"
+                                android:textSize="12sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- TARJETA 2 -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardFeaturedEvent2"
+                        android:layout_width="280dp"
+                        android:layout_height="200dp"
+                        android:layout_marginEnd="16dp"
+                        app:cardBackgroundColor="@color/surface_card"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="4dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/badge"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="4dp"
+                                android:text="+600 XP"
+                                android:textColor="@color/trophy_gold"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tvTitle2"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="Neon Beats Festival"
+                                android:textColor="@color/text_white"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toTopOf="@id/tvLoc2"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tvLoc2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="A 3.5 km • Parque Central"
+                                android:textColor="@color/neon_cyan"
+                                android:textSize="12sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- TARJETA 3 -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardFeaturedEvent3"
+                        android:layout_width="280dp"
+                        android:layout_height="200dp"
+                        android:layout_marginEnd="8dp"
+                        app:cardBackgroundColor="@color/surface_card"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="4dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/badge"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="4dp"
+                                android:text="+800 XP"
+                                android:textColor="@color/trophy_gold"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tvTitle3"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="Nexura Gaming Fest"
+                                android:textColor="@color/text_white"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toTopOf="@id/tvLoc3"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tvLoc3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="A 0.8 km • Polideportivo"
+                                android:textColor="@color/neon_cyan"
+                                android:textSize="12sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+            </HorizontalScrollView>
 
         </LinearLayout>
     </ScrollView>
 
-    <!-- BARRA DE NAVEGACIÓN  -->
+    <!-- BOTÓN FLOTANTE: CREAR EVENTO (+) -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnCreateEvent"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/boton_gradiante"
+        android:text="+"
+        android:textColor="@color/text_white"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- BARRA DE NAVEGACIÓN (NAVBAR) -->
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
@@ -202,6 +370,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
+            android:id="@+id/navHome"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -212,6 +381,7 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/navExplore"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -221,6 +391,7 @@
             android:textSize="12sp" />
 
         <TextView
+            android:id="@+id/navMyEvents"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

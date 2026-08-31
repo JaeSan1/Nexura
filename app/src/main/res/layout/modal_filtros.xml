@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/tarjeta"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- BARRA INDICADORA SUPERIOR (TIRADOR) -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/input" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filtros de Búsqueda"
+        android:textColor="@color/text_white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- 1. FILTRO: REGIÓN / CIUDAD -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="📍 Región o Ciudad"
+        android:textColor="@color/neon_cyan"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:id="@+id/rgRegion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+
+        <RadioButton
+            android:id="@+id/rbRegionNuble"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Región de Ñuble (Chillán, San Carlos, San Nicolás)"
+            android:textColor="@color/text_white"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/rbRegionBiobio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Región del Biobío (Concepción, Los Ángeles)"
+            android:textColor="@color/text_white"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/rbRegionMetropolitana"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Región Metropolitana (Santiago)"
+            android:textColor="@color/text_white"
+            android:textSize="13sp" />
+    </RadioGroup>
+
+    <!-- 2. FILTRO: FECHA -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="📅 Fecha del Evento"
+        android:textColor="@color/neon_cyan"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:id="@+id/rgFecha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+
+        <RadioButton
+            android:id="@+id/rbFechaCualquiera"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Cualquier fecha"
+            android:textColor="@color/text_white"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/rbFechaFinDeSemana"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Este fin de semana"
+            android:textColor="@color/text_white"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/rbFechaMes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Durante este mes"
+            android:textColor="@color/text_white"
+            android:textSize="13sp" />
+    </RadioGroup>
+
+    <!-- 3. FILTRO: DISTANCIA MÁXIMA -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="📡 Radio de Distancia Máxima"
+        android:textColor="@color/neon_cyan"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:id="@+id/rgDistancia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+
+        <RadioButton
+            android:id="@+id/rbDistancia5k"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hasta 5 km a la redonda"
+            android:textColor="@color/text_white"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/rbDistancia20k"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Hasta 20 km a la redonda"
+            android:textColor="@color/text_white"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/rbDistanciaTodo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Toda la región"
+            android:textColor="@color/text_white"
+            android:textSize="13sp" />
+    </RadioGroup>
+
+    <!-- BOTONES DE ACCIÓN INFERIORES -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnResetFilters"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/input"
+            android:text="Limpiar"
+            android:textAllCaps="false"
+            android:textColor="@color/text_gray"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnApplyFilters"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="2"
+            android:background="@drawable/boton_gradiante"
+            android:text="Aplicar Filtros"
+            android:textAllCaps="false"
+            android:textColor="@color/text_white"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

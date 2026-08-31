@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_dark"
-    tools:context=".Detalle_Evento">
+    tools:context=".ui.Detalle_Evento">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -19,10 +19,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- BANNER -->
+            <!-- BANNER SUPERIOR -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
+                android:layout_height="220dp"
                 android:background="@color/surface_card">
 
                 <TextView
@@ -38,7 +38,25 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <!-- BOTÓN GUARDAR EN MIS EVENTOS (FAVORITO) -->
                 <TextView
+                    android:id="@+id/btnSaveFavorite"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/input"
+                    android:gravity="center"
+                    android:text="♡"
+                    android:textColor="@color/neon_cyan"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/tvDetailXpBadge"
+                    app:layout_constraintEnd_toStartOf="@id/tvDetailXpBadge"
+                    app:layout_constraintTop_toTopOf="@id/tvDetailXpBadge" />
+
+                <!-- BADGE XP -->
+                <TextView
+                    android:id="@+id/tvDetailXpBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
@@ -54,7 +72,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+            <!-- CONTENIDO PRINCIPAL -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -71,17 +89,18 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvDetailDateLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text=" Sáb, 22 Octubre • 20:00  |  Chillán"
+                    android:text="Sáb, 22 Octubre • 20:00  | Chillán"
                     android:textColor="@color/text_gray"
                     android:textSize="13sp" />
 
-                <!-- PESTAÑAS -->
+                <!-- SELECTOR DE PESTAÑAS (TABS) -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="42dp"
+                    android:layout_height="44dp"
                     android:layout_marginTop="20dp"
                     android:background="@drawable/input"
                     android:gravity="center"
@@ -89,6 +108,7 @@
                     android:padding="4dp">
 
                     <TextView
+                        android:id="@+id/tabInfo"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -98,6 +118,7 @@
                         android:textSize="12sp" />
 
                     <TextView
+                        android:id="@+id/tabAvisos"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -109,6 +130,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tabComentarios"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -118,14 +140,45 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
-                <!-- AVISO -->
+                <!-- SECCIÓN 1: CONTENIDO INFO (INICIALMENTE OCULTO) -->
                 <LinearLayout
+                    android:id="@+id/containerTabInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/tarjeta"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Descripción del Evento"
+                        android:textColor="@color/text_white"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:lineSpacingExtra="4dp"
+                        android:text="Disfruta de la feria gastronómica tradicional más grande de la región. Más de 50 expositores, música folclórica en vivo, foodtrucks y cerveza artesanal."
+                        android:textColor="@color/text_gray"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <!-- SECCIÓN 2: CONTENIDO AVISOS (VISIBLE POR DEFECTO) -->
+                <LinearLayout
+                    android:id="@+id/containerTabAvisos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/tarjeta"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="visible">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -139,51 +192,82 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="¡Se cerro la avenida libertad!"
+                        android:text="¡Se cerró el acceso por Avenida Libertad! Usar entrada lateral por Calle 18 de Septiembre."
                         android:textColor="@color/text_white"
                         android:textSize="13sp" />
                 </LinearLayout>
 
-                <!-- COMENTARIOS  -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Comentarios de la Comunidad"
-                    android:textColor="@color/text_white"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
+                <!-- SECCIÓN 3: CONTENIDO COMENTARIOS (INICIALMENTE OCULTO) -->
                 <LinearLayout
+                    android:id="@+id/containerTabComentarios"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/input"
+                    android:layout_marginTop="16dp"
                     android:orientation="vertical"
-                    android:padding="12dp">
+                    android:visibility="gone">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="NexGamerX  [Título: Conquistador de Festivales]"
-                        android:textColor="@color/neon_cyan"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        android:background="@drawable/input"
+                        android:orientation="vertical"
+                        android:padding="12dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="NexGamerX  [Título: Conquistador de Festivales]"
+                            android:textColor="@color/neon_cyan"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="¿Alguien más ya está cerca de la zona VIP? ¡Quiero ese logro dorado!"
+                            android:textColor="@color/text_gray"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <!-- CAJA PARA ENVIAR COMENTARIO -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="¿Alguien más ya está cerca de la zona VIP? ¡Quiero ese logro dorado!"
-                        android:textColor="@color/text_gray"
-                        android:textSize="12sp" />
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/etNewComment"
+                            android:layout_width="0dp"
+                            android:layout_height="44dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/input"
+                            android:hint="Escribe un comentario..."
+                            android:paddingHorizontal="12dp"
+                            android:textColor="@color/text_white"
+                            android:textColorHint="@color/text_hint"
+                            android:textSize="12sp" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btnSendComment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="44dp"
+                            android:layout_marginStart="8dp"
+                            android:background="@drawable/boton_gradiante"
+                            android:paddingHorizontal="14dp"
+                            android:text="Enviar"
+                            android:textColor="@color/text_white"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
-    <!-- VALIDACIÓN GPS -->
+    <!-- VALIDACIÓN GPS Y RECLAMO XP -->
     <LinearLayout
         android:id="@+id/bottomGpsSection"
         android:layout_width="match_parent"
@@ -198,7 +282,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="🟢 Estás en el rango del evento  •  Tiempo en zona: 15/30 min"
+            android:text="Estás en el rango del evento  •  Tiempo en zona: 15/30 min"
             android:textColor="@color/status_green"
             android:textSize="11sp"
             android:textStyle="bold" />
