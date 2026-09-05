@@ -65,7 +65,10 @@
         android:paddingHorizontal="20dp"
         android:paddingTop="8dp"
         android:paddingBottom="24dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerNotif" />
+        app:layout_constraintTop_toBottomOf="@id/headerNotif"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_notificacion" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

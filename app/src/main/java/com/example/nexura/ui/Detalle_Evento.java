@@ -112,8 +112,6 @@ public class Detalle_Evento extends AppCompatActivity {
             });
         }
     }
-
-    // Método auxiliar para alternar estilos de pestañas
     private void activarTab(TextView tabActiva, View contenedorActivo,
                             TextView tab2, View contenedor2,
                             TextView tab3, View contenedor3) {

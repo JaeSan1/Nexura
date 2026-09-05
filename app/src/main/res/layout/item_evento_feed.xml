@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
@@ -21,7 +22,7 @@
             android:orientation="horizontal"
             android:padding="12dp">
 
-            <!-- ICONO O AVATAR ORGANIZADOR -->
+            <!-- AVATAR ORGANIZADOR -->
             <View
                 android:layout_width="34dp"
                 android:layout_height="34dp"
@@ -40,14 +41,16 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/text_white"
                     android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="Municipalidad de Chillán" />
 
                 <TextView
                     android:id="@+id/tvFeedLocationSub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/text_gray"
-                    android:textSize="11sp" />
+                    android:textSize="11sp"
+                    tools:text="Plaza de Armas • A 1.2 km" />
             </LinearLayout>
 
             <TextView
@@ -59,7 +62,8 @@
                 android:paddingVertical="4dp"
                 android:textColor="@color/trophy_gold"
                 android:textSize="11sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="+450 XP" />
         </LinearLayout>
 
         <!-- CONTENEDOR DE PORTADA CON BADGE DE FECHA -->
@@ -92,7 +96,8 @@
                 android:textSize="11sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="📅 Sáb, 22 Oct" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- TÍTULO Y DESCRIPCIÓN -->
@@ -108,7 +113,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_white"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="Fiesta de la Longaniza 2026" />
 
             <TextView
                 android:id="@+id/tvFeedDescription"
@@ -117,7 +123,8 @@
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
                 android:textColor="@color/text_gray"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                tools:text="El festival gastronómico y cultural más grande de la región. Música en vivo, gastronomía típica y puntos de experiencia Nexura verificados." />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
