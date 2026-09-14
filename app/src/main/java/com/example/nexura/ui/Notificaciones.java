@@ -6,38 +6,74 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.nexura.R;
 import com.example.nexura.adapter.NotificacionAdapter;
 import com.example.nexura.model.Notificacion;
+import com.example.nexura.network.SupabaseApi;
+import com.example.nexura.network.SupabaseCliente;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class Notificaciones extends AppCompatActivity {
+
+    private RecyclerView rvNotificaciones;
+    private NotificacionAdapter adapter;
+    private List<Notificacion> listaNotificaciones;
+    private SupabaseApi api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notificaciones);
 
-        TextView btnBack = findViewById(R.id.btnBackNotif);
+        api = SupabaseCliente.getClient().create(SupabaseApi.class);
+
+        TextView btnBack = findViewById(R.id.btnBackNotificaciones);
+        rvNotificaciones = findViewById(R.id.rvNotificaciones);
+
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        RecyclerView rvNotificaciones = findViewById(R.id.rvNotificaciones);
+        // 1. Configurar RecyclerView
         if (rvNotificaciones != null) {
             rvNotificaciones.setLayoutManager(new LinearLayoutManager(this));
-
-            List<Notificacion> listaNotif = new ArrayList<>();
-            listaNotif.add(new Notificacion("1", "Aviso urgente de organizador", "Fiesta de la Longaniza: Se cerró el acceso por Av. Libertad.", "Hace 15 min", "URGENTE", false));
-            listaNotif.add(new Notificacion("2", "¡Recompensa Desbloqueada!", "Has recibido +350 XP por tu permanencia en la Feria del Libro.", "Ayer", "XP", true));
-            listaNotif.add(new Notificacion("3", "Recordatorio de Asistencia", "Neon Beats Festival comienza en 2 días. Prepara tu llegada para validar tu GPS.", "Hace 2 días", "RECORDATORIO", true));
-
-            NotificacionAdapter adapter = new NotificacionAdapter(this, listaNotif, notif -> {
-                Toast.makeText(this, notif.getTitulo(), Toast.LENGTH_SHORT).show();
+            listaNotificaciones = new ArrayList<>();
+            adapter = new NotificacionAdapter(this, listaNotificaciones, notificacion -> {
+                Toast.makeText(this, notificacion.getTitulo(), Toast.LENGTH_SHORT).show();
             });
-
             rvNotificaciones.setAdapter(adapter);
         }
+
+        // 2. Cargar avisos y alertas desde Supabase
+        cargarNotificacionesDesdeNube();
+    }
+
+    private void cargarNotificacionesDesdeNube() {
+        api.obtenerNotificaciones().enqueue(new Callback<List<Notificacion>>() {
+            @Override
+            public void onResponse(Call<List<Notificacion>> call, Response<List<Notificacion>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listaNotificaciones.clear();
+                    listaNotificaciones.addAll(response.body());
+                    if (adapter != null) {
+                        adapter.notifyDataSetChanged();
+                    }
+                } else {
+                    Toast.makeText(Notificaciones.this, "No se pudieron obtener las alertas: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Notificacion>> call, Throwable t) {
+                Toast.makeText(Notificaciones.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -16,7 +16,15 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+
 import com.example.nexura.R;
+import com.example.nexura.model.Evento;
+import com.example.nexura.network.SupabaseApi;
+import com.example.nexura.network.SupabaseCliente;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CrearEvento extends AppCompatActivity {
 
@@ -95,6 +103,7 @@ public class CrearEvento extends AppCompatActivity {
         btnPublishEvent.setOnClickListener(v -> {
             String title = etEventTitle.getText().toString().trim();
             String location = etEventLocation.getText().toString().trim();
+            String category = etEventCategory.getText().toString().trim();
 
             if (TextUtils.isEmpty(title)) {
                 etEventTitle.setError("Ingresa el título");
@@ -108,12 +117,47 @@ public class CrearEvento extends AppCompatActivity {
                 return;
             }
 
-            new AlertDialog.Builder(CrearEvento.this)
-                    .setTitle("¡Evento Publicado Oficialmente!")
-                    .setMessage("'" + title + "' ha sido aprobado con +" + xpCalculada + " XP de recompensa verificada.")
-                    .setPositiveButton("Aceptar", (dialog, which) -> finish())
-                    .setCancelable(false)
-                    .show();
+            // Deshabilitar botón temporalmente para evitar doble envío
+            btnPublishEvent.setEnabled(false);
+
+            // 1. Armar el objeto Evento con los nombres mapeados a Supabase
+            Evento nuevoEvento = new Evento();
+            nuevoEvento.setTitulo(title);
+            nuevoEvento.setUbicacion(location);
+            nuevoEvento.setCiudad("Chillán");
+            nuevoEvento.setCategoria(category.isEmpty() ? "Festival" : category);
+            nuevoEvento.setOrganizador("Organizador Nexura");
+            nuevoEvento.setDescripcion("Evento comunitario publicado desde la app Nexura.");
+            nuevoEvento.setFecha("Próximamente");
+            nuevoEvento.setImagenUrl("");
+            nuevoEvento.setXpRecompensa(xpCalculada);
+            nuevoEvento.setLatitud(-36.6067); // Coordenadas base
+            nuevoEvento.setLongitud(-72.1034);
+
+            // 2. Llamada HTTP a Supabase vía Retrofit
+            SupabaseApi api = SupabaseCliente.getClient().create(SupabaseApi.class);
+            api.crearEvento(nuevoEvento).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    btnPublishEvent.setEnabled(true);
+                    if (response.isSuccessful()) {
+                        new AlertDialog.Builder(CrearEvento.this)
+                                .setTitle("¡Evento Publicado en la Nube! 🚀")
+                                .setMessage("'" + title + "' ha sido registrado exitosamente en Supabase con +" + xpCalculada + " XP.")
+                                .setPositiveButton("Aceptar", (dialog, which) -> finish())
+                                .setCancelable(false)
+                                .show();
+                    } else {
+                        Toast.makeText(CrearEvento.this, "Error del servidor: código " + response.code(), Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    btnPublishEvent.setEnabled(true);
+                    Toast.makeText(CrearEvento.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
         });
     }
 

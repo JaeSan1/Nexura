@@ -7,7 +7,6 @@
     android:background="@color/bg_dark"
     tools:context=".ui.Explorar">
 
-    <!-- CABECERA: TÍTULO Y SUBTÍTULO -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerExplorar"
         android:layout_width="match_parent"
@@ -41,7 +40,6 @@
             app:layout_constraintTop_toBottomOf="@id/tvExplorarTitle" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- LISTA DE EVENTOS (FEED) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFeedEventos"
         android:layout_width="match_parent"
@@ -53,10 +51,8 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/bottomNavBar"
         app:layout_constraintTop_toBottomOf="@id/headerExplorar"
-        tools:itemCount="3"
         tools:listitem="@layout/item_evento_feed" />
 
-    <!-- BARRA DE NAVEGACIÓN INFERIOR (NAVBAR) -->
     <LinearLayout
         android:id="@+id/bottomNavBar"
         android:layout_width="match_parent"

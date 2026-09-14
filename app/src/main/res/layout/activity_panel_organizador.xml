@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:padding="20dp">
 
-        <!-- HEADER -->
         <TextView
             android:id="@+id/btnBackOrganizer"
             android:layout_width="40dp"
@@ -39,7 +38,6 @@
             app:layout_constraintStart_toEndOf="@id/btnBackOrganizer"
             app:layout_constraintTop_toTopOf="@id/btnBackOrganizer" />
 
-        <!-- TARJETA DE MÉTRICAS GLOBALES -->
         <LinearLayout
             android:id="@+id/layoutMetrics"
             android:layout_width="match_parent"
@@ -126,13 +124,13 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- EMITIR AVISO URGENTE (BROADCAST EN VIVO) -->
+        <!-- EMISIÓN DE AVISO -->
         <TextView
             android:id="@+id/lblBroadcast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="📢 Emitir Aviso en Vivo a los Asistentes"
+            android:text="Emitir Aviso en Vivo a los Asistentes"
             android:textColor="@color/trophy_gold"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -154,26 +152,20 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <EditText
-                    android:id="@+id/etBroadcastMessage"
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:background="@drawable/input"
-                    android:gravity="top"
-                    android:hint="Ej. ¡Acceso vehicular cerrado por calle principal! Usar desvío norte..."
-                    android:inputType="textMultiLine"
-                    android:padding="12dp"
-                    android:textColor="@color/text_white"
-                    android:textColorHint="@color/text_hint"
+                    android:layout_height="wrap_content"
+                    android:text="Transmite avisos importantes o cambios de última hora a todos los asistentes confirmados."
+                    android:textColor="@color/text_gray"
                     android:textSize="12sp" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnSendBroadcast"
+                    android:id="@+id/btnSendBroadcastAlert"
                     android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="12dp"
                     android:background="@drawable/boton_gradiante"
-                    android:text="Transmitir Notificación Urgente"
+                    android:text="Redactar y Emitir Comunicado"
                     android:textAllCaps="false"
                     android:textColor="@color/text_white"
                     android:textSize="13sp"
@@ -181,7 +173,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- GESTIÓN DE EVENTOS PUBLICADOS -->
+        <!-- EVENTO ACTIVO (FORMATO TEXTUAL LIMPIO) -->
         <TextView
             android:id="@+id/lblManageEvents"
             android:layout_width="wrap_content"
@@ -215,7 +207,7 @@
                     android:background="@drawable/badge"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="4dp"
-                    android:text="🟢 En Vivo"
+                    android:text="EN VIVO"
                     android:textColor="@color/status_green"
                     android:textSize="11sp"
                     android:textStyle="bold"
@@ -239,7 +231,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="📍 Chillán • 840 asistentes validados hoy"
+                    android:text="Chillán • 840 asistentes validados hoy"
                     android:textColor="@color/neon_cyan"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -249,10 +241,10 @@
 
         <!-- BOTÓN NUEVO EVENTO -->
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnCreateFromPanel"
+            android:id="@+id/btnCreateNewEvent"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="24dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/input"
             android:text="+ Publicar Nuevo Evento"

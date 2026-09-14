@@ -18,11 +18,15 @@
 
         <TextView
             android:id="@+id/tvNotifIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginEnd="14dp"
-            android:textSize="22sp"
-            tools:text="📢" />
+            android:background="@drawable/categoria"
+            android:gravity="center"
+            android:textColor="@color/neon_cyan"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            tools:text="INFO" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -37,7 +41,7 @@
                 android:textColor="@color/text_white"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                tools:text="Aviso urgente de organizador" />
+                tools:text="Aviso del organizador" />
 
             <TextView
                 android:id="@+id/tvNotifMessage"

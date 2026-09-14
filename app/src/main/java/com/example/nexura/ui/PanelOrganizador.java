@@ -2,64 +2,113 @@ package com.example.nexura.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 
 import com.example.nexura.R;
+import com.example.nexura.model.Notificacion;
+import com.example.nexura.network.SupabaseApi;
+import com.example.nexura.network.SupabaseCliente;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PanelOrganizador extends AppCompatActivity {
+
+    private SupabaseApi api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_panel_organizador);
 
-        TextView btnBackOrganizer = findViewById(R.id.btnBackOrganizer);
-        EditText etBroadcastMessage = findViewById(R.id.etBroadcastMessage);
-        Button btnSendBroadcast = findViewById(R.id.btnSendBroadcast);
-        CardView cardActiveEvent1 = findViewById(R.id.cardActiveEvent1);
-        Button btnCreateFromPanel = findViewById(R.id.btnCreateFromPanel);
+        api = SupabaseCliente.getClient().create(SupabaseApi.class);
 
-        if (btnBackOrganizer != null) {
-            btnBackOrganizer.setOnClickListener(v -> finish());
+        TextView btnBack = findViewById(R.id.btnBackOrganizer);
+        Button btnCreateNewEvent = findViewById(R.id.btnCreateNewEvent);
+        Button btnSendBroadcastAlert = findViewById(R.id.btnSendBroadcastAlert);
+
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> finish());
         }
 
-        // 1. Enviar Aviso Urgente en tiempo real
-        if (btnSendBroadcast != null) {
-            btnSendBroadcast.setOnClickListener(v -> {
-                String aviso = etBroadcastMessage.getText().toString().trim();
-                if (TextUtils.isEmpty(aviso)) {
-                    etBroadcastMessage.setError("Escribe el mensaje del aviso");
-                    etBroadcastMessage.requestFocus();
-                    return;
+        // 1. Acceso a creación de un nuevo evento
+        if (btnCreateNewEvent != null) {
+            btnCreateNewEvent.setOnClickListener(v ->
+                    startActivity(new Intent(PanelOrganizador.this, CrearEvento.class)));
+        }
+
+        // 2. Emitir comunicado / aviso urgente a la comunidad
+        if (btnSendBroadcastAlert != null) {
+            btnSendBroadcastAlert.setOnClickListener(v -> mostrarDialogoEmisionAviso());
+        }
+    }
+
+    private void mostrarDialogoEmisionAviso() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("📢 Emitir Comunicado Urgente");
+
+        // Contenedor dinámico de inputs
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(50, 40, 50, 10);
+
+        final EditText inputTitulo = new EditText(this);
+        inputTitulo.setHint("Título del comunicado (ej. Cambio de hora)");
+        layout.addView(inputTitulo);
+
+        final EditText inputMensaje = new EditText(this);
+        inputMensaje.setHint("Detalle del mensaje a la comunidad");
+        layout.addView(inputMensaje);
+
+        builder.setView(layout);
+
+        builder.setPositiveButton("Transmitir", (dialog, which) -> {
+            String titulo = inputTitulo.getText().toString().trim();
+            String mensaje = inputMensaje.getText().toString().trim();
+
+            if (TextUtils.isEmpty(titulo) || TextUtils.isEmpty(mensaje)) {
+                Toast.makeText(this, "Completa el título y el mensaje", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            publicarNotificacionEnNube(titulo, mensaje);
+        });
+
+        builder.setNegativeButton("Cancelar", null);
+        builder.show();
+    }
+
+    private void publicarNotificacionEnNube(String titulo, String mensaje) {
+        Notificacion nuevaNotificacion = new Notificacion();
+        nuevaNotificacion.setTitulo(titulo);
+        nuevaNotificacion.setMensaje(mensaje);
+        nuevaNotificacion.setTiempo("Ahora");
+        nuevaNotificacion.setTipo("AVISO");
+        nuevaNotificacion.setLeida(false);
+
+        api.emitirAvisoOrganizador(nuevaNotificacion).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(PanelOrganizador.this, "¡Aviso transmitido a todos los usuarios!", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(PanelOrganizador.this, "Error al emitir: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
+            }
 
-                new AlertDialog.Builder(PanelOrganizador.this)
-                        .setTitle("Aviso Urgente Enviado")
-                        .setMessage("Se ha transmitido la notificación a todos los usuarios con el evento guardado y activos en la zona.")
-                        .setPositiveButton("Entendido", (dialog, which) -> etBroadcastMessage.setText(""))
-                        .show();
-            });
-        }
-
-        // 2. Ver Detalle del Evento Activo
-        if (cardActiveEvent1 != null) {
-            cardActiveEvent1.setOnClickListener(v -> {
-                startActivity(new Intent(PanelOrganizador.this, Detalle_Evento.class));
-            });
-        }
-
-        // 3. Crear nuevo evento desde el panel
-        if (btnCreateFromPanel != null) {
-            btnCreateFromPanel.setOnClickListener(v -> {
-                startActivity(new Intent(PanelOrganizador.this, CrearEvento.class));
-            });
-        }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(PanelOrganizador.this, "Falla de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

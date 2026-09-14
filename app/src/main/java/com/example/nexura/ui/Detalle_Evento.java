@@ -12,42 +12,55 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.nexura.R;
+import com.example.nexura.model.Comentario;
+import com.example.nexura.model.Evento;
+import com.example.nexura.network.SupabaseApi;
+import com.example.nexura.network.SupabaseCliente;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Detalle_Evento extends AppCompatActivity {
 
     private boolean yaReclamado = false;
     private boolean isFavorite = false;
+    private Evento eventoActual;
+    private SupabaseApi api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_evento);
 
+        api = SupabaseCliente.getClient().create(SupabaseApi.class);
+
+        // 1. Obtener el evento seleccionado desde el Intent
+        eventoActual = (Evento) getIntent().getSerializableExtra("EVENTO_SELECCIONADO");
+
         TextView btnBack = findViewById(R.id.btnBack);
         TextView btnSaveFavorite = findViewById(R.id.btnSaveFavorite);
         TextView tvGpsStatus = findViewById(R.id.tvGpsStatus);
         Button btnClaimGps = findViewById(R.id.btnClaimGps);
 
-        // Pestañas (Tabs)
         TextView tabInfo = findViewById(R.id.tabInfo);
         TextView tabAvisos = findViewById(R.id.tabAvisos);
         TextView tabComentarios = findViewById(R.id.tabComentarios);
 
-        // Contenedores
         LinearLayout containerTabInfo = findViewById(R.id.containerTabInfo);
         LinearLayout containerTabAvisos = findViewById(R.id.containerTabAvisos);
         LinearLayout containerTabComentarios = findViewById(R.id.containerTabComentarios);
 
-        // Comentarios
         EditText etNewComment = findViewById(R.id.etNewComment);
         Button btnSendComment = findViewById(R.id.btnSendComment);
 
-        // 1. Flecha Volver
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        // 2. Guardar en Mis Eventos (Favorito)
+        // Favoritos / Mis Eventos
         if (btnSaveFavorite != null) {
             btnSaveFavorite.setOnClickListener(v -> {
                 isFavorite = !isFavorite;
@@ -63,48 +76,64 @@ public class Detalle_Evento extends AppCompatActivity {
             });
         }
 
-        // 3. Lógica de Pestañas (Tabs)
-        tabInfo.setOnClickListener(v -> {
-            activarTab(tabInfo, containerTabInfo, tabAvisos, containerTabAvisos, tabComentarios, containerTabComentarios);
-        });
-
-        tabAvisos.setOnClickListener(v -> {
-            activarTab(tabAvisos, containerTabAvisos, tabInfo, containerTabInfo, tabComentarios, containerTabComentarios);
-        });
-
+        // Pestañas
+        tabInfo.setOnClickListener(v -> activarTab(tabInfo, containerTabInfo, tabAvisos, containerTabAvisos, tabComentarios, containerTabComentarios));
+        tabAvisos.setOnClickListener(v -> activarTab(tabAvisos, containerTabAvisos, tabInfo, containerTabInfo, tabComentarios, containerTabComentarios));
         tabComentarios.setOnClickListener(v -> {
             activarTab(tabComentarios, containerTabComentarios, tabInfo, containerTabInfo, tabAvisos, containerTabAvisos);
+            cargarComentarios();
         });
 
-        // 4. Enviar Comentario
+        // Enviar Comentario a Supabase
         if (btnSendComment != null) {
             btnSendComment.setOnClickListener(v -> {
-                String comentario = etNewComment.getText().toString().trim();
-                if (!comentario.isEmpty()) {
-                    Toast.makeText(this, "Comentario publicado en la comunidad", Toast.LENGTH_SHORT).show();
-                    etNewComment.setText("");
-                } else {
-                    etNewComment.setError("Escribe algo antes de enviar");
+                String texto = etNewComment.getText().toString().trim();
+                if (texto.isEmpty()) {
+                    etNewComment.setError("Escribe un mensaje");
+                    return;
+                }
+
+                if (eventoActual != null && eventoActual.getId() != null) {
+                    Comentario nuevo = new Comentario(eventoActual.getId(), null, "TheGoat99", texto);
+                    api.publicarComentario(nuevo).enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                Toast.makeText(Detalle_Evento.this, "Comentario publicado", Toast.LENGTH_SHORT).show();
+                                etNewComment.setText("");
+                                cargarComentarios();
+                            } else {
+                                Toast.makeText(Detalle_Evento.this, "Error al publicar: " + response.code(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(Detalle_Evento.this, "Fallo de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
         }
 
-        // 5. Reclamar Asistencia GPS (+XP)
+        // Validación GPS y Recompensa (+XP)
         if (btnClaimGps != null) {
             btnClaimGps.setOnClickListener(v -> {
                 if (!yaReclamado) {
+                    String nombreEvento = (eventoActual != null) ? eventoActual.getTitulo() : "el evento";
+                    int xpPremio = (eventoActual != null) ? eventoActual.getXpRecompensa() : 250;
+
                     new AlertDialog.Builder(Detalle_Evento.this)
                             .setTitle("¡Asistencia Confirmada! 🏅")
-                            .setMessage("Has validado tu permanencia física en la Fiesta de la Longaniza.\n\n+450 XP acreditados a tu vitrina.")
+                            .setMessage("Has validado tu permanencia física en " + nombreEvento + ".\n\n+" + xpPremio + " XP acreditados.")
                             .setPositiveButton("Reclamar Recompensa", (dialog, which) -> {
                                 yaReclamado = true;
                                 btnClaimGps.setText("✓ Asistencia Validada");
                                 btnClaimGps.setEnabled(false);
                                 btnClaimGps.setAlpha(0.5f);
                                 if (tvGpsStatus != null) {
-                                    tvGpsStatus.setText("🎉 Recompensa reclamada con éxito (+450 XP)");
+                                    tvGpsStatus.setText("🎉 Recompensa acreditada (+" + xpPremio + " XP)");
                                 }
-                                Toast.makeText(Detalle_Evento.this, "+450 XP ganados", Toast.LENGTH_SHORT).show();
                             })
                             .setNegativeButton("Cancelar", null)
                             .show();
@@ -112,10 +141,26 @@ public class Detalle_Evento extends AppCompatActivity {
             });
         }
     }
+
+    private void cargarComentarios() {
+        if (eventoActual == null || eventoActual.getId() == null) return;
+
+        api.obtenerComentariosPorEvento("eq." + eventoActual.getId()).enqueue(new Callback<List<Comentario>>() {
+            @Override
+            public void onResponse(Call<List<Comentario>> call, Response<List<Comentario>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Los comentarios llegan listos para pintarse en el contenedor
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Comentario>> call, Throwable t) {}
+        });
+    }
+
     private void activarTab(TextView tabActiva, View contenedorActivo,
                             TextView tab2, View contenedor2,
                             TextView tab3, View contenedor3) {
-
         tabActiva.setBackgroundResource(R.drawable.categoria);
         tabActiva.setTextColor(ContextCompat.getColor(this, R.color.neon_cyan));
 

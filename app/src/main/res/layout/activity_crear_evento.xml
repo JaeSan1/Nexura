@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:padding="20dp">
 
-        <!-- HEADER -->
         <TextView
             android:id="@+id/btnBackCreate"
             android:layout_width="40dp"
@@ -31,16 +30,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:letterSpacing="0.1"
             android:text="PUBLICAR EVENTO"
             android:textColor="@color/text_white"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:letterSpacing="0.1"
             app:layout_constraintBottom_toBottomOf="@id/btnBackCreate"
             app:layout_constraintStart_toEndOf="@id/btnBackCreate"
             app:layout_constraintTop_toTopOf="@id/btnBackCreate" />
 
-        <!-- 1. SELECTOR DE PORTADA PRINCIPAL -->
+        <!-- PORTADA -->
         <TextView
             android:id="@+id/lblCover"
             android:layout_width="wrap_content"
@@ -99,13 +98,13 @@
             </FrameLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- 2. GALERÍA DE FOTOS ADICIONALES -->
+        <!-- GALERÍA -->
         <TextView
             android:id="@+id/lblGallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Galería del Evento (Fotos del recinto o ediciones previas)"
+            android:text="Galería del Evento (Fotos del recinto o previas)"
             android:textColor="@color/text_gray"
             android:textSize="13sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -147,7 +146,7 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <!-- 3. DATOS BÁSICOS -->
+        <!-- FORMULARIO -->
         <TextView
             android:id="@+id/lblEventName"
             android:layout_width="wrap_content"
@@ -174,7 +173,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/lblEventName" />
 
-        <!-- CATEGORÍA Y DURACIÓN (PARA CALCULAR XP) -->
         <LinearLayout
             android:id="@+id/layoutRow1"
             android:layout_width="0dp"
@@ -241,7 +239,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- UBICACIÓN Y FECHA -->
         <TextView
             android:id="@+id/lblEventLoc"
             android:layout_width="wrap_content"
@@ -268,7 +265,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/lblEventLoc" />
 
-        <!-- TARJETA DE CÁLCULO DE RECOMPENSA AUTOMÁTICA -->
+        <!-- CÁLCULO XP AUTOMÁTICO -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardXpPreview"
             android:layout_width="0dp"
@@ -314,7 +311,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- BOTÓN PUBLICAR -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnPublishEvent"
             android:layout_width="0dp"

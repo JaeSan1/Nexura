@@ -44,13 +44,13 @@ public class NotificacionAdapter extends RecyclerView.Adapter<NotificacionAdapte
 
         switch (notif.getTipo()) {
             case "URGENTE":
-                holder.tvIcono.setText("📢");
+                holder.tvIcono.setText("AVISO");
                 break;
             case "XP":
-                holder.tvIcono.setText("⚡");
+                holder.tvIcono.setText("XP");
                 break;
             default:
-                holder.tvIcono.setText("📅");
+                holder.tvIcono.setText("EVENTO");
                 break;
         }
 

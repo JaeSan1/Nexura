@@ -7,7 +7,6 @@
     android:background="@color/bg_dark"
     tools:context=".ui.MisEventos">
 
-    <!-- HEADER -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerMyEvents"
         android:layout_width="match_parent"
@@ -18,20 +17,32 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tvTitleMyEvents"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="MIS EVENTOS"
+            android:id="@+id/btnBackMyEvents"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="←"
             android:textColor="@color/text_white"
             android:textSize="22sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTitleMyEvents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:letterSpacing="0.1"
+            android:text="MIS EVENTOS"
+            android:textColor="@color/text_white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/btnBackMyEvents"
+            app:layout_constraintStart_toEndOf="@id/btnBackMyEvents"
+            app:layout_constraintTop_toTopOf="@id/btnBackMyEvents" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- SELECTOR DE PESTAÑAS (TABS) -->
     <LinearLayout
         android:id="@+id/tabsMyEvents"
         android:layout_width="match_parent"
@@ -44,222 +55,41 @@
         app:layout_constraintTop_toBottomOf="@id/headerMyEvents">
 
         <TextView
-            android:id="@+id/tabPorAsistir"
+            android:id="@+id/tabSavedEvents"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/categoria"
             android:gravity="center"
-            android:text="Por Asistir (2)"
+            android:text="Guardados"
             android:textColor="@color/neon_cyan"
             android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tabHistorial"
+            android:id="@+id/tabAttendedHistory"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Historial (1)"
+            android:text="Historial Asistidos"
             android:textColor="@color/text_gray"
             android:textSize="12sp" />
     </LinearLayout>
 
-    <!-- CONTENIDO SCROLL -->
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMyEvents"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="12dp"
-        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/bottomNav"
-        app:layout_constraintTop_toBottomOf="@id/tabsMyEvents">
+        app:layout_constraintTop_toBottomOf="@id/tabsMyEvents"
+        tools:listitem="@layout/item_evento_feed" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="20dp"
-            android:paddingBottom="24dp">
-
-            <!-- 1. CONTENEDOR: LISTA POR ASISTIR -->
-            <LinearLayout
-                android:id="@+id/containerPorAsistir"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <!-- TARJETA GUARDADA 1 -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardSaved1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardBackgroundColor="@color/surface_card"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="3dp">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:id="@+id/tvBadge1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/badge"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="4dp"
-                            android:text="+450 XP"
-                            android:textColor="@color/trophy_gold"
-                            android:textSize="11sp"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/tvSavedTitle1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Fiesta de la Longaniza 2026"
-                            android:textColor="@color/text_white"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toStartOf="@id/tvBadge1"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="📅 Sáb, 22 Oct • Plaza Chillán"
-                            android:textColor="@color/neon_cyan"
-                            android:textSize="12sp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tvSavedTitle1" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!-- TARJETA GUARDADA 2 -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardSaved2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardBackgroundColor="@color/surface_card"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="3dp">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:id="@+id/tvBadge2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/badge"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="4dp"
-                            android:text="+600 XP"
-                            android:textColor="@color/trophy_gold"
-                            android:textSize="11sp"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/tvSavedTitle2"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Neon Beats Festival"
-                            android:textColor="@color/text_white"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toStartOf="@id/tvBadge2"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="📅 Vie, 14 Nov • Parque Central"
-                            android:textColor="@color/neon_cyan"
-                            android:textSize="12sp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tvSavedTitle2" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-            <!-- 2. CONTENEDOR: HISTORIAL (COMPLETADOS) -->
-            <LinearLayout
-                android:id="@+id/containerHistorial"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/surface_card"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="3dp">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:id="@+id/tvBadgeHist"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/btn_gps"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="4dp"
-                            android:text="✓ Reclamado (+350 XP)"
-                            android:textColor="@color/status_green"
-                            android:textSize="11sp"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/tvHistTitle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Feria del Libro y Arte 2026"
-                            android:textColor="@color/text_white"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toStartOf="@id/tvBadgeHist"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Asistencia verificada por GPS"
-                            android:textColor="@color/text_gray"
-                            android:textSize="12sp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tvHistTitle" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-        </LinearLayout>
-    </ScrollView>
-
-    <!-- BARRA DE NAVEGACIÓN (NAVBAR) -->
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"

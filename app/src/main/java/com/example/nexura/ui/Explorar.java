@@ -2,7 +2,10 @@ package com.example.nexura.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,70 +13,44 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nexura.R;
 import com.example.nexura.adapter.EventoFeedAdapter;
 import com.example.nexura.model.Evento;
+import com.example.nexura.network.SupabaseApi;
+import com.example.nexura.network.SupabaseCliente;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class Explorar extends AppCompatActivity {
+
+    private RecyclerView rvFeed;
+    private EventoFeedAdapter adapter;
+    private List<Evento> listaEventos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explorar_mapa);
 
-        // 1. Configurar RecyclerView y Adaptador
-        RecyclerView rvFeed = findViewById(R.id.rvFeedEventos);
+        // 1. Inicializar lista y RecyclerView
+        rvFeed = findViewById(R.id.rvFeedEventos);
         if (rvFeed != null) {
             rvFeed.setLayoutManager(new LinearLayoutManager(this));
-
-            List<Evento> lista = new ArrayList<>();
-            lista.add(new Evento(
-                    "1",
-                    "Fiesta de la Longaniza 2026",
-                    "El festival gastronómico y cultural más grande de la región. Música en vivo, gastronomía típica y puntos de experiencia Nexura verificados.",
-                    "Festival",
-                    "Sáb, 22 Octubre - 20:00",
-                    "Chillán, Plaza de Armas",
-                    "Municipalidad de Chillán",
-                    "",
-                    450,
-                    1.2
-            ));
-            lista.add(new Evento(
-                    "2",
-                    "Neon Beats Electronic Festival",
-                    "La fiesta de música electrónica más esperada de la zona centro sur. DJs en vivo, visuales inmersivas y recompensas exclusivas.",
-                    "Festival",
-                    "Vie, 14 Noviembre - 22:00",
-                    "Parque Central",
-                    "Productora Nova",
-                    "",
-                    600,
-                    3.5
-            ));
-            lista.add(new Evento(
-                    "3",
-                    "Feria del Libro & Cómic Chillán",
-                    "Stands de editoriales independientes, ilustradores, charlas de autores y torneos de cosplay con subida de nivel garantizada.",
-                    "Cultura",
-                    "Dom, 30 Octubre - 11:00",
-                    "Centro Cultural Municipal",
-                    "Cultura Ñuble",
-                    "",
-                    350,
-                    0.8
-            ));
-
-            EventoFeedAdapter adapter = new EventoFeedAdapter(this, lista, evento -> {
+            listaEventos = new ArrayList<>();
+            adapter = new EventoFeedAdapter(this, listaEventos, evento -> {
                 Intent intent = new Intent(Explorar.this, Detalle_Evento.class);
                 intent.putExtra("EVENTO_SELECCIONADO", evento);
                 startActivity(intent);
             });
-
             rvFeed.setAdapter(adapter);
         }
 
-        // 2. Barra de Navegación Inferior (Navbar)
+        // 2. Traer los eventos desde Supabase
+        cargarEventosDesdeSupabase();
+
+        // 3. Barra de Navegación Inferior (Navbar)
         TextView navHome = findViewById(R.id.navHome);
         TextView navMyEvents = findViewById(R.id.navMyEvents);
         TextView navProfile = findViewById(R.id.navProfile);
@@ -96,5 +73,27 @@ public class Explorar extends AppCompatActivity {
                 finish();
             });
         }
+    }
+
+    private void cargarEventosDesdeSupabase() {
+        SupabaseApi api = SupabaseCliente.getClient().create(SupabaseApi.class);
+
+        api.obtenerEventos().enqueue(new Callback<List<Evento>>() {
+            @Override
+            public void onResponse(Call<List<Evento>> call, Response<List<Evento>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listaEventos.clear();
+                    listaEventos.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(Explorar.this, "Error al cargar: código " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Evento>> call, Throwable t) {
+                Toast.makeText(Explorar.this, "Falla de red: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

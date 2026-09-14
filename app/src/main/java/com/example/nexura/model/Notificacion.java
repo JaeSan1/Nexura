@@ -1,17 +1,36 @@
 package com.example.nexura.model;
 
-public class Notificacion {
+import com.google.gson.annotations.SerializedName;
+import java.io.Serializable;
+
+public class Notificacion implements Serializable {
+
+    @SerializedName("id")
     private String id;
+
+    @SerializedName("evento_id")
+    private String eventoId;
+
+    @SerializedName("titulo")
     private String titulo;
+
+    @SerializedName("mensaje")
     private String mensaje;
+
+    @SerializedName("tiempo")
     private String tiempo;
-    private String tipo; // "URGENTE", "XP", "RECORDATORIO"
+
+    @SerializedName("tipo")
+    private String tipo;
+
+    @SerializedName("leida")
     private boolean leida;
 
     public Notificacion() {}
 
-    public Notificacion(String id, String titulo, String mensaje, String tiempo, String tipo, boolean leida) {
+    public Notificacion(String id, String eventoId, String titulo, String mensaje, String tiempo, String tipo, boolean leida) {
         this.id = id;
+        this.eventoId = eventoId;
         this.titulo = titulo;
         this.mensaje = mensaje;
         this.tiempo = tiempo;
@@ -21,6 +40,9 @@ public class Notificacion {
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
+
+    public String getEventoId() { return eventoId; }
+    public void setEventoId(String eventoId) { this.eventoId = eventoId; }
 
     public String getTitulo() { return titulo; }
     public void setTitulo(String titulo) { this.titulo = titulo; }

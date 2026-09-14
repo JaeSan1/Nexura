@@ -7,7 +7,6 @@
     android:orientation="vertical"
     android:padding="24dp">
 
-    <!-- BARRA INDICADORA SUPERIOR (TIRADOR) -->
     <View
         android:layout_width="40dp"
         android:layout_height="4dp"
@@ -23,12 +22,12 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <!-- 1. FILTRO: REGIÓN / CIUDAD -->
+    <!-- 1. REGIÓN -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="📍 Región o Ciudad"
+        android:text="Región o Ciudad"
         android:textColor="@color/neon_cyan"
         android:textSize="13sp"
         android:textStyle="bold" />
@@ -65,12 +64,12 @@
             android:textSize="13sp" />
     </RadioGroup>
 
-    <!-- 2. FILTRO: FECHA -->
+    <!-- 2. FECHA -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="📅 Fecha del Evento"
+        android:text="Fecha del Evento"
         android:textColor="@color/neon_cyan"
         android:textSize="13sp"
         android:textStyle="bold" />
@@ -107,12 +106,12 @@
             android:textSize="13sp" />
     </RadioGroup>
 
-    <!-- 3. FILTRO: DISTANCIA MÁXIMA -->
+    <!-- 3. RADIO DISTANCIA -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="📡 Radio de Distancia Máxima"
+        android:text="Radio de Distancia Máxima"
         android:textColor="@color/neon_cyan"
         android:textSize="13sp"
         android:textStyle="bold" />
@@ -149,7 +148,7 @@
             android:textSize="13sp" />
     </RadioGroup>
 
-    <!-- BOTONES DE ACCIÓN INFERIORES -->
+    <!-- ACCIONES -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

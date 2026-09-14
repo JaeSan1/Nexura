@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- CABECERA DEL POST: ORGANIZADOR, UBICACIÓN Y XP -->
+        <!-- CABECERA DEL POST -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +22,6 @@
             android:orientation="horizontal"
             android:padding="12dp">
 
-            <!-- AVATAR ORGANIZADOR -->
             <View
                 android:layout_width="34dp"
                 android:layout_height="34dp"
@@ -66,7 +65,7 @@
                 tools:text="+450 XP" />
         </LinearLayout>
 
-        <!-- CONTENEDOR DE PORTADA CON BADGE DE FECHA -->
+        <!-- PORTADA -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="180dp"
@@ -75,9 +74,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🎪 PORTADA DEL EVENTO"
+                android:text="PORTADA DEL EVENTO"
                 android:textColor="@color/text_gray"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -97,10 +96,10 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:text="📅 Sáb, 22 Oct" />
+                tools:text="Sáb, 22 Oct" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- TÍTULO Y DESCRIPCIÓN -->
+        <!-- TÍTULO Y DETALLE -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -124,7 +123,7 @@
                 android:lineSpacingExtra="3dp"
                 android:textColor="@color/text_gray"
                 android:textSize="12sp"
-                tools:text="El festival gastronómico y cultural más grande de la región. Música en vivo, gastronomía típica y puntos de experiencia Nexura verificados." />
+                tools:text="Festival gastronómico y cultural. Actividades en vivo, stands locales y puntos de experiencia Nexura verificados." />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

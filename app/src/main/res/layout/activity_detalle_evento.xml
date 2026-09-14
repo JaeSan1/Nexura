@@ -38,23 +38,23 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <!-- BOTÓN GUARDAR EN MIS EVENTOS (FAVORITO) -->
+                <!-- BOTÓN GUARDAR (TEXTO EN LUGAR DE CORAZÓN EMOJI) -->
                 <TextView
                     android:id="@+id/btnSaveFavorite"
-                    android:layout_width="38dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="38dp"
                     android:layout_marginEnd="10dp"
                     android:background="@drawable/input"
                     android:gravity="center"
-                    android:text="♡"
+                    android:paddingHorizontal="12dp"
+                    android:text="Guardar"
                     android:textColor="@color/neon_cyan"
-                    android:textSize="20sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/tvDetailXpBadge"
                     app:layout_constraintEnd_toStartOf="@id/tvDetailXpBadge"
                     app:layout_constraintTop_toTopOf="@id/tvDetailXpBadge" />
 
-                <!-- BADGE XP -->
                 <TextView
                     android:id="@+id/tvDetailXpBadge"
                     android:layout_width="wrap_content"
@@ -93,11 +93,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="Sáb, 22 Octubre • 20:00  | Chillán"
+                    android:text="Sáb, 22 Octubre • 20:00 | Chillán"
                     android:textColor="@color/text_gray"
                     android:textSize="13sp" />
 
-                <!-- SELECTOR DE PESTAÑAS (TABS) -->
+                <!-- PESTAÑAS -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
@@ -140,7 +140,7 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
-                <!-- SECCIÓN 1: CONTENIDO INFO (INICIALMENTE OCULTO) -->
+                <!-- TAB: INFO -->
                 <LinearLayout
                     android:id="@+id/containerTabInfo"
                     android:layout_width="match_parent"
@@ -169,7 +169,7 @@
                         android:textSize="13sp" />
                 </LinearLayout>
 
-                <!-- SECCIÓN 2: CONTENIDO AVISOS (VISIBLE POR DEFECTO) -->
+                <!-- TAB: AVISOS -->
                 <LinearLayout
                     android:id="@+id/containerTabAvisos"
                     android:layout_width="match_parent"
@@ -183,7 +183,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📢 AVISO URGENTE • Hace 15 min"
+                        android:text="AVISO URGENTE • Hace 15 min"
                         android:textColor="@color/trophy_gold"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -192,12 +192,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="¡Se cerró el acceso por Avenida Libertad! Usar entrada lateral por Calle 18 de Septiembre."
+                        android:text="Acceso por Avenida Libertad temporalmente restringido. Usar entrada lateral por Calle 18 de Septiembre."
                         android:textColor="@color/text_white"
                         android:textSize="13sp" />
                 </LinearLayout>
 
-                <!-- SECCIÓN 3: CONTENIDO COMENTARIOS (INICIALMENTE OCULTO) -->
+                <!-- TAB: COMENTARIOS -->
                 <LinearLayout
                     android:id="@+id/containerTabComentarios"
                     android:layout_width="match_parent"
@@ -225,12 +225,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="¿Alguien más ya está cerca de la zona VIP? ¡Quiero ese logro dorado!"
+                            android:text="¿Alguien más ya está cerca de la zona principal? Excelente ambiente."
                             android:textColor="@color/text_gray"
                             android:textSize="12sp" />
                     </LinearLayout>
 
-                    <!-- CAJA PARA ENVIAR COMENTARIO -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -267,7 +266,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- VALIDACIÓN GPS Y RECLAMO XP -->
+    <!-- VALIDACIÓN GPS -->
     <LinearLayout
         android:id="@+id/bottomGpsSection"
         android:layout_width="match_parent"
@@ -282,7 +281,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Estás en el rango del evento  •  Tiempo en zona: 15/30 min"
+            android:text="Rango de evento detectado • Tiempo en zona: 15/30 min"
             android:textColor="@color/status_green"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -293,7 +292,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/btn_gps"
-            android:text="Reclamar Asistencia por GPS  ➔"
+            android:text="Validar Asistencia GPS"
             android:textAllCaps="false"
             android:textColor="@color/status_green"
             android:textSize="14sp"

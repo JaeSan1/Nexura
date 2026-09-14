@@ -30,7 +30,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- BOTÓN NOTIFICACIONES (CAMPANA CON BADGE ROJO) -->
+        <!-- BOTÓN NOTIFICACIONES (INDICADOR LIMPIO) -->
         <FrameLayout
             android:id="@+id/btnNotificationsHeader"
             android:layout_width="38dp"
@@ -45,19 +45,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="🔔"
-                android:textSize="16sp" />
+                android:text="AVISOS"
+                android:textColor="@color/text_white"
+                android:textSize="9sp"
+                android:textStyle="bold" />
 
             <View
-                android:layout_width="8dp"
-                android:layout_height="8dp"
+                android:layout_width="6dp"
+                android:layout_height="6dp"
                 android:layout_gravity="top|end"
                 android:layout_marginTop="6dp"
                 android:layout_marginEnd="6dp"
                 android:background="@drawable/badge" />
         </FrameLayout>
 
-        <!-- AVATAR HEADER -->
         <ImageView
             android:id="@+id/ivAvatarHeader"
             android:layout_width="38dp"
@@ -69,7 +70,6 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- CONTENIDO SCROLLABLE -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -84,20 +84,18 @@
             android:paddingHorizontal="20dp"
             android:paddingBottom="80dp">
 
-            <!-- BUSCADOR RÁPIDO -->
             <EditText
                 android:id="@+id/etSearch"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/input"
-                android:hint="Buscar eventos, artistas, lugares..."
+                android:hint="Buscar eventos, artistas o recintos..."
                 android:paddingHorizontal="16dp"
                 android:textColor="@color/text_white"
                 android:textColorHint="@color/text_hint"
                 android:textSize="13sp" />
 
-            <!-- CATEGORÍAS RÁPIDAS -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -126,7 +124,7 @@
                         android:background="@drawable/categoria"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="8dp"
-                        android:text="✦ Festivales"
+                        android:text="Festivales"
                         android:textColor="@color/neon_cyan"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -156,7 +154,6 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <!-- TÍTULO CARRUSEL DESTACADOS -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -166,7 +163,6 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <!-- CARRUSEL HORIZONTAL DESLIZABLE -->
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -195,6 +191,7 @@
                             android:padding="16dp">
 
                             <TextView
+                                android:id="@+id/tvXpEvent1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/badge"
@@ -208,7 +205,7 @@
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
-                                android:id="@+id/tvTitle1"
+                                android:id="@+id/tvTitleEvent1"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:text="Fiesta de la Longaniza"
@@ -248,6 +245,7 @@
                             android:padding="16dp">
 
                             <TextView
+                                android:id="@+id/tvXpEvent2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/badge"
@@ -261,7 +259,7 @@
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
-                                android:id="@+id/tvTitle2"
+                                android:id="@+id/tvTitleEvent2"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:text="Neon Beats Festival"
@@ -301,6 +299,7 @@
                             android:padding="16dp">
 
                             <TextView
+                                android:id="@+id/tvXpEvent3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/badge"
@@ -314,7 +313,7 @@
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
-                                android:id="@+id/tvTitle3"
+                                android:id="@+id/tvTitleEvent3"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:text="Nexura Gaming Fest"
@@ -344,7 +343,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- BOTÓN FLOTANTE: CREAR EVENTO (+) -->
+    <!-- BOTÓN (+) CREAR EVENTO -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnCreateEvent"
         android:layout_width="54dp"
@@ -359,7 +358,7 @@
         app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- BARRA DE NAVEGACIÓN (NAVBAR) -->
+    <!-- NAVBAR -->
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"

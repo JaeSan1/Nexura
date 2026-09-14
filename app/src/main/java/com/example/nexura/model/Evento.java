@@ -1,35 +1,53 @@
 package com.example.nexura.model;
 
+import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Evento implements Serializable {
-    private String id;
-    private String titulo;
-    private String descripcion;
-    private String categoria;
-    private String fecha;
-    private String ubicacion;
-    private String organizadorNombre;
-    private String portadaUrl;
-    private int xpRecompensa;
-    private double distanciaKm;
 
+    @SerializedName("id")
+    private String id;
+
+    @SerializedName("titulo")
+    private String titulo;
+
+    @SerializedName("descripcion")
+    private String descripcion;
+
+    @SerializedName("categoria")
+    private String categoria;
+
+    @SerializedName("fecha")
+    private String fecha;
+
+    @SerializedName("ubicacion")
+    private String ubicacion;
+
+    @SerializedName("ciudad")
+    private String ciudad;
+
+    @SerializedName("organizador_nombre")
+    private String organizador;
+
+    @SerializedName("portada_url")
+    private String imagenUrl;
+
+    @SerializedName("xp_recompensa")
+    private int xpRecompensa;
+
+    @SerializedName("contador_likes")
+    private int contadorLikes;
+
+    @SerializedName("latitud")
+    private double latitud;
+
+    @SerializedName("longitud")
+    private double longitud;
+
+    // Constructor vacío necesario para Retrofit/Gson
     public Evento() {}
 
-    public Evento(String id, String titulo, String descripcion, String categoria, String fecha,
-                  String ubicacion, String organizadorNombre, String portadaUrl, int xpRecompensa, double distanciaKm) {
-        this.id = id;
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.categoria = categoria;
-        this.fecha = fecha;
-        this.ubicacion = ubicacion;
-        this.organizadorNombre = organizadorNombre;
-        this.portadaUrl = portadaUrl;
-        this.xpRecompensa = xpRecompensa;
-        this.distanciaKm = distanciaKm;
-    }
-
+    // Getters y Setters...
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -48,15 +66,24 @@ public class Evento implements Serializable {
     public String getUbicacion() { return ubicacion; }
     public void setUbicacion(String ubicacion) { this.ubicacion = ubicacion; }
 
-    public String getOrganizadorNombre() { return organizadorNombre; }
-    public void setOrganizadorNombre(String organizadorNombre) { this.organizadorNombre = organizadorNombre; }
+    public String getCiudad() { return ciudad; }
+    public void setCiudad(String ciudad) { this.ciudad = ciudad; }
 
-    public String getPortadaUrl() { return portadaUrl; }
-    public void setPortadaUrl(String portadaUrl) { this.portadaUrl = portadaUrl; }
+    public String getOrganizador() { return organizador; }
+    public void setOrganizador(String organizador) { this.organizador = organizador; }
+
+    public String getImagenUrl() { return imagenUrl; }
+    public void setImagenUrl(String imagenUrl) { this.imagenUrl = imagenUrl; }
 
     public int getXpRecompensa() { return xpRecompensa; }
     public void setXpRecompensa(int xpRecompensa) { this.xpRecompensa = xpRecompensa; }
 
-    public double getDistanciaKm() { return distanciaKm; }
-    public void setDistanciaKm(double distanciaKm) { this.distanciaKm = distanciaKm; }
+    public int getContadorLikes() { return contadorLikes; }
+    public void setContadorLikes(int contadorLikes) { this.contadorLikes = contadorLikes; }
+
+    public double getLatitud() { return latitud; }
+    public void setLatitud(double latitud) { this.latitud = latitud; }
+
+    public double getLongitud() { return longitud; }
+    public void setLongitud(double longitud) { this.longitud = longitud; }
 }
