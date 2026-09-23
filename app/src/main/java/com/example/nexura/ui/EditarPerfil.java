@@ -45,10 +45,9 @@ public class EditarPerfil extends AppCompatActivity {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        // 1. Precargar los datos actuales desde la nube
         cargarDatosActuales();
 
-        // 2. Guardar cambios en Supabase
+        // Guardar cambios en Supabase
         if (btnSaveProfile != null) {
             btnSaveProfile.setOnClickListener(v -> guardarCambios());
         }
@@ -96,7 +95,7 @@ public class EditarPerfil extends AppCompatActivity {
                 if (btnSaveProfile != null) btnSaveProfile.setEnabled(true);
                 if (response.isSuccessful()) {
                     Toast.makeText(EditarPerfil.this, "Perfil actualizado con éxito", Toast.LENGTH_SHORT).show();
-                    finish(); // Vuelve a Perfil.java, donde onResume() refrescará la vista
+                    finish();
                 } else {
                     Toast.makeText(EditarPerfil.this, "Error al actualizar: " + response.code(), Toast.LENGTH_SHORT).show();
                 }

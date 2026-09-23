@@ -9,15 +9,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SupabaseCliente {
 
-    // Reemplaza con tus valores de Supabase (Settings -> API)
     private static final String BASE_URL = "https://wfkzbqhsacitksuwqlei.supabase.co/rest/v1/";
-    private static final String API_KEY = "PEGA_AQUI_TU_ANON_PUBLISHABLE_KEY";
+    private static final String API_KEY = "sb_publishable_eM33f-gmSEJ41-nnTPwG5w_-T2oCacD";
 
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient() {
         if (retrofit == null) {
-            // Interceptor para inyectar cabeceras requeridas por Supabase en cada petición
             Interceptor headerInterceptor = chain -> {
                 Request original = chain.request();
                 Request request = original.newBuilder()

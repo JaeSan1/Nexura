@@ -41,19 +41,19 @@ public class Login extends AppCompatActivity {
         TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
         TextView tvGoRegister = findViewById(R.id.tvGoRegister);
 
-        // 1. Navegación a Recuperar Contraseña
+        // Navegación a Recuperar Contraseña
         if (tvForgotPassword != null) {
             tvForgotPassword.setOnClickListener(v ->
                     startActivity(new Intent(Login.this, RecuperarPassword.class)));
         }
 
-        // 2. Navegación a Registro
+        // Navegación a Registro
         if (tvGoRegister != null) {
             tvGoRegister.setOnClickListener(v ->
                     startActivity(new Intent(Login.this, Registro.class)));
         }
 
-        // 3. Acción de Iniciar Sesión contra Supabase
+        // Acción de Iniciar Sesión contra Supabase
         if (btnLoginAction != null) {
             btnLoginAction.setOnClickListener(v -> autenticarUsuario());
         }

@@ -117,10 +117,9 @@ public class CrearEvento extends AppCompatActivity {
                 return;
             }
 
-            // Deshabilitar botón temporalmente para evitar doble envío
+            // Deshabilitar botón
             btnPublishEvent.setEnabled(false);
 
-            // 1. Armar el objeto Evento con los nombres mapeados a Supabase
             Evento nuevoEvento = new Evento();
             nuevoEvento.setTitulo(title);
             nuevoEvento.setUbicacion(location);
@@ -131,10 +130,10 @@ public class CrearEvento extends AppCompatActivity {
             nuevoEvento.setFecha("Próximamente");
             nuevoEvento.setImagenUrl("");
             nuevoEvento.setXpRecompensa(xpCalculada);
-            nuevoEvento.setLatitud(-36.6067); // Coordenadas base
+            nuevoEvento.setLatitud(-36.6067);
             nuevoEvento.setLongitud(-72.1034);
 
-            // 2. Llamada HTTP a Supabase vía Retrofit
+            // 2. Llamada HTTP a Supabase
             SupabaseApi api = SupabaseCliente.getClient().create(SupabaseApi.class);
             api.crearEvento(nuevoEvento).enqueue(new Callback<Void>() {
                 @Override
@@ -142,7 +141,7 @@ public class CrearEvento extends AppCompatActivity {
                     btnPublishEvent.setEnabled(true);
                     if (response.isSuccessful()) {
                         new AlertDialog.Builder(CrearEvento.this)
-                                .setTitle("¡Evento Publicado en la Nube! 🚀")
+                                .setTitle("¡Evento Publicado en la Nube!")
                                 .setMessage("'" + title + "' ha sido registrado exitosamente en Supabase con +" + xpCalculada + " XP.")
                                 .setPositiveButton("Aceptar", (dialog, which) -> finish())
                                 .setCancelable(false)

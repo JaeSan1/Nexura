@@ -64,7 +64,7 @@ public class RecuperarPassword extends AppCompatActivity {
 
         btnSendResetCode.setEnabled(false);
 
-        // Validar si el correo existe en la base de datos de Supabase
+        // Validar correo existe en la base de datos
         api.verificarCredenciales("eq." + email).enqueue(new Callback<List<Usuario>>() {
             @Override
             public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {

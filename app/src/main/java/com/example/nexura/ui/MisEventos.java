@@ -44,7 +44,7 @@ public class MisEventos extends AppCompatActivity {
         tabHistory = findViewById(R.id.tabAttendedHistory);
         rvMyEvents = findViewById(R.id.rvMyEvents);
 
-        // Barra de navegación inferior (Navbar)
+        // Barra de navegación inferior
         TextView navHome = findViewById(R.id.navHome);
         TextView navExplore = findViewById(R.id.navExplore);
         TextView navProfile = findViewById(R.id.navProfile);
@@ -53,7 +53,7 @@ public class MisEventos extends AppCompatActivity {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        // 1. Inicializar lista y RecyclerView
+        // Inicializar lista
         if (rvMyEvents != null) {
             rvMyEvents.setLayoutManager(new LinearLayoutManager(this));
             listaEventos = new ArrayList<>();
@@ -65,10 +65,10 @@ public class MisEventos extends AppCompatActivity {
             rvMyEvents.setAdapter(adapter);
         }
 
-        // 2. Cargar eventos desde Supabase
+        // Cargar eventos desde Supabase
         cargarEventosUsuario(true);
 
-        // 3. Manejo de Pestañas (Guardados vs Historial)
+        // Manejo de Pestañas
         if (tabSaved != null && tabHistory != null) {
             tabSaved.setOnClickListener(v -> {
                 cambiarPestana(true);
@@ -81,7 +81,7 @@ public class MisEventos extends AppCompatActivity {
             });
         }
 
-        // 4. Navbar Clics
+        // Navbar Clics
         if (navHome != null) {
             navHome.setOnClickListener(v -> {
                 startActivity(new Intent(MisEventos.this, Home.class));

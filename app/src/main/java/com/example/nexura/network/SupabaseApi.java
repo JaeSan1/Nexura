@@ -19,19 +19,16 @@ import retrofit2.http.Query;
 
 public interface SupabaseApi {
 
-    // ==========================================
-    // 1. EVENTOS (Explorar, Home, CrearEvento)
-    // ==========================================
 
-    // Listar todos los eventos en orden descendente de creación
+    // Listar los eventos
     @GET("eventos?select=*&order=created_at.desc")
     Call<List<Evento>> obtenerEventos();
 
-    // Top 3 eventos con más likes para el carrusel de Home
+    // 3 eventos con más likes
     @GET("eventos?select=*&order=contador_likes.desc&limit=3")
     Call<List<Evento>> obtenerEventosDestacados();
 
-    // Filtro por coincidencia en el título
+    // Filtro por título
     @GET("eventos?select=*")
     Call<List<Evento>> buscarEventosPorTitulo(@Query("titulo") String filtroTitulo);
 

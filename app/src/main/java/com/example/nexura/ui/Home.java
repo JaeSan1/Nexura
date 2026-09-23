@@ -41,12 +41,12 @@ public class Home extends AppCompatActivity {
         EditText etSearch = findViewById(R.id.etSearch);
         Button btnCreateEvent = findViewById(R.id.btnCreateEvent);
 
-        // Tarjetas del Carrusel
+        // Tarjetas
         card1 = findViewById(R.id.cardFeaturedEvent1);
         card2 = findViewById(R.id.cardFeaturedEvent2);
         card3 = findViewById(R.id.cardFeaturedEvent3);
 
-        // Textos dentro de las tarjetas (IDs estándar en tu layout de Home)
+        // Textos dentro de las tarjetas
         tvTitle1 = findViewById(R.id.tvTitleEvent1);
         tvTitle2 = findViewById(R.id.tvTitleEvent2);
         tvTitle3 = findViewById(R.id.tvTitleEvent3);
@@ -54,15 +54,15 @@ public class Home extends AppCompatActivity {
         tvXp2 = findViewById(R.id.tvXpEvent2);
         tvXp3 = findViewById(R.id.tvXpEvent3);
 
-        // Navegación Navbar
+        // Navegación
         TextView navExplore = findViewById(R.id.navExplore);
         TextView navMyEvents = findViewById(R.id.navMyEvents);
         TextView navProfile = findViewById(R.id.navProfile);
 
-        // 1. Cargar datos reales desde Supabase
+        // Cargar datos reales desde Supabase
         cargarCarruselDestacados();
 
-        // 2. Clics en tarjetas del carrusel con paso de datos al detalle
+        // Clics en tarjetas
         if (card1 != null) {
             card1.setOnClickListener(v -> abrirDetalle(0));
         }
@@ -73,7 +73,7 @@ public class Home extends AppCompatActivity {
             card3.setOnClickListener(v -> abrirDetalle(2));
         }
 
-        // 3. Navegación a Perfil
+        // Navegación a Perfil
         if (ivAvatarHeader != null) {
             ivAvatarHeader.setOnClickListener(v -> startActivity(new Intent(Home.this, Perfil.class)));
         }
@@ -81,7 +81,7 @@ public class Home extends AppCompatActivity {
             navProfile.setOnClickListener(v -> startActivity(new Intent(Home.this, Perfil.class)));
         }
 
-        // 4. Navegación a Explorar y Mis Eventos
+        // Navegación a Explorar y Mis Eventos
         if (navExplore != null) {
             navExplore.setOnClickListener(v -> startActivity(new Intent(Home.this, Explorar.class)));
         }
@@ -89,12 +89,12 @@ public class Home extends AppCompatActivity {
             navMyEvents.setOnClickListener(v -> startActivity(new Intent(Home.this, MisEventos.class)));
         }
 
-        // 5. Botón Flotante Creador (+) -> Crear Evento
+        // Botón Crear Evento
         if (btnCreateEvent != null) {
             btnCreateEvent.setOnClickListener(v -> startActivity(new Intent(Home.this, CrearEvento.class)));
         }
 
-        // 6. Buscador rápido conectado
+        // Buscador
         if (etSearch != null) {
             etSearch.setOnEditorActionListener((v, actionId, event) -> {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_NULL) {

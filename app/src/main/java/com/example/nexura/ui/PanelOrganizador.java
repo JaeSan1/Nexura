@@ -40,13 +40,13 @@ public class PanelOrganizador extends AppCompatActivity {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        // 1. Acceso a creación de un nuevo evento
+        // Acceso a creación de un nuevo evento
         if (btnCreateNewEvent != null) {
             btnCreateNewEvent.setOnClickListener(v ->
                     startActivity(new Intent(PanelOrganizador.this, CrearEvento.class)));
         }
 
-        // 2. Emitir comunicado / aviso urgente a la comunidad
+        // aviso urgente a la comunidad
         if (btnSendBroadcastAlert != null) {
             btnSendBroadcastAlert.setOnClickListener(v -> mostrarDialogoEmisionAviso());
         }
@@ -56,7 +56,7 @@ public class PanelOrganizador extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("📢 Emitir Comunicado Urgente");
 
-        // Contenedor dinámico de inputs
+        // Contenedor dinámico
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(50, 40, 50, 10);

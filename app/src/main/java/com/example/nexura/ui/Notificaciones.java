@@ -41,7 +41,7 @@ public class Notificaciones extends AppCompatActivity {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        // 1. Configurar RecyclerView
+        // Configurar RecyclerView
         if (rvNotificaciones != null) {
             rvNotificaciones.setLayoutManager(new LinearLayoutManager(this));
             listaNotificaciones = new ArrayList<>();
@@ -51,7 +51,7 @@ public class Notificaciones extends AppCompatActivity {
             rvNotificaciones.setAdapter(adapter);
         }
 
-        // 2. Cargar avisos y alertas desde Supabase
+        // Cargar avisos y alertas
         cargarNotificacionesDesdeNube();
     }
 

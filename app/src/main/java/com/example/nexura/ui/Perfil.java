@@ -24,7 +24,7 @@ import retrofit2.Response;
 
 public class Perfil extends AppCompatActivity {
 
-    // Views de Gamificación y Perfil
+    // Vistas Perfil
     private TextView tvGamertag, tvUserLevel, tvEquippedTitle, tvXpProgress, tvCityLocation;
     private TextView tvFollowersCount, tvFollowingCount, tvLikesCount;
     private ProgressBar pbXpBar;
@@ -40,7 +40,7 @@ public class Perfil extends AppCompatActivity {
 
         api = SupabaseCliente.getClient().create(SupabaseApi.class);
 
-        // Referencias de UI
+
         TextView btnBack = findViewById(R.id.btnBackPerfil);
         tvGamertag = findViewById(R.id.tvProfileGamertag);
         tvUserLevel = findViewById(R.id.tvProfileLevel);
@@ -63,14 +63,14 @@ public class Perfil extends AppCompatActivity {
         // Cargar datos reales desde Supabase
         cargarDatosUsuario();
 
-        // 1. Acceso al Panel de Organizador
+        // Acceso al Panel de Organizador
         if (btnGoOrganizerPanel != null) {
             btnGoOrganizerPanel.setOnClickListener(v -> {
                 startActivity(new Intent(Perfil.this, PanelOrganizador.class));
             });
         }
 
-        // 2. Menú de Ajustes / Cosméticos
+        // Menú de Ajustes
         if (btnEditCosmetics != null) {
             btnEditCosmetics.setOnClickListener(v -> {
                 String[] opciones = {
@@ -98,7 +98,7 @@ public class Perfil extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Recargar datos si el usuario editó perfil o ganó XP
+        // Recargar datos si el usuario editó perfil
         cargarDatosUsuario();
     }
 

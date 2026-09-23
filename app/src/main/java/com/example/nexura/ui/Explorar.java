@@ -34,7 +34,7 @@ public class Explorar extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explorar_mapa);
 
-        // 1. Inicializar lista y RecyclerView
+        // 1. Inicializar lista
         rvFeed = findViewById(R.id.rvFeedEventos);
         if (rvFeed != null) {
             rvFeed.setLayoutManager(new LinearLayoutManager(this));
@@ -50,7 +50,7 @@ public class Explorar extends AppCompatActivity {
         // 2. Traer los eventos desde Supabase
         cargarEventosDesdeSupabase();
 
-        // 3. Barra de Navegación Inferior (Navbar)
+        // 3. Barra de Navegación Inferior
         TextView navHome = findViewById(R.id.navHome);
         TextView navMyEvents = findViewById(R.id.navMyEvents);
         TextView navProfile = findViewById(R.id.navProfile);

@@ -37,7 +37,7 @@ public class Detalle_Evento extends AppCompatActivity {
 
         api = SupabaseCliente.getClient().create(SupabaseApi.class);
 
-        // 1. Obtener el evento seleccionado desde el Intent
+        // 1. Obtener el evento seleccionado
         eventoActual = (Evento) getIntent().getSerializableExtra("EVENTO_SELECCIONADO");
 
         TextView btnBack = findViewById(R.id.btnBack);
@@ -116,7 +116,7 @@ public class Detalle_Evento extends AppCompatActivity {
             });
         }
 
-        // Validación GPS y Recompensa (+XP)
+        // Validación GPS y Recompensa
         if (btnClaimGps != null) {
             btnClaimGps.setOnClickListener(v -> {
                 if (!yaReclamado) {
