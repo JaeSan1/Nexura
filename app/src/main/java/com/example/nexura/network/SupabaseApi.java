@@ -36,38 +36,34 @@ public interface SupabaseApi {
     @GET("eventos?select=*")
     Call<List<Evento>> obtenerEventosPorCiudad(@Query("ciudad") String filtroCiudad);
 
-    // Guardar nuevo evento en la base de datos
+    // Guardar nuevo evento
     @POST("eventos")
     Call<Void> crearEvento(@Body Evento evento);
 
-    // ==========================================
-    // 2. PERFILES Y AUTENTICACIÓN (Login, Registro, Perfil, EditarPerfil)
-    // ==========================================
+    // 2. PERFILES Y AUTENTICACIÓN
 
-    // Registrar nuevo usuario en la tabla perfiles
+
+    // Registrar nuevo usuario
     @POST("perfiles")
     Call<Void> registrarUsuario(@Body Usuario nuevoUsuario);
 
-    // Consultar perfil por gamertag (ej. "eq.TheGoat99")
+    // Consultar perfil por gamertag
     @GET("perfiles?select=*")
     Call<List<Usuario>> obtenerPerfilPorGamertag(@Query("gamertag") String filtroGamertag);
 
-    // Verificar si el correo ya existe en Login / Registro
+    // Verificar si el correo ya existe en Login
     @GET("perfiles?select=*")
     Call<List<Usuario>> verificarCredenciales(@Query("correo") String filtroCorreo);
 
-    // Actualizar campos parciales (biografía, ciudad, gamertag, título equipado)
+    // Actualizar campos
     @PATCH("perfiles")
     Call<Void> actualizarPerfil(
             @Query("gamertag") String filtroGamertag,
             @Body Map<String, Object> camposActualizados
     );
 
-    // ==========================================
-    // 3. ASISTENCIAS Y FAVORITOS (MisEventos, Detalle_Evento)
-    // ==========================================
-
-    // Guardar evento en la lista de favoritos/asistencias
+    // 3. ASISTENCIAS Y FAVORITOS
+    // Guardar evento
     @POST("asistencias")
     Call<Void> agregarAsistencia(@Body Map<String, Object> datosAsistencia);
 
@@ -78,7 +74,7 @@ public interface SupabaseApi {
             @Query("evento_id") String filtroEventoId
     );
 
-    // Validar GPS para activar el trigger de subida de nivel y XP
+    // Validar GPS
     @PATCH("asistencias")
     Call<Void> validarAsistenciaGps(
             @Query("usuario_id") String filtroUsuarioId,
@@ -86,11 +82,10 @@ public interface SupabaseApi {
             @Body Map<String, Object> camposActualizados
     );
 
-    // ==========================================
     // 4. COMENTARIOS (Detalle_Evento)
-    // ==========================================
 
-    // Listar comentarios asociados a un evento específico
+
+    // Listar comentarios
     @GET("comentarios?select=*&order=created_at.desc")
     Call<List<Comentario>> obtenerComentariosPorEvento(@Query("evento_id") String filtroEventoId);
 
@@ -98,23 +93,18 @@ public interface SupabaseApi {
     @POST("comentarios")
     Call<Void> publicarComentario(@Body Comentario comentario);
 
-    // ==========================================
-    // 5. NOTIFICACIONES (Notificaciones, PanelOrganizador)
-    // ==========================================
+    // 5. NOTIFICACIONES
 
     // Listar notificaciones y avisos de la comunidad
     @GET("notificaciones?select=*&order=created_at.desc")
     Call<List<Notificacion>> obtenerNotificaciones();
 
-    // Difundir un aviso urgente desde el panel de organizador
+    // aviso urgente
     @POST("notificaciones")
     Call<Void> emitirAvisoOrganizador(@Body Notificacion nuevaNotificacion);
 
-    // ==========================================
     // 6. GAMIFICACIÓN (Catálogo de Logros)
-    // ==========================================
-
-    // Listar las medallas e insignias disponibles en el sistema
+    // Listar las medallas
     @GET("logros?select=*")
     Call<List<Logro>> obtenerLogros();
 }

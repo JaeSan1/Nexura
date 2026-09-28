@@ -38,7 +38,7 @@ public class EventoFeedAdapter extends RecyclerView.Adapter<EventoFeedAdapter.Ev
     public void onBindViewHolder(@NonNull EventoViewHolder holder, int position) {
         Evento evento = listaEventos.get(position);
 
-        holder.tvOrganizador.setText(evento.getOrganizadorNombre());
+        holder.tvOrganizador.setText(evento.getOrganizador());
         holder.tvUbicacionDistancia.setText(evento.getUbicacion() + " • A " + evento.getDistanciaKm() + " km");
         holder.tvXpBadge.setText("+" + evento.getXpRecompensa() + " XP");
         holder.tvFechaBadge.setText("📅 " + evento.getFecha());

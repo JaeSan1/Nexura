@@ -44,6 +44,11 @@ public class Evento implements Serializable {
     @SerializedName("longitud")
     private double longitud;
 
+    @SerializedName("DistanciaKm")
+    private double distanciaKm;
+
+
+
     // Constructor vacío necesario para Retrofit/Gson
     public Evento() {}
 
@@ -86,4 +91,9 @@ public class Evento implements Serializable {
 
     public double getLongitud() { return longitud; }
     public void setLongitud(double longitud) { this.longitud = longitud; }
+
+    public double getDistanciaKm() { return distanciaKm; }
+    public void setDistanciaKm(double distanciaKm) { this.distanciaKm = distanciaKm; }
+
+
 }

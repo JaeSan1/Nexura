@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_dark"
     tools:context=".ui.Perfil">
+
+    <!-- Contenido principal -->
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -18,7 +22,8 @@
             android:orientation="vertical"
             android:paddingBottom="40dp">
 
-            <!-- 1. BANNER CUSTOMIZABLE ESTILO TARJETA GENSHIN -->
+            <!-- Banner -->
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="170dp">
@@ -30,9 +35,6 @@
                     android:background="@color/surface_card"
                     android:scaleType="centerCrop" />
 
-                <!-- GRADIENTE OSCURO INFERIOR PARA INTEGRAR -->
-
-                <!-- BOTÓN VOLVER -->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
@@ -55,13 +57,12 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <!-- MENÚ DE 3 PUNTOS (...) ESTILO GENSHIN/IG -->
                 <TextView
                     android:id="@+id/btnMoreOptions"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_marginEnd="16dp"
                     android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
                     android:background="@drawable/input"
                     android:gravity="center"
                     android:text="···"
@@ -70,15 +71,16 @@
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- 2. CABECERA: AVATAR Y DATOS DE JUGADOR -->
+            <!-- Datos del usuario -->
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="20dp">
 
-                <!-- AVATAR CIRCULAR CON MARCO -->
                 <FrameLayout
                     android:id="@+id/frameProfileAvatar"
                     android:layout_width="86dp"
@@ -95,9 +97,9 @@
                         android:layout_height="match_parent"
                         android:background="@color/electric_purple"
                         android:scaleType="centerCrop" />
+
                 </FrameLayout>
 
-                <!-- GAMERTAG Y CIUDAD -->
                 <TextView
                     android:id="@+id/tvProfileGamertag"
                     android:layout_width="0dp"
@@ -128,7 +130,8 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- 3. RANGO DE AVENTURERO, BARRA DE XP Y TÍTULO EQUIPABLE -->
+            <!-- Nivel y experiencia -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -154,7 +157,6 @@
                         android:textSize="13sp"
                         android:textStyle="bold" />
 
-                    <!-- TÍTULO DESBLOQUEABLE ABAJO DEL NIVEL -->
                     <TextView
                         android:id="@+id/tvEquippedTitle"
                         android:layout_width="wrap_content"
@@ -177,6 +179,7 @@
                         android:text="4.200 / 5.000 XP"
                         android:textColor="@color/text_gray"
                         android:textSize="11sp" />
+
                 </LinearLayout>
 
                 <ProgressBar
@@ -188,9 +191,11 @@
                     android:max="5000"
                     android:progress="4200"
                     android:progressTint="@color/neon_cyan" />
+
             </LinearLayout>
 
-            <!-- 4. CONTADORES ESTILO INSTAGRAM (POSTS, SEGUIDORES, REPUTACIÓN) -->
+            <!-- Estadísticas -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -222,6 +227,7 @@
                         android:text="Galería"
                         android:textColor="@color/text_gray"
                         android:textSize="11sp" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -246,6 +252,32 @@
                         android:text="Seguidores"
                         android:textColor="@color/text_gray"
                         android:textSize="11sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvFollowingCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="120"
+                        android:textColor="@color/text_white"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Seguidos"
+                        android:textColor="@color/text_gray"
+                        android:textSize="11sp" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -270,10 +302,13 @@
                         android:text="Reputación"
                         android:textColor="@color/text_gray"
                         android:textSize="11sp" />
+
                 </LinearLayout>
+
             </LinearLayout>
 
-            <!-- 5. BIOGRAFÍA / DESCRIPCIÓN -->
+            <!-- Biografía -->
+
             <TextView
                 android:id="@+id/tvProfileBio"
                 android:layout_width="match_parent"
@@ -285,7 +320,8 @@
                 android:textColor="@color/text_gray"
                 android:textSize="12sp" />
 
-            <!-- BOTONES DE GESTIÓN (PANEL Y EDITAR) -->
+            <!-- Botones -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -318,9 +354,11 @@
                     android:textColor="@color/text_white"
                     android:textSize="12sp"
                     android:textStyle="bold" />
+
             </LinearLayout>
 
-            <!-- 6. SECCIÓN DE GALERÍA ESTILO FEED INSTAGRAM -->
+            <!-- Galería -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -349,9 +387,9 @@
                     android:textColor="@color/neon_cyan"
                     android:textSize="11sp"
                     android:textStyle="bold" />
+
             </LinearLayout>
 
-            <!-- GRID RECYCLERVIEW DE 3 COLUMNAS -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvProfileGallery"
                 android:layout_width="match_parent"
@@ -361,6 +399,7 @@
                 android:paddingHorizontal="18dp" />
 
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
