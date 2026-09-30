@@ -41,6 +41,7 @@
         <activity android:name=".ui.CrearEvento" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.PanelOrganizador" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.Notificaciones" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ui.MapaInteractivoActivity" />
 
     </application>
 

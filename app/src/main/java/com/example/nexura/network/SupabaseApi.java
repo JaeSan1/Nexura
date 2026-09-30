@@ -36,18 +36,13 @@ public interface SupabaseApi {
     @GET("eventos?select=*")
     Call<List<Evento>> obtenerEventosPorCiudad(@Query("ciudad") String filtroCiudad);
 
-    // Guardar nuevo evento
     @POST("eventos")
     Call<Void> crearEvento(@Body Evento evento);
 
-    // 2. PERFILES Y AUTENTICACIÓN
-
-
-    // Registrar nuevo usuario
+    // PERFILES Y AUTENTICACIÓN
     @POST("perfiles")
     Call<Void> registrarUsuario(@Body Usuario nuevoUsuario);
 
-    // Consultar perfil por gamertag
     @GET("perfiles?select=*")
     Call<List<Usuario>> obtenerPerfilPorGamertag(@Query("gamertag") String filtroGamertag);
 
@@ -63,7 +58,6 @@ public interface SupabaseApi {
     );
 
     // 3. ASISTENCIAS Y FAVORITOS
-    // Guardar evento
     @POST("asistencias")
     Call<Void> agregarAsistencia(@Body Map<String, Object> datosAsistencia);
 
@@ -82,10 +76,7 @@ public interface SupabaseApi {
             @Body Map<String, Object> camposActualizados
     );
 
-    // 4. COMENTARIOS (Detalle_Evento)
-
-
-    // Listar comentarios
+    // COMENTARIOS
     @GET("comentarios?select=*&order=created_at.desc")
     Call<List<Comentario>> obtenerComentariosPorEvento(@Query("evento_id") String filtroEventoId);
 
@@ -93,9 +84,7 @@ public interface SupabaseApi {
     @POST("comentarios")
     Call<Void> publicarComentario(@Body Comentario comentario);
 
-    // 5. NOTIFICACIONES
-
-    // Listar notificaciones y avisos de la comunidad
+    // NOTIFICACIONES
     @GET("notificaciones?select=*&order=created_at.desc")
     Call<List<Notificacion>> obtenerNotificaciones();
 
@@ -103,8 +92,7 @@ public interface SupabaseApi {
     @POST("notificaciones")
     Call<Void> emitirAvisoOrganizador(@Body Notificacion nuevaNotificacion);
 
-    // 6. GAMIFICACIÓN (Catálogo de Logros)
-    // Listar las medallas
+    // GAMIFICACIÓN
     @GET("logros?select=*")
     Call<List<Logro>> obtenerLogros();
 }

@@ -2,11 +2,11 @@ package com.example.nexura.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ProgressBar;
+import android.preference.PreferenceManager;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +15,11 @@ import com.example.nexura.adapter.EventoFeedAdapter;
 import com.example.nexura.model.Evento;
 import com.example.nexura.network.SupabaseApi;
 import com.example.nexura.network.SupabaseCliente;
+
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +33,38 @@ public class Explorar extends AppCompatActivity {
     private RecyclerView rvFeed;
     private EventoFeedAdapter adapter;
     private List<Evento> listaEventos;
+    private MapView mapPreviewView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 1. Inicialización de configuración OpenStreetMap (siempre antes de inflar el layout)
+        Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
+
         setContentView(R.layout.activity_explorar_mapa);
 
-        // 1. Inicializar lista
+        CardView cardOpenFullMap = findViewById(R.id.cardOpenFullMap);
+        mapPreviewView = findViewById(R.id.mapPreviewView);
+
+        // 2. Vista previa estática de Chillán
+        if (mapPreviewView != null) {
+            mapPreviewView.setTileSource(TileSourceFactory.MAPNIK);
+            mapPreviewView.setMultiTouchControls(false); // Estático como radar
+            mapPreviewView.getController().setZoom(14.0);
+            GeoPoint puntoChillan = new GeoPoint(-36.6067, -72.1034);
+            mapPreviewView.getController().setCenter(puntoChillan);
+        }
+
+        // 3. Abrir la pantalla completa del mapa
+        if (cardOpenFullMap != null) {
+            cardOpenFullMap.setOnClickListener(v -> {
+                Intent intent = new Intent(Explorar.this, MapaInteractivoActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        // 4. Inicializar RecyclerView del Feed
         rvFeed = findViewById(R.id.rvFeedEventos);
         if (rvFeed != null) {
             rvFeed.setLayoutManager(new LinearLayoutManager(this));
@@ -47,10 +77,10 @@ public class Explorar extends AppCompatActivity {
             rvFeed.setAdapter(adapter);
         }
 
-        // 2. Traer los eventos desde Supabase
+        // 5. Cargar eventos desde Supabase
         cargarEventosDesdeSupabase();
 
-        // 3. Barra de Navegación Inferior
+        // 6. Barra de Navegación Inferior
         TextView navHome = findViewById(R.id.navHome);
         TextView navMyEvents = findViewById(R.id.navMyEvents);
         TextView navProfile = findViewById(R.id.navProfile);
@@ -84,7 +114,9 @@ public class Explorar extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     listaEventos.clear();
                     listaEventos.addAll(response.body());
-                    adapter.notifyDataSetChanged();
+                    if (adapter != null) {
+                        adapter.notifyDataSetChanged();
+                    }
                 } else {
                     Toast.makeText(Explorar.this, "Error al cargar: código " + response.code(), Toast.LENGTH_SHORT).show();
                 }
@@ -95,5 +127,22 @@ public class Explorar extends AppCompatActivity {
                 Toast.makeText(Explorar.this, "Falla de red: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    // Ciclo de vida obligatorio para que MapView no consuma memoria innecesaria
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mapPreviewView != null) {
+            mapPreviewView.onResume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mapPreviewView != null) {
+            mapPreviewView.onPause();
+        }
     }
 }
