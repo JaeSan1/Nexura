@@ -58,21 +58,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- VISTA PREVIA MAPA OSM / RADAR TÁCTICO -->
+            <!-- VISTA PREVIA MAPA OSM / RADAR TÁCTICO (Sin la capa oscura que lo bloqueaba) -->
             <org.osmdroid.views.MapView
                 android:id="@+id/mapPreviewView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <!-- CAPA CONTRASTE  -->
-            <View
-                android:id="@+id/mapTouchInterceptor"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/nav" />
-
-            <!-- MAPA -->
-
+            <!-- ETIQUETA FLOTANTE -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

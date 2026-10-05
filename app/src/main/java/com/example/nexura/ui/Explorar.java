@@ -39,8 +39,9 @@ public class Explorar extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 1. Inicialización de configuración OpenStreetMap (siempre antes de inflar el layout)
+        // 1. Inicialización de configuración OpenStreetMap y User-Agent obligatorio
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
+        Configuration.getInstance().setUserAgentValue(getPackageName());
 
         setContentView(R.layout.activity_explorar_mapa);
 
@@ -50,13 +51,13 @@ public class Explorar extends AppCompatActivity {
         // 2. Vista previa estática de Chillán
         if (mapPreviewView != null) {
             mapPreviewView.setTileSource(TileSourceFactory.MAPNIK);
-            mapPreviewView.setMultiTouchControls(false); // Estático como radar
+            mapPreviewView.setMultiTouchControls(false); // Desactiva gestos para que funcione como una vista previa fija
             mapPreviewView.getController().setZoom(14.0);
             GeoPoint puntoChillan = new GeoPoint(-36.6067, -72.1034);
             mapPreviewView.getController().setCenter(puntoChillan);
         }
 
-        // 3. Abrir la pantalla completa del mapa
+        // 3. Abrir la pantalla completa del mapa al hacer clic en la tarjeta
         if (cardOpenFullMap != null) {
             cardOpenFullMap.setOnClickListener(v -> {
                 Intent intent = new Intent(Explorar.this, MapaInteractivoActivity.class);
@@ -129,7 +130,7 @@ public class Explorar extends AppCompatActivity {
         });
     }
 
-    // Ciclo de vida obligatorio para que MapView no consuma memoria innecesaria
+    // Ciclo de vida obligatorio para que MapView maneje bien los recursos
     @Override
     protected void onResume() {
         super.onResume();

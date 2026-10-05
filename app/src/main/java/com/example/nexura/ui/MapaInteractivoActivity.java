@@ -34,8 +34,10 @@ public class MapaInteractivoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Inicializar configuración OSM
+        // Inicializar configuración OSM y establecer el User-Agent obligatorio
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
+        Configuration.getInstance().setUserAgentValue(getPackageName());
+
         setContentView(R.layout.activity_mapa_interactivo);
 
         TextView btnBack = findViewById(R.id.btnBackMap);
