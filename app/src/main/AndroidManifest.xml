@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.nexura">
 
     <!-- Permisos para Supabase (Internet) -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,7 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:name=".App"
+        android:name="com.example.nexura.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -42,7 +43,7 @@
         <activity android:name=".ui.CrearEvento" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.PanelOrganizador" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.Notificaciones" android:exported="false" android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".ui.MapaInteractivoActivity" />
+        <activity android:name=".ui.MapaInteractivoActivity" android:exported="false" />
 
     </application>
 

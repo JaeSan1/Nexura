@@ -19,56 +19,57 @@ import retrofit2.http.Query;
 
 public interface SupabaseApi {
 
-
-    // Listar los eventos
+    // EVENTOS
     @GET("eventos?select=*&order=created_at.desc")
     Call<List<Evento>> obtenerEventos();
 
-    // 3 eventos con más likes
     @GET("eventos?select=*&order=contador_likes.desc&limit=3")
     Call<List<Evento>> obtenerEventosDestacados();
 
-    // Filtro por título
     @GET("eventos?select=*")
     Call<List<Evento>> buscarEventosPorTitulo(@Query("titulo") String filtroTitulo);
 
-    // Filtro por ciudad
     @GET("eventos?select=*")
     Call<List<Evento>> obtenerEventosPorCiudad(@Query("ciudad") String filtroCiudad);
 
     @POST("eventos")
     Call<Void> crearEvento(@Body Evento evento);
 
-    // PERFILES Y AUTENTICACIÓN
+    // AUTENTICACIÓN Y PERFIL
     @POST("perfiles")
     Call<Void> registrarUsuario(@Body Usuario nuevoUsuario);
 
     @GET("perfiles?select=*")
     Call<List<Usuario>> obtenerPerfilPorGamertag(@Query("gamertag") String filtroGamertag);
 
-    // Verificar si el correo ya existe en Login
+    @GET("perfiles?select=*")
+    Call<List<Usuario>> obtenerPerfilPorId(@Query("id") String filtroId);
+
     @GET("perfiles?select=*")
     Call<List<Usuario>> verificarCredenciales(@Query("correo") String filtroCorreo);
 
-    // Actualizar campos
     @PATCH("perfiles")
     Call<Void> actualizarPerfil(
-            @Query("gamertag") String filtroGamertag,
+            @Query("id") String filtroId,
             @Body Map<String, Object> camposActualizados
     );
 
-    // 3. ASISTENCIAS Y FAVORITOS
+    // ASISTENCIAS Y FAVORITOS (MIS EVENTOS)
     @POST("asistencias")
     Call<Void> agregarAsistencia(@Body Map<String, Object> datosAsistencia);
 
-    // Eliminar de "Mis Eventos"
+    @GET("asistencias?select=*,eventos(*)")
+    Call<List<Map<String, Object>>> obtenerAsistenciasUsuario(
+            @Query("usuario_id") String filtroUsuarioId,
+            @Query("asistio") String filtroAsistio
+    );
+
     @DELETE("asistencias")
     Call<Void> eliminarAsistencia(
             @Query("usuario_id") String filtroUsuarioId,
             @Query("evento_id") String filtroEventoId
     );
 
-    // Validar GPS
     @PATCH("asistencias")
     Call<Void> validarAsistenciaGps(
             @Query("usuario_id") String filtroUsuarioId,
@@ -80,7 +81,6 @@ public interface SupabaseApi {
     @GET("comentarios?select=*&order=created_at.desc")
     Call<List<Comentario>> obtenerComentariosPorEvento(@Query("evento_id") String filtroEventoId);
 
-    // Publicar nuevo comentario
     @POST("comentarios")
     Call<Void> publicarComentario(@Body Comentario comentario);
 
@@ -88,11 +88,10 @@ public interface SupabaseApi {
     @GET("notificaciones?select=*&order=created_at.desc")
     Call<List<Notificacion>> obtenerNotificaciones();
 
-    // aviso urgente
     @POST("notificaciones")
     Call<Void> emitirAvisoOrganizador(@Body Notificacion nuevaNotificacion);
 
-    // GAMIFICACIÓN
+    // LOGROS
     @GET("logros?select=*")
     Call<List<Logro>> obtenerLogros();
 }

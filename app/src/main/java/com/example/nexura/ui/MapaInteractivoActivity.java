@@ -14,7 +14,7 @@ import com.example.nexura.network.SupabaseApi;
 import com.example.nexura.network.SupabaseCliente;
 
 import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.tileprovider.tilesource.XYTileSource;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
@@ -34,9 +34,9 @@ public class MapaInteractivoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Inicializar configuración OSM y establecer el User-Agent obligatorio
+
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-        Configuration.getInstance().setUserAgentValue(getPackageName());
+        Configuration.getInstance().setUserAgentValue("NexuraCommunityApp/2.0 (contacto: nexura.chillan@gmail.com)");
 
         setContentView(R.layout.activity_mapa_interactivo);
 
@@ -48,9 +48,17 @@ public class MapaInteractivoActivity extends AppCompatActivity {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        // Configuración del MapView
         if (osmMapView != null) {
-            osmMapView.setTileSource(TileSourceFactory.MAPNIK);
+            XYTileSource OSM_PUBLICO = new XYTileSource(
+                    "OSM_Publico",
+                    0, 19, 256, ".png",
+                    new String[] {
+                            "https://a.tile.openstreetmap.fr/osmfr/",
+                            "https://b.tile.openstreetmap.fr/osmfr/",
+                            "https://c.tile.openstreetmap.fr/osmfr/"
+                    }
+            );
+            osmMapView.setTileSource(OSM_PUBLICO);
             osmMapView.setMultiTouchControls(true);
             osmMapView.getController().setZoom(15.0);
             osmMapView.getController().setCenter(centroChillan);
@@ -64,7 +72,7 @@ public class MapaInteractivoActivity extends AppCompatActivity {
             });
         }
 
-        // Cargar pines de eventos desde Supabase
+
         cargarMarcadoresEventos();
     }
 

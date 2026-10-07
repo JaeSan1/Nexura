@@ -17,7 +17,7 @@ import com.example.nexura.network.SupabaseApi;
 import com.example.nexura.network.SupabaseCliente;
 
 import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.tileprovider.tilesource.XYTileSource;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
@@ -39,25 +39,34 @@ public class Explorar extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 1. Inicialización de configuración OpenStreetMap y User-Agent obligatorio
+        // 1. Configuración de User-Agent y caché de OpenStreetMap
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-        Configuration.getInstance().setUserAgentValue(getPackageName());
+        Configuration.getInstance().setUserAgentValue("NexuraCommunityApp/2.0 (contacto: nexura.chillan@gmail.com)");
 
         setContentView(R.layout.activity_explorar_mapa);
 
         CardView cardOpenFullMap = findViewById(R.id.cardOpenFullMap);
         mapPreviewView = findViewById(R.id.mapPreviewView);
 
-        // 2. Vista previa estática de Chillán
+        // 2. Fuente de mapas pública sin necesidad de API Key
         if (mapPreviewView != null) {
-            mapPreviewView.setTileSource(TileSourceFactory.MAPNIK);
-            mapPreviewView.setMultiTouchControls(false); // Desactiva gestos para que funcione como una vista previa fija
+            XYTileSource OSM_PUBLICO = new XYTileSource(
+                    "OSM_Publico",
+                    0, 19, 256, ".png",
+                    new String[] {
+                            "https://a.tile.openstreetmap.fr/osmfr/",
+                            "https://b.tile.openstreetmap.fr/osmfr/",
+                            "https://c.tile.openstreetmap.fr/osmfr/"
+                    }
+            );
+            mapPreviewView.setTileSource(OSM_PUBLICO);
+            mapPreviewView.setMultiTouchControls(false);
             mapPreviewView.getController().setZoom(14.0);
             GeoPoint puntoChillan = new GeoPoint(-36.6067, -72.1034);
             mapPreviewView.getController().setCenter(puntoChillan);
         }
 
-        // 3. Abrir la pantalla completa del mapa al hacer clic en la tarjeta
+        // 3. Clic en la tarjeta para abrir el mapa interactivo
         if (cardOpenFullMap != null) {
             cardOpenFullMap.setOnClickListener(v -> {
                 Intent intent = new Intent(Explorar.this, MapaInteractivoActivity.class);
@@ -65,7 +74,7 @@ public class Explorar extends AppCompatActivity {
             });
         }
 
-        // 4. Inicializar RecyclerView del Feed
+        // 4. Inicializar RecyclerView del feed de eventos
         rvFeed = findViewById(R.id.rvFeedEventos);
         if (rvFeed != null) {
             rvFeed.setLayoutManager(new LinearLayoutManager(this));
@@ -81,7 +90,7 @@ public class Explorar extends AppCompatActivity {
         // 5. Cargar eventos desde Supabase
         cargarEventosDesdeSupabase();
 
-        // 6. Barra de Navegación Inferior
+        // 6. Navegación inferior
         TextView navHome = findViewById(R.id.navHome);
         TextView navMyEvents = findViewById(R.id.navMyEvents);
         TextView navProfile = findViewById(R.id.navProfile);
@@ -118,32 +127,25 @@ public class Explorar extends AppCompatActivity {
                     if (adapter != null) {
                         adapter.notifyDataSetChanged();
                     }
-                } else {
-                    Toast.makeText(Explorar.this, "Error al cargar: código " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Evento>> call, Throwable t) {
-                Toast.makeText(Explorar.this, "Falla de red: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(Explorar.this, "Error de conexión", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // Ciclo de vida obligatorio para que MapView maneje bien los recursos
     @Override
     protected void onResume() {
         super.onResume();
-        if (mapPreviewView != null) {
-            mapPreviewView.onResume();
-        }
+        if (mapPreviewView != null) mapPreviewView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (mapPreviewView != null) {
-            mapPreviewView.onPause();
-        }
+        if (mapPreviewView != null) mapPreviewView.onPause();
     }
 }

@@ -16,8 +16,11 @@ import com.example.nexura.model.Comentario;
 import com.example.nexura.model.Evento;
 import com.example.nexura.network.SupabaseApi;
 import com.example.nexura.network.SupabaseCliente;
+import com.example.nexura.util.SessionManager;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,15 +32,15 @@ public class Detalle_Evento extends AppCompatActivity {
     private boolean isFavorite = false;
     private Evento eventoActual;
     private SupabaseApi api;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_evento);
 
+        sessionManager = new SessionManager(this);
         api = SupabaseCliente.getClient().create(SupabaseApi.class);
-
-        // 1. Obtener el evento seleccionado
         eventoActual = (Evento) getIntent().getSerializableExtra("EVENTO_SELECCIONADO");
 
         TextView btnBack = findViewById(R.id.btnBack);
@@ -56,27 +59,50 @@ public class Detalle_Evento extends AppCompatActivity {
         EditText etNewComment = findViewById(R.id.etNewComment);
         Button btnSendComment = findViewById(R.id.btnSendComment);
 
-        if (btnBack != null) {
-            btnBack.setOnClickListener(v -> finish());
-        }
+        if (btnBack != null) btnBack.setOnClickListener(v -> finish());
 
-        // Favoritos / Mis Eventos
+        // Guardar o eliminar en Mis Eventos de Supabase
         if (btnSaveFavorite != null) {
             btnSaveFavorite.setOnClickListener(v -> {
+                if (eventoActual == null || eventoActual.getId() == null) return;
+
                 isFavorite = !isFavorite;
                 if (isFavorite) {
-                    btnSaveFavorite.setText("♥");
+                    btnSaveFavorite.setText("Guardado");
                     btnSaveFavorite.setTextColor(ContextCompat.getColor(this, R.color.neon_cyan));
-                    Toast.makeText(this, "Guardado en 'Mis Eventos'", Toast.LENGTH_SHORT).show();
+
+                    Map<String, Object> body = new HashMap<>();
+                    body.put("usuario_id", sessionManager.getUserId());
+                    body.put("evento_id", eventoActual.getId());
+                    body.put("asistio", false);
+
+                    api.agregarAsistencia(body).enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            Toast.makeText(Detalle_Evento.this, "Guardado en Mis Eventos", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {}
+                    });
                 } else {
-                    btnSaveFavorite.setText("♡");
+                    btnSaveFavorite.setText("Guardar");
                     btnSaveFavorite.setTextColor(ContextCompat.getColor(this, R.color.text_gray));
-                    Toast.makeText(this, "Eliminado de 'Mis Eventos'", Toast.LENGTH_SHORT).show();
+
+                    api.eliminarAsistencia("eq." + sessionManager.getUserId(), "eq." + eventoActual.getId())
+                            .enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                    Toast.makeText(Detalle_Evento.this, "Eliminado de Mis Eventos", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onFailure(Call<Void> call, Throwable t) {}
+                            });
                 }
             });
         }
 
-        // Pestañas
         tabInfo.setOnClickListener(v -> activarTab(tabInfo, containerTabInfo, tabAvisos, containerTabAvisos, tabComentarios, containerTabComentarios));
         tabAvisos.setOnClickListener(v -> activarTab(tabAvisos, containerTabAvisos, tabInfo, containerTabInfo, tabComentarios, containerTabComentarios));
         tabComentarios.setOnClickListener(v -> {
@@ -84,7 +110,7 @@ public class Detalle_Evento extends AppCompatActivity {
             cargarComentarios();
         });
 
-        // Enviar Comentario a Supabase
+        // Comentario vinculado a la cuenta logueada
         if (btnSendComment != null) {
             btnSendComment.setOnClickListener(v -> {
                 String texto = etNewComment.getText().toString().trim();
@@ -94,7 +120,13 @@ public class Detalle_Evento extends AppCompatActivity {
                 }
 
                 if (eventoActual != null && eventoActual.getId() != null) {
-                    Comentario nuevo = new Comentario(eventoActual.getId(), null, "TheGoat99", texto);
+                    Comentario nuevo = new Comentario(
+                            eventoActual.getId(),
+                            sessionManager.getUserId(),
+                            sessionManager.getGamertag(),
+                            texto
+                    );
+
                     api.publicarComentario(nuevo).enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
@@ -102,37 +134,32 @@ public class Detalle_Evento extends AppCompatActivity {
                                 Toast.makeText(Detalle_Evento.this, "Comentario publicado", Toast.LENGTH_SHORT).show();
                                 etNewComment.setText("");
                                 cargarComentarios();
-                            } else {
-                                Toast.makeText(Detalle_Evento.this, "Error al publicar: " + response.code(), Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                            Toast.makeText(Detalle_Evento.this, "Fallo de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+                        public void onFailure(Call<Void> call, Throwable t) {}
                     });
                 }
             });
         }
 
-        // Validación GPS y Recompensa
+        // Validación GPS
         if (btnClaimGps != null) {
             btnClaimGps.setOnClickListener(v -> {
                 if (!yaReclamado) {
-                    String nombreEvento = (eventoActual != null) ? eventoActual.getTitulo() : "el evento";
                     int xpPremio = (eventoActual != null) ? eventoActual.getXpRecompensa() : 250;
 
                     new AlertDialog.Builder(Detalle_Evento.this)
-                            .setTitle("¡Asistencia Confirmada! 🏅")
-                            .setMessage("Has validado tu permanencia física en " + nombreEvento + ".\n\n+" + xpPremio + " XP acreditados.")
-                            .setPositiveButton("Reclamar Recompensa", (dialog, which) -> {
+                            .setTitle("Asistencia Confirmada")
+                            .setMessage("Has validado tu permanencia física. +" + xpPremio + " XP acreditados.")
+                            .setPositiveButton("Reclamar", (dialog, which) -> {
                                 yaReclamado = true;
-                                btnClaimGps.setText("✓ Asistencia Validada");
+                                btnClaimGps.setText("Asistencia Validada");
                                 btnClaimGps.setEnabled(false);
                                 btnClaimGps.setAlpha(0.5f);
                                 if (tvGpsStatus != null) {
-                                    tvGpsStatus.setText("🎉 Recompensa acreditada (+" + xpPremio + " XP)");
+                                    tvGpsStatus.setText("Recompensa acreditada (+" + xpPremio + " XP)");
                                 }
                             })
                             .setNegativeButton("Cancelar", null)
@@ -147,31 +174,23 @@ public class Detalle_Evento extends AppCompatActivity {
 
         api.obtenerComentariosPorEvento("eq." + eventoActual.getId()).enqueue(new Callback<List<Comentario>>() {
             @Override
-            public void onResponse(Call<List<Comentario>> call, Response<List<Comentario>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    // Los comentarios llegan listos para pintarse en el contenedor
-                }
-            }
+            public void onResponse(Call<List<Comentario>> call, Response<List<Comentario>> response) {}
 
             @Override
             public void onFailure(Call<List<Comentario>> call, Throwable t) {}
         });
     }
 
-    private void activarTab(TextView tabActiva, View contenedorActivo,
-                            TextView tab2, View contenedor2,
-                            TextView tab3, View contenedor3) {
-        tabActiva.setBackgroundResource(R.drawable.categoria);
-        tabActiva.setTextColor(ContextCompat.getColor(this, R.color.neon_cyan));
+    private void activarTab(TextView activa, View contActivo, TextView t2, View c2, TextView t3, View c3) {
+        activa.setBackgroundResource(R.drawable.categoria);
+        activa.setTextColor(ContextCompat.getColor(this, R.color.neon_cyan));
+        t2.setBackground(null);
+        t2.setTextColor(ContextCompat.getColor(this, R.color.text_gray));
+        t3.setBackground(null);
+        t3.setTextColor(ContextCompat.getColor(this, R.color.text_gray));
 
-        tab2.setBackground(null);
-        tab2.setTextColor(ContextCompat.getColor(this, R.color.text_gray));
-
-        tab3.setBackground(null);
-        tab3.setTextColor(ContextCompat.getColor(this, R.color.text_gray));
-
-        contenedorActivo.setVisibility(View.VISIBLE);
-        contenedor2.setVisibility(View.GONE);
-        contenedor3.setVisibility(View.GONE);
+        contActivo.setVisibility(View.VISIBLE);
+        c2.setVisibility(View.GONE);
+        c3.setVisibility(View.GONE);
     }
 }
