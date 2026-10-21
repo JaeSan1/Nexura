@@ -47,6 +47,15 @@ public class Usuario implements Serializable {
     @SerializedName("es_organizador")
     private boolean esOrganizador;
 
+    @SerializedName("es_verificado")
+    private boolean esVerificado;
+
+    @SerializedName("calificacion_promedio")
+    private float calificacionPromedio;
+
+    @SerializedName("eventos_organizados")
+    private int eventosOrganizados;
+
     public Usuario() {}
 
     // Getters y Setters
@@ -91,4 +100,13 @@ public class Usuario implements Serializable {
 
     public boolean isEsOrganizador() { return esOrganizador; }
     public void setEsOrganizador(boolean esOrganizador) { this.esOrganizador = esOrganizador; }
+
+    public boolean isEsVerificado() { return esVerificado; }
+    public void setEsVerificado(boolean esVerificado) { this.esVerificado = esVerificado; }
+
+    public float getCalificacionPromedio() { return calificacionPromedio; }
+    public void setCalificacionPromedio(float calificacionPromedio) { this.calificacionPromedio = calificacionPromedio; }
+
+    public int getEventosOrganizados() { return eventosOrganizados; }
+    public void setEventosOrganizados(int eventosOrganizados) { this.eventosOrganizados = eventosOrganizados; }
 }

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nexura.R;
-import com.example.nexura.adapter.NotificacionAdapter;
+import com.example.nexura.ui.adapter.NotificacionAdapter;
 import com.example.nexura.model.Notificacion;
 import com.example.nexura.network.SupabaseApi;
 import com.example.nexura.network.SupabaseCliente;

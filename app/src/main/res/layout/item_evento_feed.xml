@@ -34,14 +34,34 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvFeedOrganizer"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/text_white"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    tools:text="Municipalidad de Chillán" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvFeedOrganizer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_white"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        tools:text="Municipalidad de Chillán" />
+
+                    <!-- Insignia de Verificado -->
+                    <TextView
+                        android:id="@+id/tvVerifiedBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="✔"
+                        android:textColor="@color/neon_cyan"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tvFeedLocationSub"
@@ -71,17 +91,12 @@
             android:layout_height="180dp"
             android:background="@color/bg_dark">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="PORTADA DEL EVENTO"
-                android:textColor="@color/text_gray"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/ivEventImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:contentDescription="Portada Evento" />
 
             <TextView
                 android:id="@+id/tvFeedDateBadge"
@@ -96,7 +111,7 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:text="Sáb, 22 Oct" />
+                tools:text="Próximamente" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- TÍTULO Y DETALLE -->
@@ -113,7 +128,7 @@
                 android:textColor="@color/text_white"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                tools:text="Fiesta de la Longaniza 2026" />
+                tools:text="Fiesta de la Longaniza" />
 
             <TextView
                 android:id="@+id/tvFeedDescription"
@@ -123,7 +138,7 @@
                 android:lineSpacingExtra="3dp"
                 android:textColor="@color/text_gray"
                 android:textSize="12sp"
-                tools:text="Festival gastronómico y cultural. Actividades en vivo, stands locales y puntos de experiencia Nexura verificados." />
+                tools:text="Festival gastronómico y cultural en la Plaza de Armas de Chillán." />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

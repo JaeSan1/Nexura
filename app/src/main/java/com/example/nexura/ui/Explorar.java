@@ -3,18 +3,19 @@ package com.example.nexura.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nexura.R;
-import com.example.nexura.adapter.EventoFeedAdapter;
-import com.example.nexura.model.Evento;
-import com.example.nexura.network.SupabaseApi;
-import com.example.nexura.network.SupabaseCliente;
+import com.example.nexura.ui.adapter.EventoFeedAdapter;
+import com.example.nexura.util.NetworkUtils;
+import com.example.nexura.Viewmodel.ExplorarViewModel;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.XYTileSource;
@@ -22,24 +23,18 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class Explorar extends AppCompatActivity {
 
-    private RecyclerView rvFeed;
     private EventoFeedAdapter adapter;
-    private List<Evento> listaEventos;
     private MapView mapPreviewView;
+    private ExplorarViewModel viewModel;
+    private View layoutLoadingOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 1. Configuración de User-Agent y caché de OpenStreetMap
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         Configuration.getInstance().setUserAgentValue("NexuraCommunityApp/2.0 (contacto: nexura.chillan@gmail.com)");
 
@@ -47,8 +42,9 @@ public class Explorar extends AppCompatActivity {
 
         CardView cardOpenFullMap = findViewById(R.id.cardOpenFullMap);
         mapPreviewView = findViewById(R.id.mapPreviewView);
+        layoutLoadingOverlay = findViewById(R.id.layoutLoadingOverlay);
 
-        // 2. Fuente de mapas pública sin necesidad de API Key
+        // Mapa de OpenStreetMap
         if (mapPreviewView != null) {
             XYTileSource OSM_PUBLICO = new XYTileSource(
                     "OSM_Publico",
@@ -66,20 +62,14 @@ public class Explorar extends AppCompatActivity {
             mapPreviewView.getController().setCenter(puntoChillan);
         }
 
-        // 3. Clic en la tarjeta para abrir el mapa interactivo
         if (cardOpenFullMap != null) {
-            cardOpenFullMap.setOnClickListener(v -> {
-                Intent intent = new Intent(Explorar.this, MapaInteractivoActivity.class);
-                startActivity(intent);
-            });
+            cardOpenFullMap.setOnClickListener(v -> startActivity(new Intent(Explorar.this, MapaInteractivoActivity.class)));
         }
 
-        // 4. Inicializar RecyclerView del feed de eventos
-        rvFeed = findViewById(R.id.rvFeedEventos);
+        RecyclerView rvFeed = findViewById(R.id.rvFeedEventos);
         if (rvFeed != null) {
             rvFeed.setLayoutManager(new LinearLayoutManager(this));
-            listaEventos = new ArrayList<>();
-            adapter = new EventoFeedAdapter(this, listaEventos, evento -> {
+            adapter = new EventoFeedAdapter(this, new ArrayList<>(), evento -> {
                 Intent intent = new Intent(Explorar.this, Detalle_Evento.class);
                 intent.putExtra("EVENTO_SELECCIONADO", evento);
                 startActivity(intent);
@@ -87,10 +77,38 @@ public class Explorar extends AppCompatActivity {
             rvFeed.setAdapter(adapter);
         }
 
-        // 5. Cargar eventos desde Supabase
-        cargarEventosDesdeSupabase();
+        // Inicializar ViewModel
+        viewModel = new ViewModelProvider(this).get(ExplorarViewModel.class);
 
-        // 6. Navegación inferior
+        // Observar estado de carga (Overlay)
+        viewModel.getCargando().observe(this, cargando -> {
+            if (layoutLoadingOverlay != null) {
+                layoutLoadingOverlay.setVisibility(Boolean.TRUE.equals(cargando) ? View.VISIBLE : View.GONE);
+            }
+        });
+
+        // Observar la lista de eventos desde el ViewModel
+        viewModel.getEventosFeed().observe(this, eventos -> {
+            if (eventos != null && adapter != null) {
+                adapter.actualizarLista(eventos);
+            }
+        });
+
+        // Observar errores de red
+        viewModel.getError().observe(this, mensaje -> {
+            if (mensaje != null) {
+                Toast.makeText(Explorar.this, mensaje, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Cargar datos
+        if (NetworkUtils.hayInternet(this)) {
+            viewModel.cargarEventosFeed();
+        } else {
+            Toast.makeText(this, "Sin conexión a Internet", Toast.LENGTH_SHORT).show();
+        }
+
+        // Navegación Inferior
         TextView navHome = findViewById(R.id.navHome);
         TextView navMyEvents = findViewById(R.id.navMyEvents);
         TextView navProfile = findViewById(R.id.navProfile);
@@ -113,28 +131,6 @@ public class Explorar extends AppCompatActivity {
                 finish();
             });
         }
-    }
-
-    private void cargarEventosDesdeSupabase() {
-        SupabaseApi api = SupabaseCliente.getClient().create(SupabaseApi.class);
-
-        api.obtenerEventos().enqueue(new Callback<List<Evento>>() {
-            @Override
-            public void onResponse(Call<List<Evento>> call, Response<List<Evento>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    listaEventos.clear();
-                    listaEventos.addAll(response.body());
-                    if (adapter != null) {
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Evento>> call, Throwable t) {
-                Toast.makeText(Explorar.this, "Error de conexión", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override

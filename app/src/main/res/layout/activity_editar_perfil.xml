@@ -1,183 +1,234 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_dark"
-    android:fillViewport="true"
-    tools:context=".ui.EditarPerfil">
+    android:background="#0F172A">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="20dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <TextView
-            android:id="@+id/btnBackEditProfile"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="12dp"
-            android:gravity="center"
-            android:text="←"
-            android:textColor="@color/text_white"
-            android:textSize="22sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tvEditProfileTitle"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:letterSpacing="0.1"
-            android:text="EDITAR PERFIL"
-            android:textColor="@color/text_white"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/btnBackEditProfile"
-            app:layout_constraintStart_toEndOf="@id/btnBackEditProfile"
-            app:layout_constraintTop_toTopOf="@id/btnBackEditProfile" />
+            android:orientation="vertical"
+            android:padding="20dp">
 
-        <FrameLayout
-            android:id="@+id/frameEditAvatar"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/avatar"
-            android:padding="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvEditProfileTitle">
-
-            <ImageView
-                android:id="@+id/ivEditAvatar"
+            <!-- Header / Toolbar Superior -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/electric_purple"
-                android:scaleType="centerCrop" />
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
+                <TextView
+                    android:id="@+id/btnBackEditProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="←"
+                    android:textColor="#00F2FE"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:text="Editar Perfil"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Sección de Portada / Banner Interactivo -->
             <TextView
-                android:layout_width="32dp"
-                android:layout_height="24dp"
-                android:layout_gravity="bottom|end"
-                android:background="@drawable/categoria"
-                android:gravity="center"
-                android:text="EDIT"
-                android:textColor="@color/neon_cyan"
-                android:textSize="9sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="6dp"
+                android:text="BANNER / PORTADA DE PERFIL"
+                android:textColor="#00F2FE"
+                android:textSize="11sp"
                 android:textStyle="bold" />
-        </FrameLayout>
 
-        <TextView
-            android:id="@+id/btnChangePhotoText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Cambiar foto de perfil"
-            android:textColor="@color/neon_cyan"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frameEditAvatar" />
+            <FrameLayout
+                android:id="@+id/containerBannerEdit"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/categoria">
 
-        <TextView
-            android:id="@+id/lblEditUsername"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Nombre de usuario (Gamertag)"
-            android:textColor="@color/text_gray"
-            android:textSize="13sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnChangePhotoText" />
+                <ImageView
+                    android:id="@+id/ivBannerEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/categoria" />
 
-        <EditText
-            android:id="@+id/etEditGamertag"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/input"
-            android:hint="TheGoat99"
-            android:paddingHorizontal="14dp"
-            android:textColor="@color/text_white"
-            android:textColorHint="@color/text_hint"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lblEditUsername" />
+                <!-- Indicador de cambiar portada -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="#80000000"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp">
 
-        <TextView
-            android:id="@+id/lblEditCity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Ciudad / Región principal"
-            android:textColor="@color/text_gray"
-            android:textSize="13sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/etEditGamertag" />
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@android:drawable/ic_menu_camera"
+                        app:tint="#00F2FE" />
 
-        <EditText
-            android:id="@+id/etEditCity"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/input"
-            android:hint="Chillán, Chile"
-            android:paddingHorizontal="14dp"
-            android:textColor="@color/text_white"
-            android:textColorHint="@color/text_hint"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lblEditCity" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="Cambiar Banner"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </FrameLayout>
 
-        <TextView
-            android:id="@+id/lblEditBio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Biografía / Presentación"
-            android:textColor="@color/text_gray"
-            android:textSize="13sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/etEditCity" />
+            <!-- Sección de Avatar Interactivo -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="AVATAR / FOTO DE PERFIL"
+                android:textColor="#00F2FE"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/etEditBio"
-            android:layout_width="0dp"
-            android:layout_height="90dp"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/input"
-            android:gravity="top"
-            android:hint="Escribe sobre tus gustos o eventos..."
-            android:inputType="textMultiLine"
-            android:padding="12dp"
-            android:textColor="@color/text_white"
-            android:textColorHint="@color/text_hint"
-            android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lblEditBio" />
+            <FrameLayout
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSaveProfile"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_marginTop="28dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/boton_gradiante"
-            android:text="Guardar Cambios"
-            android:textAllCaps="false"
-            android:textColor="@color/text_white"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/etEditBio" />
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/ivAvatarEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#1E293B"
+                    android:padding="2dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_launcher"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                    app:strokeColor="#00F2FE"
+                    app:strokeWidth="2dp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="bottom|end"
+                    android:background="@drawable/badge"
+                    android:contentDescription="Cambiar Avatar"
+                    android:padding="6dp"
+                    android:src="@android:drawable/ic_menu_camera"
+                    app:tint="#00F2FE" />
+            </FrameLayout>
+
+            <!-- Formulario de Edición -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Gamertag -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:text="GAMERTAG / APODO"
+                    android:textColor="#00F2FE"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etGamertagEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/categoria"
+                    android:hint="Ej. NexuraPlayer"
+                    android:inputType="textPersonName"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B"
+                    android:textSize="14sp" />
+
+                <!-- Ciudad / Región -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:text="CIUDAD O REGIÓN"
+                    android:textColor="#00F2FE"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etCityEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/categoria"
+                    android:hint="Ej. Chillán"
+                    android:inputType="textCapWords"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B"
+                    android:textSize="14sp" />
+
+                <!-- Biografía -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:text="BIOGRAFÍA / PRESENTACIÓN"
+                    android:textColor="#00F2FE"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etBioEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginBottom="32dp"
+                    android:background="@drawable/categoria"
+                    android:gravity="top|start"
+                    android:hint="Cuéntale a la comunidad sobre tus gustos gaming, eventos que te interesan, etc."
+                    android:inputType="textMultiLine"
+                    android:padding="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B"
+                    android:textSize="14sp" />
+
+                <!-- Botón de Guardar -->
+                <Button
+                    android:id="@+id/btnSaveProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:backgroundTint="#00F2FE"
+                    android:text="GUARDAR CAMBIOS"
+                    android:textColor="#0F172A"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Superposición de Carga (Overlay) -->
+    <include layout="@layout/activity_loading_overlay" />
+
+</FrameLayout>

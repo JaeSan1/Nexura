@@ -1,37 +1,42 @@
 package com.example.nexura.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.nexura.R;
+import com.example.nexura.Repository.UsuarioRepository;
+import com.example.nexura.Viewmodel.PerfilViewModel;
+import com.example.nexura.model.Logro;
 import com.example.nexura.model.Usuario;
-import com.example.nexura.network.SupabaseApi;
-import com.example.nexura.network.SupabaseCliente;
+import com.example.nexura.util.NetworkUtils;
 import com.example.nexura.util.SessionManager;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class Perfil extends AppCompatActivity {
 
-    private TextView tvGamertag, tvUserLevel, tvEquippedTitle, tvXpProgress, tvCityLocation;
-    private TextView tvFollowersCount, tvFollowingCount, tvLikesCount, tvProfileBio;
+    private TextView tvGamertag, tvVerifiedBadge, tvUserLevel, tvEquippedTitle, tvXpProgress, tvCityLocation;
+    private TextView tvFollowersCount, tvFollowingCount, tvLikesCount, tvProfileBio, tvAchievementsCount;
+    private ImageView ivProfileAvatar, ivProfileBanner;
     private ProgressBar pbXpBar;
+    private LinearLayout containerLogros;
 
-    private SupabaseApi api;
+    private PerfilViewModel viewModel;
     private SessionManager sessionManager;
-    private Usuario usuarioActual;
+    private UsuarioRepository usuarioRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +44,20 @@ public class Perfil extends AppCompatActivity {
         setContentView(R.layout.activity_perfil);
 
         sessionManager = new SessionManager(this);
-        api = SupabaseCliente.getClient().create(SupabaseApi.class);
+        usuarioRepository = new UsuarioRepository();
+        viewModel = new ViewModelProvider(this).get(PerfilViewModel.class);
 
         TextView btnBack = findViewById(R.id.btnBackPerfil);
         tvGamertag = findViewById(R.id.tvProfileGamertag);
+        tvVerifiedBadge = findViewById(R.id.tvVerifiedBadge);
         tvUserLevel = findViewById(R.id.tvProfileLevel);
         tvEquippedTitle = findViewById(R.id.tvEquippedTitle);
         tvXpProgress = findViewById(R.id.tvXpProgressText);
         tvCityLocation = findViewById(R.id.tvProfileLocation);
         tvProfileBio = findViewById(R.id.tvProfileBio);
+
+        ivProfileAvatar = findViewById(R.id.ivProfileAvatar);
+        ivProfileBanner = findViewById(R.id.ivProfileBanner);
 
         pbXpBar = findViewById(R.id.pbProfileXp);
 
@@ -55,67 +65,169 @@ public class Perfil extends AppCompatActivity {
         tvFollowingCount = findViewById(R.id.tvFollowingCount);
         tvLikesCount = findViewById(R.id.tvReputationLikesCount);
 
-        Button btnGoOrganizerPanel = findViewById(R.id.btnGoOrganizerPanel);
+        tvAchievementsCount = findViewById(R.id.tvAchievementsCount);
+        containerLogros = findViewById(R.id.containerLogros);
+
         Button btnEditCosmetics = findViewById(R.id.btnQuickEdit);
 
         if (btnBack != null) btnBack.setOnClickListener(v -> finish());
 
-        if (btnGoOrganizerPanel != null) {
-            btnGoOrganizerPanel.setOnClickListener(v -> startActivity(new Intent(Perfil.this, PanelOrganizador.class)));
-        }
-
+        // Desplegar Modal de Ajustes
         if (btnEditCosmetics != null) {
             btnEditCosmetics.setOnClickListener(v -> {
-                String[] opciones = {"Cambiar Título Equipado", "Editar Información", "Cerrar Sesión"};
-                new AlertDialog.Builder(Perfil.this)
-                        .setTitle("Ajustes de Perfil")
-                        .setItems(opciones, (dialog, which) -> {
-                            if (which == 0) abrirSelectorTitulos();
-                            else if (which == 1) startActivity(new Intent(Perfil.this, EditarPerfil.class));
-                            else if (which == 2) cerrarSesion();
-                        })
-                        .show();
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(Perfil.this);
+                View sheetView = getLayoutInflater().inflate(R.layout.modal_ajuste_perfil, null);
+                bottomSheetDialog.setContentView(sheetView);
+
+                TextView optionEdit = sheetView.findViewById(R.id.optionEditProfile);
+                TextView optionLogout = sheetView.findViewById(R.id.optionLogout);
+                TextView optionDelete = sheetView.findViewById(R.id.optionDeleteAccount);
+
+                // NAVEGACIÓN A EDITAR PERFIL
+                if (optionEdit != null) {
+                    optionEdit.setOnClickListener(view -> {
+                        bottomSheetDialog.dismiss();
+                        Intent intent = new Intent(Perfil.this, EditarPerfil.class);
+                        startActivity(intent);
+                    });
+                }
+
+                if (optionLogout != null) {
+                    optionLogout.setOnClickListener(view -> {
+                        bottomSheetDialog.dismiss();
+                        cerrarSesion();
+                    });
+                }
+
+                if (optionDelete != null) {
+                    optionDelete.setOnClickListener(view -> {
+                        bottomSheetDialog.dismiss();
+                        new AlertDialog.Builder(Perfil.this)
+                                .setTitle("¿Eliminar tu cuenta?")
+                                .setMessage("Esta acción es irreversible. Se borrarán permanentemente tus eventos, XP, nivel y datos de perfil.")
+                                .setPositiveButton("Eliminar", (dialog, which) -> procesarEliminacionCuenta())
+                                .setNegativeButton("Cancelar", null)
+                                .show();
+                    });
+                }
+
+                bottomSheetDialog.show();
             });
         }
 
-        cargarDatosUsuario();
+        // Suscribirse al ViewModel
+        viewModel.getUsuario().observe(this, this::actualizarUI);
+        viewModel.getLogros().observe(this, this::mostrarLogrosEnUI);
+
+        cargarDatos();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        cargarDatosUsuario();
+        cargarDatos(); // Recargar datos al volver de EditarPerfil
     }
 
-    private void cargarDatosUsuario() {
+    private void cargarDatos() {
+        if (NetworkUtils.hayInternet(this)) {
+            viewModel.cargarPerfil(sessionManager.getUserId());
+            viewModel.cargarLogros();
+        } else {
+            Toast.makeText(this, "Sin conexión a Internet", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void procesarEliminacionCuenta() {
         String userId = sessionManager.getUserId();
-        String gamertag = sessionManager.getGamertag();
-
-        Call<List<Usuario>> call = (!userId.isEmpty())
-                ? api.obtenerPerfilPorId("eq." + userId)
-                : api.obtenerPerfilPorGamertag("eq." + gamertag);
-
-        call.enqueue(new Callback<List<Usuario>>() {
+        usuarioRepository.eliminarCuenta(userId, new UsuarioRepository.ApiCallback<Void>() {
             @Override
-            public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
-                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    usuarioActual = response.body().get(0);
-                    actualizarUI(usuarioActual);
-                }
+            public void onSuccess(Void result) {
+                Toast.makeText(Perfil.this, "Cuenta eliminada correctamente", Toast.LENGTH_LONG).show();
+                cerrarSesion();
             }
 
             @Override
-            public void onFailure(Call<List<Usuario>> call, Throwable t) {
-                Toast.makeText(Perfil.this, "Sin conexión con tu perfil", Toast.LENGTH_SHORT).show();
+            public void onError(String mensajeError) {
+                Toast.makeText(Perfil.this, "No se pudo eliminar: " + mensajeError, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    private void mostrarLogrosEnUI(List<Logro> listaLogros) {
+        if (containerLogros == null || listaLogros == null) return;
+        containerLogros.removeAllViews();
+
+        if (tvAchievementsCount != null) {
+            tvAchievementsCount.setText(listaLogros.size() + " Logros Disponibles");
+        }
+
+        for (Logro logro : listaLogros) {
+            CardView card = new CardView(this);
+            LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            cardParams.setMargins(0, 0, 0, 12);
+            card.setLayoutParams(cardParams);
+            card.setCardBackgroundColor(Color.parseColor("#1E293B"));
+            card.setRadius(12f);
+            card.setCardElevation(2f);
+
+            LinearLayout layoutInner = new LinearLayout(this);
+            layoutInner.setOrientation(LinearLayout.HORIZONTAL);
+            layoutInner.setPadding(14, 12, 14, 12);
+
+            TextView tvEmoji = new TextView(this);
+            tvEmoji.setText(logro.getIconoEmoji() != null ? logro.getIconoEmoji() : "🏆");
+            tvEmoji.setTextSize(22f);
+            tvEmoji.setPadding(0, 0, 12, 0);
+
+            LinearLayout layoutTextos = new LinearLayout(this);
+            layoutTextos.setOrientation(LinearLayout.VERTICAL);
+            LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+                    0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f
+            );
+            layoutTextos.setLayoutParams(textParams);
+
+            TextView tvNombre = new TextView(this);
+            tvNombre.setText(logro.getNombre());
+            tvNombre.setTextColor(Color.WHITE);
+            tvNombre.setTextSize(13f);
+
+            TextView tvDesc = new TextView(this);
+            tvDesc.setText(logro.getDescripcion());
+            tvDesc.setTextColor(Color.parseColor("#94A3B8"));
+            tvDesc.setTextSize(11f);
+
+            layoutTextos.addView(tvNombre);
+            layoutTextos.addView(tvDesc);
+
+            TextView tvXp = new TextView(this);
+            tvXp.setText("+" + logro.getXpBonus() + " XP");
+            tvXp.setTextColor(Color.parseColor("#00F2FE"));
+            tvXp.setTextSize(11f);
+
+            layoutInner.addView(tvEmoji);
+            layoutInner.addView(layoutTextos);
+            layoutInner.addView(tvXp);
+
+            card.addView(layoutInner);
+            containerLogros.addView(card);
+        }
+    }
+
     private void actualizarUI(Usuario user) {
+        if (user == null) return;
+
         if (tvGamertag != null) tvGamertag.setText(user.getGamertag());
+
+        if (tvVerifiedBadge != null) {
+            tvVerifiedBadge.setVisibility(user.isEsVerificado() ? View.VISIBLE : View.GONE);
+        }
+
         if (tvUserLevel != null) tvUserLevel.setText("NIVEL " + user.getNivel());
-        if (tvEquippedTitle != null) tvEquippedTitle.setText(user.getTituloEquipado());
-        if (tvCityLocation != null) tvCityLocation.setText(user.getCiudad());
+        if (tvEquippedTitle != null) tvEquippedTitle.setText(user.getTituloEquipado() != null ? user.getTituloEquipado() : "AVENTURERO NOVATO");
+        if (tvCityLocation != null) tvCityLocation.setText("📍 " + (user.getCiudad() != null ? user.getCiudad() : "Chillán, Chile"));
         if (tvProfileBio != null && user.getBiografia() != null) tvProfileBio.setText(user.getBiografia());
 
         if (tvFollowersCount != null) tvFollowersCount.setText(String.valueOf(user.getSeguidores()));
@@ -123,46 +235,11 @@ public class Perfil extends AppCompatActivity {
         if (tvLikesCount != null) tvLikesCount.setText(String.valueOf(user.getReputacionLikes()));
 
         if (pbXpBar != null && tvXpProgress != null) {
-            pbXpBar.setMax(user.getXpMeta());
+            int meta = user.getXpMeta() > 0 ? user.getXpMeta() : 1000;
+            pbXpBar.setMax(meta);
             pbXpBar.setProgress(user.getXpActual());
-            tvXpProgress.setText(user.getXpActual() + " / " + user.getXpMeta() + " XP");
+            tvXpProgress.setText(user.getXpActual() + " / " + meta + " XP");
         }
-    }
-
-    private void abrirSelectorTitulos() {
-        String[] titulosDisponibles = {
-                "AVENTURERO NOVATO",
-                "FRIKI",
-                "FIESTERO NOCTURNO",
-                "CONQUISTADOR DE FESTIVALES"
-        };
-
-        new AlertDialog.Builder(this)
-                .setTitle("Equipar Título")
-                .setItems(titulosDisponibles, (dialog, which) -> guardarTituloEnNube(titulosDisponibles[which]))
-                .show();
-    }
-
-    private void guardarTituloEnNube(String nuevoTitulo) {
-        String filtro = (!sessionManager.getUserId().isEmpty())
-                ? "eq." + sessionManager.getUserId()
-                : "eq." + sessionManager.getGamertag();
-
-        Map<String, Object> body = new HashMap<>();
-        body.put("titulo_equipado", nuevoTitulo);
-
-        api.actualizarPerfil(filtro, body).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    if (tvEquippedTitle != null) tvEquippedTitle.setText(nuevoTitulo);
-                    Toast.makeText(Perfil.this, "Título actualizado", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {}
-        });
     }
 
     private void cerrarSesion() {

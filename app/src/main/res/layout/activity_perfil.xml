@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_dark"
-    tools:context=".ui.Perfil">
-
-    <!-- Contenido principal -->
+    android:background="#0F172A">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -20,215 +15,194 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="40dp">
+            android:paddingBottom="30dp">
 
-            <!-- Banner -->
-
+            <!-- BANNER DE FONDO Y AVATAR -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="170dp">
+                android:layout_height="wrap_content">
 
+                <!-- BANNER DE PORTADA -->
                 <ImageView
                     android:id="@+id/ivProfileBanner"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/surface_card"
-                    android:scaleType="centerCrop" />
+                    android:layout_height="160dp"
+                    android:background="#1E293B"
+                    android:contentDescription="Banner de Perfil"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/categoria"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginBottom="52dp"
-                    android:background="@drawable/nav"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    tools:layout_editor_absoluteX="0dp" />
-
+                <!-- BOTÓN ATRÁS -->
                 <TextView
                     android:id="@+id/btnBackPerfil"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/input"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_margin="16dp"
+                    android:background="@drawable/badge"
                     android:gravity="center"
                     android:text="←"
-                    android:textColor="@color/text_white"
+                    android:textColor="#FFFFFF"
                     android:textSize="20sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/btnMoreOptions"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/input"
-                    android:gravity="center"
-                    android:text="···"
-                    android:textColor="@color/text_white"
-                    android:textSize="22sp"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- Datos del usuario -->
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="20dp">
-
-                <FrameLayout
-                    android:id="@+id/frameProfileAvatar"
-                    android:layout_width="86dp"
-                    android:layout_height="86dp"
-                    android:layout_marginTop="-43dp"
-                    android:background="@drawable/avatar"
+                <!-- FOTO DE PERFIL SUPERPUESTA A LA IZQUIERDA -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/ivProfileAvatar"
+                    android:layout_width="92dp"
+                    android:layout_height="92dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="114dp"
+                    android:background="#1E293B"
+                    android:contentDescription="Foto de Perfil"
                     android:padding="3dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_launcher"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                    app:strokeColor="#0F172A"
+                    app:strokeWidth="4dp" />
+
+                <!-- INFORMACIÓN PRINCIPAL DEL USUARIO -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="168dp"
+                    android:layout_marginEnd="20dp"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/ivProfileAvatar"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <ImageView
-                        android:id="@+id/ivProfileAvatar"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/electric_purple"
-                        android:scaleType="centerCrop" />
-
-                </FrameLayout>
-
-                <TextView
-                    android:id="@+id/tvProfileGamertag"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="6dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="TheGoat99"
-                    android:textColor="@color/text_white"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/frameProfileAvatar"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/tvProfileLocation"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:text="Chillán, Región de Ñuble"
-                    android:textColor="@color/text_gray"
-                    android:textSize="12sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/frameProfileAvatar"
-                    app:layout_constraintTop_toBottomOf="@id/tvProfileGamertag" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- Nivel y experiencia -->
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/vitrina"
-                android:orientation="vertical"
-                android:padding="14dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvProfileLevel"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:letterSpacing="0.05"
-                        android:text="NIVEL 27"
-                        android:textColor="@color/neon_cyan"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvProfileGamertag"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            tools:text="TheGoat99" />
+
+                        <TextView
+                            android:id="@+id/tvVerifiedBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="✔"
+                            android:textColor="#00F2FE"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvEquippedTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:background="@drawable/titulo"
-                        android:paddingHorizontal="10dp"
-                        android:paddingVertical="3dp"
-                        android:text="[RARO] CONQUISTADOR DE FESTIVALES"
-                        android:textColor="@color/trophy_gold"
-                        android:textSize="10sp"
-                        android:textStyle="bold" />
+                        android:layout_marginTop="2dp"
+                        android:textColor="#00F2FE"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        tools:text="CONQUISTADOR DE FESTIVALES" />
 
                     <TextView
-                        android:id="@+id/tvXpProgressText"
-                        android:layout_width="0dp"
+                        android:id="@+id/tvProfileLocation"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:text="4.200 / 5.000 XP"
-                        android:textColor="@color/text_gray"
-                        android:textSize="11sp" />
-
+                        android:layout_marginTop="2dp"
+                        android:textColor="#94A3B8"
+                        android:textSize="11sp"
+                        tools:text="📍 Chillán, Chile" />
                 </LinearLayout>
 
-                <ProgressBar
-                    android:id="@+id/pbProfileXp"
-                    style="?android:attr/progressBarStyleHorizontal"
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- BIOGRAFÍA -->
+            <TextView
+                android:id="@+id/tvProfileBio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="16dp"
+                android:lineSpacingExtra="3dp"
+                android:textColor="#CBD5E1"
+                android:textSize="13sp"
+                tools:text="Organizador independiente de eventos geek y gaming en Chillán. Apasionado por crear experiencias para la comunidad." />
+
+            <!-- BARRA DE NIVEL Y XP -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="#1E293B"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="6dp"
-                    android:layout_marginTop="10dp"
-                    android:max="5000"
-                    android:progress="4200"
-                    android:progressTint="@color/neon_cyan" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-            </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-            <!-- Estadísticas -->
+                        <TextView
+                            android:id="@+id/tvProfileLevel"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="#00F2FE"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            tools:text="NIVEL 27" />
 
+                        <TextView
+                            android:id="@+id/tvXpProgressText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#94A3B8"
+                            android:textSize="12sp"
+                            tools:text="1,200 / 2,500 XP" />
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/pbProfileXp"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_marginTop="10dp"
+                        android:progressDrawable="@drawable/categoria"
+                        tools:progress="60" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- ESTADÍSTICAS (SEGUIDORES, SEGUIDOS, LIKES) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="14dp"
-                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/categoria"
                 android:orientation="horizontal"
-                android:paddingVertical="8dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tvPostsCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="6"
-                        android:textColor="@color/text_white"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Galería"
-                        android:textColor="@color/text_gray"
-                        android:textSize="11sp" />
-
-                </LinearLayout>
+                android:paddingVertical="12dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -241,18 +215,17 @@
                         android:id="@+id/tvFollowersCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="342"
-                        android:textColor="@color/text_white"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="342" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Seguidores"
-                        android:textColor="@color/text_gray"
+                        android:textColor="#94A3B8"
                         android:textSize="11sp" />
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -266,18 +239,17 @@
                         android:id="@+id/tvFollowingCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="120"
-                        android:textColor="@color/text_white"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="120" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Seguidos"
-                        android:textColor="@color/text_gray"
+                        android:textColor="#94A3B8"
                         android:textSize="11sp" />
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -291,74 +263,33 @@
                         android:id="@+id/tvReputationLikesCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1.2K"
-                        android:textColor="@color/neon_cyan"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="1.2K" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Reputación"
-                        android:textColor="@color/text_gray"
+                        android:textColor="#94A3B8"
                         android:textSize="11sp" />
-
                 </LinearLayout>
-
             </LinearLayout>
 
-            <!-- Biografía -->
-
-            <TextView
-                android:id="@+id/tvProfileBio"
+            <!-- BOTÓN EDITAR PERFIL -->
+            <Button
+                android:id="@+id/btnQuickEdit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="8dp"
-                android:lineSpacingExtra="3dp"
-                android:text="Organizador independiente de eventos geek y gaming en Chillán. Buscando reclutar asistentes para las próximas exposiciones."
-                android:textColor="@color/text_gray"
-                android:textSize="12sp" />
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#1E293B"
+                android:text="Editar Perfil"
+                android:textColor="#00F2FE"
+                android:textStyle="bold" />
 
-            <!-- Botones -->
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="14dp"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnQuickEdit"
-                    android:layout_width="0dp"
-                    android:layout_height="42dp"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/input"
-                    android:text="Editar Perfil"
-                    android:textAllCaps="false"
-                    android:textColor="@color/text_white"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnGoOrganizerPanel"
-                    android:layout_width="0dp"
-                    android:layout_height="42dp"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/boton_gradiante"
-                    android:text="Panel Organizador"
-                    android:textAllCaps="false"
-                    android:textColor="@color/text_white"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <!-- Galería -->
-
+            <!-- SECCIÓN DE EXHIBICIÓN DE LOGROS -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -371,35 +302,29 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Exhibición de Eventos"
-                    android:textColor="@color/text_white"
-                    android:textSize="15sp"
+                    android:text="LOGROS DESBLOQUEADOS"
+                    android:textColor="#00F2FE"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/btnPostPhoto"
+                    android:id="@+id/tvAchievementsCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/categoria"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="5dp"
-                    android:text="+ Publicar Foto"
-                    android:textColor="@color/neon_cyan"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-
+                    android:textColor="#94A3B8"
+                    android:textSize="12sp"
+                    tools:text="3/6 Logros" />
             </LinearLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvProfileGallery"
+            <!-- CONTENEDOR DE TARJETAS DE LOGROS -->
+            <LinearLayout
+                android:id="@+id/containerLogros"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:nestedScrollingEnabled="false"
-                android:paddingHorizontal="18dp" />
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical" />
 
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,4 +1,4 @@
-package com.example.nexura.adapter;
+package com.example.nexura.ui.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

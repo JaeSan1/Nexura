@@ -7,37 +7,38 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nexura.R;
-import com.example.nexura.adapter.EventoFeedAdapter;
+import com.example.nexura.Viewmodel.EventoViewModel;
 import com.example.nexura.model.Evento;
-import com.example.nexura.network.SupabaseApi;
-import com.example.nexura.network.SupabaseCliente;
+import com.example.nexura.ui.adapter.EventoFeedAdapter;
+import com.example.nexura.util.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.Map;
 
 public class MisEventos extends AppCompatActivity {
 
     private RecyclerView rvMyEvents;
     private EventoFeedAdapter adapter;
     private List<Evento> listaEventos;
-    private SupabaseApi api;
 
     private TextView tabSaved, tabHistory;
+    private EventoViewModel eventoViewModel;
+    private SessionManager sessionManager;
+    private boolean mostrandoGuardados = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mis_eventos);
 
-        api = SupabaseCliente.getClient().create(SupabaseApi.class);
+        sessionManager = new SessionManager(this);
+        eventoViewModel = new ViewModelProvider(this).get(EventoViewModel.class);
 
         TextView btnBack = findViewById(R.id.btnBackMyEvents);
         tabSaved = findViewById(R.id.tabSavedEvents);
@@ -53,7 +54,7 @@ public class MisEventos extends AppCompatActivity {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        // Inicializar lista
+        // Inicializar RecyclerView y Adapter
         if (rvMyEvents != null) {
             rvMyEvents.setLayoutManager(new LinearLayoutManager(this));
             listaEventos = new ArrayList<>();
@@ -65,35 +66,42 @@ public class MisEventos extends AppCompatActivity {
             rvMyEvents.setAdapter(adapter);
         }
 
-        // Cargar eventos desde Supabase
-        cargarEventosUsuario(true);
-
         // Manejo de Pestañas
         if (tabSaved != null && tabHistory != null) {
             tabSaved.setOnClickListener(v -> {
+                mostrandoGuardados = true;
                 cambiarPestana(true);
-                cargarEventosUsuario(true);
+                consultarMisEventos();
             });
 
             tabHistory.setOnClickListener(v -> {
+                mostrandoGuardados = false;
                 cambiarPestana(false);
-                cargarEventosUsuario(false);
+                consultarMisEventos();
             });
         }
 
-        // Navbar Clics
+        // Observar la lista de asistencias/eventos desde el ViewModel
+        eventoViewModel.getMisEventos().observe(this, this::procesarRespuestaEventos);
+
+        // Cargar eventos guardados al iniciar
+        consultarMisEventos();
+
+        // NAVEGACIÓN NAVBAR INFERIOR
         if (navHome != null) {
             navHome.setOnClickListener(v -> {
                 startActivity(new Intent(MisEventos.this, Home.class));
                 finish();
             });
         }
+
         if (navExplore != null) {
             navExplore.setOnClickListener(v -> {
                 startActivity(new Intent(MisEventos.this, Explorar.class));
                 finish();
             });
         }
+
         if (navProfile != null) {
             navProfile.setOnClickListener(v -> {
                 startActivity(new Intent(MisEventos.this, Perfil.class));
@@ -102,47 +110,49 @@ public class MisEventos extends AppCompatActivity {
         }
     }
 
-    private void cargarEventosUsuario(boolean soloGuardados) {
-        api.obtenerEventos().enqueue(new Callback<List<Evento>>() {
-            @Override
-            public void onResponse(Call<List<Evento>> call, Response<List<Evento>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    listaEventos.clear();
-                    List<Evento> todos = response.body();
+    private void consultarMisEventos() {
+        String userId = sessionManager.getUserId();
+        if (userId.isEmpty()) {
+            Toast.makeText(this, "Sesión no válida", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-                    // Simulación de filtro por pestaña entre los eventos disponibles
-                    if (soloGuardados) {
-                        // Muestra los primeros eventos guardados
-                        for (int i = 0; i < Math.min(todos.size(), 2); i++) {
-                            listaEventos.add(todos.get(i));
-                        }
-                    } else {
-                        // Muestra el resto como historial
-                        if (todos.size() > 2) {
-                            for (int i = 2; i < todos.size(); i++) {
-                                listaEventos.add(todos.get(i));
-                            }
-                        } else {
-                            listaEventos.addAll(todos);
-                        }
-                    }
+        // Si mostrandoGuardados es true -> esHistorial = false (Guardados)
+        // Si mostrandoGuardados es false -> esHistorial = true (Asistidos)
+        eventoViewModel.cargarMisEventos(userId, !mostrandoGuardados);
+    }
 
-                    if (adapter != null) {
-                        adapter.notifyDataSetChanged();
-                    }
-                } else {
-                    Toast.makeText(MisEventos.this, "No se pudieron obtener eventos", Toast.LENGTH_SHORT).show();
+    private void procesarRespuestaEventos(List<Map<String, Object>> listaAsistencias) {
+        listaEventos.clear();
+
+        if (listaAsistencias != null && !listaAsistencias.isEmpty()) {
+            for (Map<String, Object> fila : listaAsistencias) {
+                // Mapear la respuesta anidada 'eventos(*)' de Supabase a objetos Evento
+                Object objEvento = fila.get("eventos");
+                if (objEvento instanceof Map) {
+                    Map<String, Object> mapEv = (Map<String, Object>) objEvento;
+                    Evento e = new Evento();
+
+                    if (mapEv.get("id") != null) e.setId(mapEv.get("id").toString());
+                    if (mapEv.get("titulo") != null) e.setTitulo(mapEv.get("titulo").toString());
+                    if (mapEv.get("descripcion") != null) e.setDescripcion(mapEv.get("descripcion").toString());
+                    if (mapEv.get("ubicacion") != null) e.setUbicacion(mapEv.get("ubicacion").toString());
+                    if (mapEv.get("imagen_url") != null) e.setImagenUrl(mapEv.get("imagen_url").toString());
+                    if (mapEv.get("categoria") != null) e.setCategoria(mapEv.get("categoria").toString());
+
+                    listaEventos.add(e);
                 }
             }
+        }
 
-            @Override
-            public void onFailure(Call<List<Evento>> call, Throwable t) {
-                Toast.makeText(MisEventos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private void cambiarPestana(boolean esGuardados) {
+        if (tabSaved == null || tabHistory == null) return;
+
         if (esGuardados) {
             tabSaved.setBackgroundResource(R.drawable.categoria);
             tabSaved.setTextColor(ContextCompat.getColor(this, R.color.neon_cyan));

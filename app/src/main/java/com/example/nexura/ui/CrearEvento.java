@@ -1,5 +1,6 @@
 package com.example.nexura.ui;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -21,7 +22,14 @@ import com.example.nexura.R;
 import com.example.nexura.model.Evento;
 import com.example.nexura.network.SupabaseApi;
 import com.example.nexura.network.SupabaseCliente;
+import com.example.nexura.util.SessionManager;
 
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,23 +41,18 @@ public class CrearEvento extends AppCompatActivity {
     private TextView tvGalleryCount;
     private TextView tvCalculatedXp;
 
-    private int fotosGaleriaSeleccionadas = 0;
+    private Uri uriImagenSeleccionada = null;
     private int xpCalculada = 250;
+    private SupabaseApi api;
+    private SessionManager sessionManager;
 
     private final ActivityResultLauncher<String> selectCoverLauncher =
             registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
                 if (uri != null) {
+                    uriImagenSeleccionada = uri;
                     ivEventCover.setImageURI(uri);
                     layoutPlaceholderCover.setVisibility(View.GONE);
                     Toast.makeText(this, "Portada cargada", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-    private final ActivityResultLauncher<String> selectGalleryLauncher =
-            registerForActivityResult(new ActivityResultContracts.GetMultipleContents(), uris -> {
-                if (uris != null && !uris.isEmpty()) {
-                    fotosGaleriaSeleccionadas = uris.size();
-                    tvGalleryCount.setText(fotosGaleriaSeleccionadas + " foto(s) seleccionada(s)");
                 }
             });
 
@@ -58,13 +61,13 @@ public class CrearEvento extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crear_evento);
 
+        sessionManager = new SessionManager(this);
+        api = SupabaseCliente.getClient().create(SupabaseApi.class);
+
         TextView btnBackCreate = findViewById(R.id.btnBackCreate);
         CardView cardSelectCover = findViewById(R.id.cardSelectCover);
         ivEventCover = findViewById(R.id.ivEventCover);
         layoutPlaceholderCover = findViewById(R.id.layoutPlaceholderCover);
-
-        CardView btnAddGalleryPhoto = findViewById(R.id.btnAddGalleryPhoto);
-        tvGalleryCount = findViewById(R.id.tvGalleryCount);
 
         EditText etEventTitle = findViewById(R.id.etEventTitle);
         EditText etEventCategory = findViewById(R.id.etEventCategory);
@@ -74,17 +77,11 @@ public class CrearEvento extends AppCompatActivity {
 
         Button btnPublishEvent = findViewById(R.id.btnPublishEvent);
 
-        if (btnBackCreate != null) {
-            btnBackCreate.setOnClickListener(v -> finish());
-        }
-
+        if (btnBackCreate != null) btnBackCreate.setOnClickListener(v -> finish());
         cardSelectCover.setOnClickListener(v -> selectCoverLauncher.launch("image/*"));
-        btnAddGalleryPhoto.setOnClickListener(v -> selectGalleryLauncher.launch("image/*"));
 
         TextWatcher xpWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int count, int after) {
                 calcularXpDinamica(
@@ -92,9 +89,7 @@ public class CrearEvento extends AppCompatActivity {
                         etEventDuration.getText().toString().trim()
                 );
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
+            @Override public void afterTextChanged(Editable s) {}
         };
 
         etEventCategory.addTextChangedListener(xpWatcher);
@@ -117,57 +112,86 @@ public class CrearEvento extends AppCompatActivity {
                 return;
             }
 
-            // Deshabilitar botón
             btnPublishEvent.setEnabled(false);
 
-            Evento nuevoEvento = new Evento();
-            nuevoEvento.setTitulo(title);
-            nuevoEvento.setUbicacion(location);
-            nuevoEvento.setCiudad("Chillán");
-            nuevoEvento.setCategoria(category.isEmpty() ? "Festival" : category);
-            nuevoEvento.setOrganizador("Organizador Nexura");
-            nuevoEvento.setDescripcion("Evento comunitario publicado desde la app Nexura.");
-            nuevoEvento.setFecha("Próximamente");
-            nuevoEvento.setImagenUrl("");
-            nuevoEvento.setXpRecompensa(xpCalculada);
-            nuevoEvento.setLatitud(-36.6067);
-            nuevoEvento.setLongitud(-72.1034);
+            if (uriImagenSeleccionada != null) {
+                subirImagenYPublicar(title, location, category, btnPublishEvent);
+            } else {
+                publicarEventoBase(title, location, category, "", btnPublishEvent);
+            }
+        });
+    }
 
-            // 2. Llamada HTTP a Supabase
-            SupabaseApi api = SupabaseCliente.getClient().create(SupabaseApi.class);
-            api.crearEvento(nuevoEvento).enqueue(new Callback<Void>() {
+    private void subirImagenYPublicar(String title, String location, String category, Button btn) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(uriImagenSeleccionada);
+            byte[] bytes = new byte[inputStream.available()];
+            inputStream.read(bytes);
+            inputStream.close();
+
+            String nombreArchivo = "evento_" + System.currentTimeMillis() + ".jpg";
+            RequestBody body = RequestBody.create(MediaType.parse("image/jpeg"), bytes);
+
+            api.subirImagenBucket("image/jpeg", nombreArchivo, body).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
-                    btnPublishEvent.setEnabled(true);
-                    if (response.isSuccessful()) {
-                        new AlertDialog.Builder(CrearEvento.this)
-                                .setTitle("¡Evento Publicado en la Nube!")
-                                .setMessage("'" + title + "' ha sido registrado exitosamente en Supabase con +" + xpCalculada + " XP.")
-                                .setPositiveButton("Aceptar", (dialog, which) -> finish())
-                                .setCancelable(false)
-                                .show();
-                    } else {
-                        Toast.makeText(CrearEvento.this, "Error del servidor: código " + response.code(), Toast.LENGTH_LONG).show();
-                    }
+                    String urlPublica = "https://wfkzbqhsacitksuwqlei.supabase.co/storage/v1/object/public/eventos-imagenes/" + nombreArchivo;
+                    publicarEventoBase(title, location, category, urlPublica, btn);
                 }
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
-                    btnPublishEvent.setEnabled(true);
-                    Toast.makeText(CrearEvento.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                    publicarEventoBase(title, location, category, "", btn);
                 }
             });
+
+        } catch (Exception e) {
+            publicarEventoBase(title, location, category, "", btn);
+        }
+    }
+
+    private void publicarEventoBase(String title, String location, String category, String urlImagen, Button btn) {
+        Evento nuevoEvento = new Evento();
+        nuevoEvento.setTitulo(title);
+        nuevoEvento.setUbicacion(location);
+        nuevoEvento.setCiudad("Chillán");
+        nuevoEvento.setCategoria(category.isEmpty() ? "Festival" : category);
+        nuevoEvento.setOrganizador(sessionManager.getGamertag());
+        nuevoEvento.setDescripcion("Evento comunitario creado por " + sessionManager.getGamertag());
+        nuevoEvento.setFecha("Próximamente");
+        nuevoEvento.setImagenUrl(urlImagen);
+        nuevoEvento.setXpRecompensa(xpCalculada);
+        nuevoEvento.setLatitud(-36.6067);
+        nuevoEvento.setLongitud(-72.1034);
+
+        api.crearEvento(nuevoEvento).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                btn.setEnabled(true);
+                if (response.isSuccessful()) {
+                    new AlertDialog.Builder(CrearEvento.this)
+                            .setTitle("¡Evento Publicado!")
+                            .setMessage("'" + title + "' fue registrado correctamente. +" + xpCalculada + " XP para los asistentes.")
+                            .setPositiveButton("Aceptar", (dialog, which) -> finish())
+                            .setCancelable(false)
+                            .show();
+                } else {
+                    Toast.makeText(CrearEvento.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                btn.setEnabled(true);
+                Toast.makeText(CrearEvento.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
     private void calcularXpDinamica(String categoria, String strHoras) {
         int base = 200;
-
-        if (categoria.toLowerCase().contains("festival") || categoria.toLowerCase().contains("concierto")) {
-            base += 200;
-        } else if (categoria.toLowerCase().contains("feria") || categoria.toLowerCase().contains("expo")) {
-            base += 100;
-        }
+        if (categoria.toLowerCase().contains("festival") || categoria.toLowerCase().contains("concierto")) base += 200;
+        else if (categoria.toLowerCase().contains("feria") || categoria.toLowerCase().contains("expo")) base += 100;
 
         int horas = 1;
         if (!strHoras.isEmpty()) {

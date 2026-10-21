@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#1E293B"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- Indicador superior de arrastre -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:background="#334155" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="OPCIONES DE CUENTA"
+        android:textColor="#00F2FE"
+        android:textSize="11sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/optionEditProfile"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:paddingStart="8dp"
+        android:text="✏️   Editar Información del Perfil"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#334155" />
+
+    <TextView
+        android:id="@+id/optionLogout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:paddingStart="8dp"
+        android:text="🚪   Cerrar Sesión"
+        android:textColor="#FF5555"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#334155" />
+
+    <!-- Opción de borrado de cuenta -->
+    <TextView
+        android:id="@+id/optionDeleteAccount"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:paddingStart="8dp"
+        android:text="⚠️   Eliminar Mi Cuenta"
+        android:textColor="#EF4444"
+        android:textSize="14sp" />
+</LinearLayout>

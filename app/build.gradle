@@ -14,6 +14,16 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // Leer variables de local.properties
+        Properties properties = new Properties()
+        if (project.rootProject.file('local.properties').exists()) {
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        }
+
+        // Se agregan comillas dobles explícitas ("\"...\"") para que Java las reconozca como String
+        buildConfigField "String", "SUPABASE_URL", "\"${properties.getProperty('SUPABASE_URL', '')}\""
+        buildConfigField "String", "SUPABASE_ANON_KEY", "\"${properties.getProperty('SUPABASE_ANON_KEY', '')}\""
     }
 
     buildTypes {
@@ -22,9 +32,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 }
 
@@ -45,4 +60,5 @@ dependencies {
 
     // OpenStreetMap para Android (osmdroid)
     implementation 'org.osmdroid:osmdroid-android:6.1.18'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 }

@@ -47,12 +47,13 @@ public class Evento implements Serializable {
     @SerializedName("DistanciaKm")
     private double distanciaKm;
 
+    @SerializedName("creador_verificado")
+    private boolean creadorVerificado;
 
-
-    // Constructor vacío necesario para Retrofit/Gson
+    // Constructor vacío
     public Evento() {}
 
-    // Getters y Setters...
+    // Getters y Setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -95,5 +96,6 @@ public class Evento implements Serializable {
     public double getDistanciaKm() { return distanciaKm; }
     public void setDistanciaKm(double distanciaKm) { this.distanciaKm = distanciaKm; }
 
-
+    public boolean isCreadorVerificado() { return creadorVerificado; }
+    public void setCreadorVerificado(boolean creadorVerificado) { this.creadorVerificado = creadorVerificado; }
 }

@@ -1,114 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_dark"
-    tools:context=".ui.Home">
-
-    <!-- HEADER CON LOGO, BOTÓN DE NOTIFICACIONES Y AVATAR -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/headerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="20dp"
-        android:paddingTop="24dp"
-        android:paddingBottom="12dp"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/tvHomeLogo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:letterSpacing="0.1"
-            android:text="NEXURA"
-            android:textColor="@color/text_white"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- BOTÓN NOTIFICACIONES (INDICADOR LIMPIO) -->
-        <FrameLayout
-            android:id="@+id/btnNotificationsHeader"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/input"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/ivAvatarHeader"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="AVISOS"
-                android:textColor="@color/text_white"
-                android:textSize="9sp"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="6dp"
-                android:layout_height="6dp"
-                android:layout_gravity="top|end"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="6dp"
-                android:background="@drawable/badge" />
-        </FrameLayout>
-
-        <ImageView
-            android:id="@+id/ivAvatarHeader"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:background="@drawable/categoria"
-            android:padding="2dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    android:background="#0F172A">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        app:layout_constraintBottom_toTopOf="@id/bottomNav"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout">
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomNavigation"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="20dp"
-            android:paddingBottom="80dp">
+            android:padding="20dp">
 
+            <!-- HEADER / LOGO Y ICONOS DE NOTIFICACIÓN Y PERFIL -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="NEXURA"
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- Botón Avisos / Notificaciones -->
+                    <ImageButton
+                        android:id="@+id/btnAvisosHeader"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/badge"
+                        android:contentDescription="Avisos"
+                        android:padding="8dp"
+                        android:src="@android:drawable/ic_popup_reminder"
+                        app:tint="#00F2FE" />
+
+                    <!-- Avatar superior que abre Perfil -->
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/ivAvatarHeader"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/ic_launcher"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                        app:strokeColor="#00F2FE"
+                        app:strokeWidth="2dp" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <!-- BUSCADOR PRINCIPAL -->
             <EditText
                 android:id="@+id/etSearch"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/input"
+                android:layout_height="50dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/categoria"
                 android:hint="Buscar eventos, artistas o recintos..."
+                android:imeOptions="actionSearch"
+                android:inputType="text"
                 android:paddingHorizontal="16dp"
-                android:textColor="@color/text_white"
-                android:textColorHint="@color/text_hint"
-                android:textSize="13sp" />
+                android:textColor="#FFFFFF"
+                android:textColorHint="#64748B"
+                android:textSize="14sp" />
 
+            <!-- CATEGORÍAS (SELECCIONABLES) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginBottom="12dp"
                 android:text="Categorías"
-                android:textColor="@color/text_white"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="28dp"
                 android:scrollbars="none">
 
                 <LinearLayout
@@ -117,57 +103,56 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/chipFestivales"
+                        android:id="@+id/btnCategoryFestivales"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:background="@drawable/categoria"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/badge"
                         android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
+                        android:paddingVertical="10dp"
                         android:text="Festivales"
-                        android:textColor="@color/neon_cyan"
-                        android:textSize="12sp"
+                        android:textColor="#00F2FE"
+                        android:textSize="13sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/chipConferencias"
+                        android:id="@+id/btnCategoryConferencias"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:background="@drawable/input"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/categoria"
                         android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
+                        android:paddingVertical="10dp"
                         android:text="Conferencias"
-                        android:textColor="@color/text_gray"
-                        android:textSize="12sp" />
+                        android:textColor="#94A3B8"
+                        android:textSize="13sp" />
 
                     <TextView
-                        android:id="@+id/chipDeportes"
+                        android:id="@+id/btnCategoryDeportes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/input"
+                        android:background="@drawable/categoria"
                         android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
+                        android:paddingVertical="10dp"
                         android:text="Deportes"
-                        android:textColor="@color/text_gray"
-                        android:textSize="12sp" />
+                        android:textColor="#94A3B8"
+                        android:textSize="13sp" />
                 </LinearLayout>
             </HorizontalScrollView>
 
+            <!-- EVENTOS DESTACADOS -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginBottom="14dp"
                 android:text="Eventos Destacados"
-                android:textColor="@color/text_white"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:clipToPadding="false"
                 android:scrollbars="none">
 
                 <LinearLayout
@@ -175,239 +160,176 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <!-- TARJETA 1 -->
+                    <!-- Tarjeta 1 -->
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardFeaturedEvent1"
-                        android:layout_width="280dp"
-                        android:layout_height="200dp"
-                        android:layout_marginEnd="16dp"
-                        app:cardBackgroundColor="@color/surface_card"
-                        app:cardCornerRadius="20dp"
-                        app:cardElevation="4dp">
+                        android:layout_width="220dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="14dp"
+                        app:cardBackgroundColor="#1E293B"
+                        app:cardCornerRadius="16dp">
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:padding="16dp">
+                            android:padding="14dp">
 
                             <TextView
                                 android:id="@+id/tvXpEvent1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
                                 android:background="@drawable/badge"
-                                android:paddingHorizontal="10dp"
+                                android:paddingHorizontal="8dp"
                                 android:paddingVertical="4dp"
                                 android:text="+450 XP"
-                                android:textColor="@color/trophy_gold"
-                                android:textSize="11sp"
-                                android:textStyle="bold"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                android:textColor="#00F2FE"
+                                android:textSize="10sp"
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/tvTitleEvent1"
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Fiesta de la Longaniza"
-                                android:textColor="@color/text_white"
-                                android:textSize="18sp"
-                                android:textStyle="bold"
-                                app:layout_constraintBottom_toTopOf="@id/tvLoc1"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent" />
+                                android:layout_above="@id/tvLocationEvent1"
+                                android:layout_marginBottom="6dp"
+                                android:ellipsize="end"
+                                android:maxLines="2"
+                                android:text="Cargando..."
+                                android:textColor="#FFFFFF"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tvLoc1"
-                                android:layout_width="wrap_content"
+                                android:id="@+id/tvLocationEvent1"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="4dp"
-                                android:text="A 1.2 km • Plaza Chillán"
-                                android:textColor="@color/neon_cyan"
-                                android:textSize="12sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
+                                android:layout_alignParentBottom="true"
+                                android:text="Buscando ubicación..."
+                                android:textColor="#00F2FE"
+                                android:textSize="11sp" />
+                        </RelativeLayout>
                     </androidx.cardview.widget.CardView>
 
-                    <!-- TARJETA 2 -->
+                    <!-- Tarjeta 2 -->
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardFeaturedEvent2"
-                        android:layout_width="280dp"
-                        android:layout_height="200dp"
-                        android:layout_marginEnd="16dp"
-                        app:cardBackgroundColor="@color/surface_card"
-                        app:cardCornerRadius="20dp"
-                        app:cardElevation="4dp">
+                        android:layout_width="220dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="14dp"
+                        app:cardBackgroundColor="#1E293B"
+                        app:cardCornerRadius="16dp">
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:padding="16dp">
+                            android:padding="14dp">
 
                             <TextView
                                 android:id="@+id/tvXpEvent2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
                                 android:background="@drawable/badge"
-                                android:paddingHorizontal="10dp"
+                                android:paddingHorizontal="8dp"
                                 android:paddingVertical="4dp"
                                 android:text="+600 XP"
-                                android:textColor="@color/trophy_gold"
-                                android:textSize="11sp"
-                                android:textStyle="bold"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                android:textColor="#00F2FE"
+                                android:textSize="10sp"
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/tvTitleEvent2"
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Neon Beats Festival"
-                                android:textColor="@color/text_white"
-                                android:textSize="18sp"
-                                android:textStyle="bold"
-                                app:layout_constraintBottom_toTopOf="@id/tvLoc2"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent" />
+                                android:layout_above="@id/tvLocationEvent2"
+                                android:layout_marginBottom="6dp"
+                                android:ellipsize="end"
+                                android:maxLines="2"
+                                android:text="Cargando..."
+                                android:textColor="#FFFFFF"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tvLoc2"
-                                android:layout_width="wrap_content"
+                                android:id="@+id/tvLocationEvent2"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="4dp"
-                                android:text="A 3.5 km • Parque Central"
-                                android:textColor="@color/neon_cyan"
-                                android:textSize="12sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
+                                android:layout_alignParentBottom="true"
+                                android:text="Buscando ubicación..."
+                                android:textColor="#00F2FE"
+                                android:textSize="11sp" />
+                        </RelativeLayout>
                     </androidx.cardview.widget.CardView>
-
-                    <!-- TARJETA 3 -->
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/cardFeaturedEvent3"
-                        android:layout_width="280dp"
-                        android:layout_height="200dp"
-                        android:layout_marginEnd="8dp"
-                        app:cardBackgroundColor="@color/surface_card"
-                        app:cardCornerRadius="20dp"
-                        app:cardElevation="4dp">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="16dp">
-
-                            <TextView
-                                android:id="@+id/tvXpEvent3"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/badge"
-                                android:paddingHorizontal="10dp"
-                                android:paddingVertical="4dp"
-                                android:text="+800 XP"
-                                android:textColor="@color/trophy_gold"
-                                android:textSize="11sp"
-                                android:textStyle="bold"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <TextView
-                                android:id="@+id/tvTitleEvent3"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:text="Nexura Gaming Fest"
-                                android:textColor="@color/text_white"
-                                android:textSize="18sp"
-                                android:textStyle="bold"
-                                app:layout_constraintBottom_toTopOf="@id/tvLoc3"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent" />
-
-                            <TextView
-                                android:id="@+id/tvLoc3"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="4dp"
-                                android:text="A 0.8 km • Polideportivo"
-                                android:textColor="@color/neon_cyan"
-                                android:textSize="12sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </androidx.cardview.widget.CardView>
-
                 </LinearLayout>
             </HorizontalScrollView>
 
         </LinearLayout>
     </ScrollView>
 
-    <!-- BOTÓN (+) CREAR EVENTO -->
-    <androidx.appcompat.widget.AppCompatButton
+    <!-- Botón Flotante para Crear Evento -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnCreateEvent"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/boton_gradiante"
-        android:text="+"
-        android:textColor="@color/text_white"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/bottomNav"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottomNavigation"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:contentDescription="Crear Evento"
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="#00F2FE"
+        app:tint="#0F172A" />
 
-    <!-- NAVBAR -->
+    <!-- NAVEGACIÓN INFERIOR -->
     <LinearLayout
-        android:id="@+id/bottomNav"
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:background="@drawable/nav"
-        android:gravity="center"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="#1E293B"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:weightSum="4">
 
         <TextView
-            android:id="@+id/navHome"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Inicio"
-            android:textColor="@color/neon_cyan"
+            android:textColor="#00F2FE"
             android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/navExplore"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Explorar"
-            android:textColor="@color/text_gray"
+            android:textColor="#94A3B8"
             android:textSize="12sp" />
 
         <TextView
             android:id="@+id/navMyEvents"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Mis Eventos"
-            android:textColor="@color/text_gray"
+            android:textColor="#94A3B8"
             android:textSize="12sp" />
 
         <TextView
             android:id="@+id/navProfile"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Perfil"
-            android:textColor="@color/text_gray"
+            android:textColor="#94A3B8"
             android:textSize="12sp" />
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

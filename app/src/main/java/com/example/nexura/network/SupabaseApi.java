@@ -9,12 +9,15 @@ import com.example.nexura.model.Usuario;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface SupabaseApi {
@@ -35,6 +38,14 @@ public interface SupabaseApi {
     @POST("eventos")
     Call<Void> crearEvento(@Body Evento evento);
 
+    // SUBIDA DE ARCHIVOS A SUPABASE STORAGE
+    @POST("storage/v1/object/eventos-imagenes/{nombre_archivo}")
+    Call<Void> subirImagenBucket(
+            @Header("Content-Type") String contentType,
+            @Path("nombre_archivo") String nombreArchivo,
+            @Body RequestBody bytesImagen
+    );
+
     // AUTENTICACIÓN Y PERFIL
     @POST("perfiles")
     Call<Void> registrarUsuario(@Body Usuario nuevoUsuario);
@@ -53,6 +64,22 @@ public interface SupabaseApi {
             @Query("id") String filtroId,
             @Body Map<String, Object> camposActualizados
     );
+
+    @PATCH("perfiles")
+    Call<Void> actualizarXpUsuario(
+            @Query("id") String filtroId,
+            @Body Map<String, Object> camposActualizados
+    );
+
+    @PATCH("perfiles")
+    Call<Void> actualizarSeguidoresUsuario(
+            @Query("id") String filtroId,
+            @Body Map<String, Object> camposActualizados
+    );
+
+    // ELIMINACIÓN DE PERFIL
+    @DELETE("perfiles")
+    Call<Void> eliminarUsuario(@Query("id") String filtroId);
 
     // ASISTENCIAS Y FAVORITOS (MIS EVENTOS)
     @POST("asistencias")
