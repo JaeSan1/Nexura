@@ -25,7 +25,7 @@ public class Home extends AppCompatActivity {
     private SessionManager sessionManager;
     private EventoViewModel eventoViewModel;
 
-    // DECLARACIÓN DE VARIABLES
+    // Componentes de la UI
     private ImageButton btnAvisosHeader;
     private ShapeableImageView ivAvatarHeader;
     private EditText etSearch;
@@ -48,26 +48,22 @@ public class Home extends AppCompatActivity {
         sessionManager = new SessionManager(this);
         eventoViewModel = new ViewModelProvider(this).get(EventoViewModel.class);
 
-        // 1. Vincular Header
+        // 1. Header
         btnAvisosHeader = findViewById(R.id.btnAvisosHeader);
         ivAvatarHeader = findViewById(R.id.ivAvatarHeader);
 
         if (btnAvisosHeader != null) {
-            btnAvisosHeader.setOnClickListener(v -> {
-                startActivity(new Intent(Home.this, Notificaciones.class));
-            });
+            btnAvisosHeader.setOnClickListener(v -> startActivity(new Intent(Home.this, Notificaciones.class)));
         }
 
         if (ivAvatarHeader != null) {
-            ivAvatarHeader.setOnClickListener(v -> {
-                startActivity(new Intent(Home.this, Perfil.class));
-            });
+            ivAvatarHeader.setOnClickListener(v -> startActivity(new Intent(Home.this, Perfil.class)));
         }
 
-        // 2. Buscador Principal
+        // 2. Buscador
         etSearch = findViewById(R.id.etSearch);
 
-        // 3. Vincular Categorías
+        // 3. Categorías
         btnCategoryFestivales = findViewById(R.id.btnCategoryFestivales);
         btnCategoryConferencias = findViewById(R.id.btnCategoryConferencias);
         btnCategoryDeportes = findViewById(R.id.btnCategoryDeportes);
@@ -75,7 +71,7 @@ public class Home extends AppCompatActivity {
         categoriaSeleccionadaActual = btnCategoryFestivales;
         configurarFiltrosCategorias();
 
-        // 4. Vincular Tarjetas Destacadas
+        // 4. Tarjetas Destacadas
         cardFeaturedEvent1 = findViewById(R.id.cardFeaturedEvent1);
         tvTitleEvent1 = findViewById(R.id.tvTitleEvent1);
         tvLocationEvent1 = findViewById(R.id.tvLocationEvent1);
@@ -86,12 +82,10 @@ public class Home extends AppCompatActivity {
         tvLocationEvent2 = findViewById(R.id.tvLocationEvent2);
         tvXpEvent2 = findViewById(R.id.tvXpEvent2);
 
-        // 5. Botón Flotante para Crear Evento
+        // 5. Botón Flotante Crear Evento
         btnCreateEvent = findViewById(R.id.btnCreateEvent);
         if (btnCreateEvent != null) {
-            btnCreateEvent.setOnClickListener(v -> {
-                startActivity(new Intent(Home.this, CrearEvento.class));
-            });
+            btnCreateEvent.setOnClickListener(v -> startActivity(new Intent(Home.this, CrearEvento.class)));
         }
 
         // 6. Navegación Inferior
@@ -100,10 +94,16 @@ public class Home extends AppCompatActivity {
         navProfile = findViewById(R.id.navProfile);
         configurarNavegacionInferior();
 
-        // 7. Suscribirse a LiveData para actualizar la UI con datos de Supabase
+        // 7. Suscribirse a los LiveData del ViewModel
         eventoViewModel.getEventos().observe(this, this::actualizarEventosDestacados);
 
-        // Cargar eventos desde el ViewModel
+        eventoViewModel.getError().observe(this, error -> {
+            if (error != null && !error.isEmpty()) {
+                Toast.makeText(Home.this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Cargar eventos desde Supabase mediante el ViewModel
         eventoViewModel.cargarEventos();
     }
 
@@ -129,6 +129,7 @@ public class Home extends AppCompatActivity {
         categoriaPulsada.setTextColor(ContextCompat.getColor(this, R.color.neon_cyan));
         categoriaSeleccionadaActual = categoriaPulsada;
 
+        // Le pedimos al ViewModel que filtre la lista
         eventoViewModel.filtrarPorCategoria(nombreCategoria);
     }
 
@@ -139,7 +140,6 @@ public class Home extends AppCompatActivity {
             Evento e1 = lista.get(0);
             if (tvTitleEvent1 != null) tvTitleEvent1.setText(e1.getTitulo());
             if (tvLocationEvent1 != null) tvLocationEvent1.setText(e1.getUbicacion());
-
             cardFeaturedEvent1.setOnClickListener(v -> abrirDetalleEvento(e1));
         }
 
@@ -147,7 +147,6 @@ public class Home extends AppCompatActivity {
             Evento e2 = lista.get(1);
             if (tvTitleEvent2 != null) tvTitleEvent2.setText(e2.getTitulo());
             if (tvLocationEvent2 != null) tvLocationEvent2.setText(e2.getUbicacion());
-
             cardFeaturedEvent2.setOnClickListener(v -> abrirDetalleEvento(e2));
         }
     }

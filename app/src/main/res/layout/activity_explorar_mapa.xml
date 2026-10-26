@@ -6,72 +6,89 @@
     android:layout_height="match_parent"
     android:background="#0F172A">
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottomNavigation"
-        android:orientation="vertical">
+        android:fillViewport="true">
 
-        <!-- PREVISUALIZACIÓN DEL MAPA INTERACTIVO -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardOpenFullMap"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_margin="16dp"
-            app:cardBackgroundColor="#1E293B"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <org.osmdroid.views.MapView
-                    android:id="@+id/mapPreviewView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <!-- Badge Flotante para expandir Mapa Completo -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_margin="12dp"
-                    android:background="@drawable/badge"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
-                    android:text="🗺 Ver Mapa Completo"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- TÍTULO DEL FEED -->
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="8dp"
-            android:text="EXPLORAR EVENTOS CERCA DE TI"
-            android:textColor="#00F2FE"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:padding="20dp">
 
-        <!-- RECYCLERVIEW DEL FEED DE EVENTOS -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvFeedEventos"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingHorizontal="16dp"
-            android:paddingBottom="16dp" />
+            <!-- TÍTULO DE LA PANTALLA -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Explorar Mapa &amp; Eventos"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-    </LinearLayout>
+            <!-- SECCIÓN DEL MAPA (VISTA PREVIA) -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardMapContainer"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="#1E293B"
+                app:cardCornerRadius="16dp">
 
-    <!-- NAVEGACIÓN INFERIOR -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <!-- OSMDroid Vista Previa del Mapa -->
+                    <org.osmdroid.views.MapView
+                        android:id="@+id/mapPreview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <!-- Botón Flotante para Abrir Mapa Completo -->
+                    <TextView
+                        android:id="@+id/btnVerMapaCompleto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_margin="12dp"
+                        android:background="@drawable/badge"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="8dp"
+                        android:text="Ver Mapa Completo ↗"
+                        android:textColor="#00F2FE"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- TÍTULO SECCIÓN EVENTOS CERCANOS -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:text="Eventos Cercanos"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- RECYCLERVIEW DE EVENTOS -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvExplorarEventos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_evento_feed" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- BARRA DE NAVEGACIÓN INFERIOR -->
     <LinearLayout
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
@@ -79,12 +96,13 @@
         android:layout_alignParentBottom="true"
         android:background="#1E293B"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="4">
 
         <TextView
             android:id="@+id/navHome"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Inicio"
@@ -93,7 +111,7 @@
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Explorar"
@@ -104,7 +122,7 @@
         <TextView
             android:id="@+id/navMyEvents"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Mis Eventos"
@@ -114,15 +132,12 @@
         <TextView
             android:id="@+id/navProfile"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Perfil"
             android:textColor="#94A3B8"
             android:textSize="12sp" />
     </LinearLayout>
-
-    <!-- SUPERPOSICIÓN DE CARGA (OVERLAY) -->
-    <include layout="@layout/activity_loading_overlay" />
 
 </RelativeLayout>

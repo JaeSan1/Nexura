@@ -43,7 +43,7 @@ public class EventoViewModel extends ViewModel {
         return errorLiveData;
     }
 
-    // Cargar todos los eventos desde Supabase mediante el Repositorio
+    // Cargar todos los eventos desde Supabase
     public void cargarEventos() {
         cargandoLiveData.setValue(true);
         eventoRepository.obtenerTodosLosEventos(new EventoRepository.ApiCallback<List<Evento>>() {
@@ -64,7 +64,7 @@ public class EventoViewModel extends ViewModel {
         });
     }
 
-    // Filtrar eventos por categoría en el Home de forma local
+    // Filtrar localmente por categoría
     public void filtrarPorCategoria(String categoria) {
         if (categoria == null || categoria.equalsIgnoreCase("Todos")) {
             eventosFiltradosLiveData.setValue(listaEventosCache);
@@ -80,7 +80,7 @@ public class EventoViewModel extends ViewModel {
         eventosFiltradosLiveData.setValue(filtrada);
     }
 
-    // Cargar Mis Eventos (Guardados vs Historial Asistidos) desde Supabase
+    // Cargar Mis Eventos (Guardados vs Historial)
     public void cargarMisEventos(String userId, boolean esHistorial) {
         cargandoLiveData.setValue(true);
         eventoRepository.obtenerMisEventos(userId, esHistorial, new EventoRepository.ApiCallback<List<Map<String, Object>>>() {
