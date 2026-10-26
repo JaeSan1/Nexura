@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.Nexura" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <!-- Base application theme (Cambiado a NoActionBar para ocultar la barra superior por defecto) -->
+    <style name="Theme.Nexura" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -9,8 +9,17 @@
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        <!-- Status bar color (Oscurecida para combinar con el fondo de Nexura) -->
+        <item name="android:statusBarColor">#0F172A</item>
+    </style>
+
+    <!-- TEMA PARA EL SPLASH SCREEN DE NEXURA -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!-- Fondo oscuro de la pantalla de bienvenida -->
+        <item name="windowSplashScreenBackground">#0F172A</item>
+        <!-- Isotipo neón 'N' vectorial en el centro -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_logo_nexura</item>
+        <!-- Tema al que pasa la app automáticamente al terminar de cargar -->
+        <item name="postSplashScreenTheme">@style/Theme.Nexura</item>
     </style>
 </resources>

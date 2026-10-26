@@ -23,6 +23,7 @@ import com.example.nexura.network.SupabaseCliente;
 import com.example.nexura.util.NetworkUtils;
 import com.example.nexura.util.SessionManager;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -59,10 +60,10 @@ public class EditarPerfil extends AppCompatActivity {
                     try {
                         InputStream is = getContentResolver().openInputStream(uri);
                         Bitmap bitmap = BitmapFactory.decodeStream(is);
-                        ivAvatarEdit.setImageBitmap(bitmap);
+                        if (ivAvatarEdit != null) ivAvatarEdit.setImageBitmap(bitmap);
                         Toast.makeText(this, "Avatar seleccionado", Toast.LENGTH_SHORT).show();
                     } catch (Exception e) {
-                        ivAvatarEdit.setImageURI(uri);
+                        if (ivAvatarEdit != null) ivAvatarEdit.setImageURI(uri);
                     }
                 }
             });
@@ -75,10 +76,10 @@ public class EditarPerfil extends AppCompatActivity {
                     try {
                         InputStream is = getContentResolver().openInputStream(uri);
                         Bitmap bitmap = BitmapFactory.decodeStream(is);
-                        ivBannerEdit.setImageBitmap(bitmap);
+                        if (ivBannerEdit != null) ivBannerEdit.setImageBitmap(bitmap);
                         Toast.makeText(this, "Banner seleccionado", Toast.LENGTH_SHORT).show();
                     } catch (Exception e) {
-                        ivBannerEdit.setImageURI(uri);
+                        if (ivBannerEdit != null) ivBannerEdit.setImageURI(uri);
                     }
                 }
             });
@@ -108,7 +109,7 @@ public class EditarPerfil extends AppCompatActivity {
         if (ivAvatarEdit != null) ivAvatarEdit.setOnClickListener(v -> selectAvatarLauncher.launch("image/*"));
         if (containerBannerEdit != null) containerBannerEdit.setOnClickListener(v -> selectBannerLauncher.launch("image/*"));
 
-        // Cargar datos actuales
+        // Cargar datos actuales del usuario
         cargarDatosActuales();
 
         if (btnSaveProfile != null) {
@@ -165,7 +166,7 @@ public class EditarPerfil extends AppCompatActivity {
             return;
         }
 
-        btnSaveProfile.setEnabled(false);
+        if (btnSaveProfile != null) btnSaveProfile.setEnabled(false);
 
         if (uriAvatarSeleccionado != null) {
             mostrarCargando("Subiendo avatar...");
@@ -193,9 +194,26 @@ public class EditarPerfil extends AppCompatActivity {
     private void subirImagenABucket(Uri uriImagen, String prefijo, UploadCallback callback) {
         try {
             InputStream inputStream = getContentResolver().openInputStream(uriImagen);
-            byte[] bytes = new byte[inputStream.available()];
-            inputStream.read(bytes);
+            if (inputStream == null) {
+                callback.onCompleted("");
+                return;
+            }
+
+            // Lectura segura mediante buffer dinámico (evita inputStream.available() == 0)
+            ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
             inputStream.close();
+
+            byte[] bytes = byteBuffer.toByteArray();
+
+            if (bytes.length == 0) {
+                callback.onCompleted("");
+                return;
+            }
 
             String nombreArchivo = prefijo + System.currentTimeMillis() + ".jpg";
             RequestBody body = RequestBody.create(MediaType.parse("image/jpeg"), bytes);
@@ -203,8 +221,13 @@ public class EditarPerfil extends AppCompatActivity {
             api.subirImagenBucket("image/jpeg", nombreArchivo, body).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
-                    String urlPublica = "https://wfkzbqhsacitksuwqlei.supabase.co/storage/v1/object/public/eventos-imagenes/" + nombreArchivo;
-                    callback.onCompleted(urlPublica);
+                    if (response.isSuccessful()) {
+                        String urlPublica = "https://wfkzbqhsacitksuwqlei.supabase.co/storage/v1/object/public/eventos-imagenes/" + nombreArchivo;
+                        callback.onCompleted(urlPublica);
+                    } else {
+                        // Fallback si falla la subida de la imagen
+                        callback.onCompleted("");
+                    }
                 }
 
                 @Override

@@ -2,6 +2,7 @@ package com.example.nexura.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -110,9 +111,16 @@ public class MisEventos extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refrescar automáticamente al volver a la pantalla
+        consultarMisEventos();
+    }
+
     private void consultarMisEventos() {
         String userId = sessionManager.getUserId();
-        if (userId.isEmpty()) {
+        if (TextUtils.isEmpty(userId)) {
             Toast.makeText(this, "Sesión no válida", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -122,8 +130,13 @@ public class MisEventos extends AppCompatActivity {
         eventoViewModel.cargarMisEventos(userId, !mostrandoGuardados);
     }
 
+    @SuppressWarnings("unchecked")
     private void procesarRespuestaEventos(List<Map<String, Object>> listaAsistencias) {
-        listaEventos.clear();
+        if (listaEventos == null) {
+            listaEventos = new ArrayList<>();
+        } else {
+            listaEventos.clear();
+        }
 
         if (listaAsistencias != null && !listaAsistencias.isEmpty()) {
             for (Map<String, Object> fila : listaAsistencias) {
@@ -137,8 +150,29 @@ public class MisEventos extends AppCompatActivity {
                     if (mapEv.get("titulo") != null) e.setTitulo(mapEv.get("titulo").toString());
                     if (mapEv.get("descripcion") != null) e.setDescripcion(mapEv.get("descripcion").toString());
                     if (mapEv.get("ubicacion") != null) e.setUbicacion(mapEv.get("ubicacion").toString());
+                    if (mapEv.get("ciudad") != null) e.setCiudad(mapEv.get("ciudad").toString());
+                    if (mapEv.get("fecha") != null) e.setFecha(mapEv.get("fecha").toString());
                     if (mapEv.get("imagen_url") != null) e.setImagenUrl(mapEv.get("imagen_url").toString());
                     if (mapEv.get("categoria") != null) e.setCategoria(mapEv.get("categoria").toString());
+                    if (mapEv.get("organizador") != null) e.setOrganizador(mapEv.get("organizador").toString());
+
+                    if (mapEv.get("xp_recompensa") != null) {
+                        try {
+                            e.setXpRecompensa(Integer.parseInt(mapEv.get("xp_recompensa").toString()));
+                        } catch (NumberFormatException ignored) {}
+                    }
+
+                    if (mapEv.get("latitud") != null) {
+                        try {
+                            e.setLatitud(Double.parseDouble(mapEv.get("latitud").toString()));
+                        } catch (NumberFormatException ignored) {}
+                    }
+
+                    if (mapEv.get("longitud") != null) {
+                        try {
+                            e.setLongitud(Double.parseDouble(mapEv.get("longitud").toString()));
+                        } catch (NumberFormatException ignored) {}
+                    }
 
                     listaEventos.add(e);
                 }

@@ -24,9 +24,8 @@ import com.example.nexura.network.SupabaseApi;
 import com.example.nexura.network.SupabaseCliente;
 import com.example.nexura.util.SessionManager;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -38,7 +37,6 @@ public class CrearEvento extends AppCompatActivity {
 
     private ImageView ivEventCover;
     private LinearLayout layoutPlaceholderCover;
-    private TextView tvGalleryCount;
     private TextView tvCalculatedXp;
 
     private Uri uriImagenSeleccionada = null;
@@ -51,7 +49,9 @@ public class CrearEvento extends AppCompatActivity {
                 if (uri != null) {
                     uriImagenSeleccionada = uri;
                     ivEventCover.setImageURI(uri);
-                    layoutPlaceholderCover.setVisibility(View.GONE);
+                    if (layoutPlaceholderCover != null) {
+                        layoutPlaceholderCover.setVisibility(View.GONE);
+                    }
                     Toast.makeText(this, "Portada cargada", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -77,57 +77,85 @@ public class CrearEvento extends AppCompatActivity {
 
         Button btnPublishEvent = findViewById(R.id.btnPublishEvent);
 
-        if (btnBackCreate != null) btnBackCreate.setOnClickListener(v -> finish());
-        cardSelectCover.setOnClickListener(v -> selectCoverLauncher.launch("image/*"));
+        if (btnBackCreate != null) {
+            btnBackCreate.setOnClickListener(v -> finish());
+        }
+
+        if (cardSelectCover != null) {
+            cardSelectCover.setOnClickListener(v -> selectCoverLauncher.launch("image/*"));
+        }
 
         TextWatcher xpWatcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int count, int after) {
                 calcularXpDinamica(
-                        etEventCategory.getText().toString().trim(),
-                        etEventDuration.getText().toString().trim()
+                        etEventCategory != null ? etEventCategory.getText().toString().trim() : "",
+                        etEventDuration != null ? etEventDuration.getText().toString().trim() : ""
                 );
             }
             @Override public void afterTextChanged(Editable s) {}
         };
 
-        etEventCategory.addTextChangedListener(xpWatcher);
-        etEventDuration.addTextChangedListener(xpWatcher);
+        if (etEventCategory != null) etEventCategory.addTextChangedListener(xpWatcher);
+        if (etEventDuration != null) etEventDuration.addTextChangedListener(xpWatcher);
 
-        btnPublishEvent.setOnClickListener(v -> {
-            String title = etEventTitle.getText().toString().trim();
-            String location = etEventLocation.getText().toString().trim();
-            String category = etEventCategory.getText().toString().trim();
+        if (btnPublishEvent != null) {
+            btnPublishEvent.setOnClickListener(v -> {
+                String title = etEventTitle != null ? etEventTitle.getText().toString().trim() : "";
+                String location = etEventLocation != null ? etEventLocation.getText().toString().trim() : "";
+                String category = etEventCategory != null ? etEventCategory.getText().toString().trim() : "";
 
-            if (TextUtils.isEmpty(title)) {
-                etEventTitle.setError("Ingresa el título");
-                etEventTitle.requestFocus();
-                return;
-            }
+                if (TextUtils.isEmpty(title)) {
+                    if (etEventTitle != null) {
+                        etEventTitle.setError("Ingresa el título");
+                        etEventTitle.requestFocus();
+                    }
+                    return;
+                }
 
-            if (TextUtils.isEmpty(location)) {
-                etEventLocation.setError("Ingresa la ubicación");
-                etEventLocation.requestFocus();
-                return;
-            }
+                if (TextUtils.isEmpty(location)) {
+                    if (etEventLocation != null) {
+                        etEventLocation.setError("Ingresa la ubicación");
+                        etEventLocation.requestFocus();
+                    }
+                    return;
+                }
 
-            btnPublishEvent.setEnabled(false);
+                btnPublishEvent.setEnabled(false);
 
-            if (uriImagenSeleccionada != null) {
-                subirImagenYPublicar(title, location, category, btnPublishEvent);
-            } else {
-                publicarEventoBase(title, location, category, "", btnPublishEvent);
-            }
-        });
+                if (uriImagenSeleccionada != null) {
+                    subirImagenYPublicar(title, location, category, btnPublishEvent);
+                } else {
+                    publicarEventoBase(title, location, category, "", btnPublishEvent);
+                }
+            });
+        }
     }
 
     private void subirImagenYPublicar(String title, String location, String category, Button btn) {
         try {
             InputStream inputStream = getContentResolver().openInputStream(uriImagenSeleccionada);
-            byte[] bytes = new byte[inputStream.available()];
-            inputStream.read(bytes);
+            if (inputStream == null) {
+                publicarEventoBase(title, location, category, "", btn);
+                return;
+            }
+
+            // Lectura completa y segura mediante ByteArrayOutputStream
+            ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
             inputStream.close();
+
+            byte[] bytes = byteBuffer.toByteArray();
+
+            if (bytes.length == 0) {
+                publicarEventoBase(title, location, category, "", btn);
+                return;
+            }
 
             String nombreArchivo = "evento_" + System.currentTimeMillis() + ".jpg";
             RequestBody body = RequestBody.create(MediaType.parse("image/jpeg"), bytes);
@@ -135,8 +163,13 @@ public class CrearEvento extends AppCompatActivity {
             api.subirImagenBucket("image/jpeg", nombreArchivo, body).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
-                    String urlPublica = "https://wfkzbqhsacitksuwqlei.supabase.co/storage/v1/object/public/eventos-imagenes/" + nombreArchivo;
-                    publicarEventoBase(title, location, category, urlPublica, btn);
+                    if (response.isSuccessful()) {
+                        String urlPublica = "https://wfkzbqhsacitksuwqlei.supabase.co/storage/v1/object/public/eventos-imagenes/" + nombreArchivo;
+                        publicarEventoBase(title, location, category, urlPublica, btn);
+                    } else {
+                        // Fallback: si falla el bucket, publica el evento sin imagen para no bloquear la app
+                        publicarEventoBase(title, location, category, "", btn);
+                    }
                 }
 
                 @Override
@@ -155,7 +188,7 @@ public class CrearEvento extends AppCompatActivity {
         nuevoEvento.setTitulo(title);
         nuevoEvento.setUbicacion(location);
         nuevoEvento.setCiudad("Chillán");
-        nuevoEvento.setCategoria(category.isEmpty() ? "Festival" : category);
+        nuevoEvento.setCategoria(TextUtils.isEmpty(category) ? "Festival" : category);
         nuevoEvento.setOrganizador(sessionManager.getGamertag());
         nuevoEvento.setDescripcion("Evento comunitario creado por " + sessionManager.getGamertag());
         nuevoEvento.setFecha("Próximamente");
@@ -176,7 +209,7 @@ public class CrearEvento extends AppCompatActivity {
                             .setCancelable(false)
                             .show();
                 } else {
-                    Toast.makeText(CrearEvento.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CrearEvento.this, "Error al publicar evento: " + response.code(), Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -190,8 +223,11 @@ public class CrearEvento extends AppCompatActivity {
 
     private void calcularXpDinamica(String categoria, String strHoras) {
         int base = 200;
-        if (categoria.toLowerCase().contains("festival") || categoria.toLowerCase().contains("concierto")) base += 200;
-        else if (categoria.toLowerCase().contains("feria") || categoria.toLowerCase().contains("expo")) base += 100;
+        if (categoria.toLowerCase().contains("festival") || categoria.toLowerCase().contains("concierto")) {
+            base += 200;
+        } else if (categoria.toLowerCase().contains("feria") || categoria.toLowerCase().contains("expo")) {
+            base += 100;
+        }
 
         int horas = 1;
         if (!strHoras.isEmpty()) {
@@ -202,6 +238,8 @@ public class CrearEvento extends AppCompatActivity {
         }
 
         xpCalculada = base + (horas * 50);
-        tvCalculatedXp.setText("+" + xpCalculada + " XP estimada por asistencia completa");
+        if (tvCalculatedXp != null) {
+            tvCalculatedXp.setText("+" + xpCalculada + " XP estimada por asistencia completa");
+        }
     }
 }

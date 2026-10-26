@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="128dp"
+    android:height="128dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <!-- Fondo Oscuro Redondeado -->
+    <path
+        android:pathData="M 128,0 L 384,0 A 128,128 0 0 1 512,128 L 512,384 A 128,128 0 0 1 384,512 L 128,512 A 128,128 0 0 1 0,384 L 0,128 A 128,128 0 0 1 128,0 Z"
+        android:fillColor="#0F172A" />
+
+    <!-- Columna Izquierda 'N' (Cian Neón) -->
+    <path
+        android:pathData="M160,360 V160 L210,160 V310 L160,360 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="160"
+                android:startY="160"
+                android:endX="210"
+                android:endY="360"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FF00F2FE" />
+                <item android:offset="1.0" android:color="#FF00A8FF" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Diagonal 'N' (Degradado Cian a Violeta) -->
+    <path
+        android:pathData="M195,160 L320,335 V360 L285,360 L160,185 V160 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="160"
+                android:startY="160"
+                android:endX="320"
+                android:endY="360"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FF00F2FE" />
+                <item android:offset="0.5" android:color="#FFA855F7" />
+                <item android:offset="1.0" android:color="#FF6366F1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Columna Derecha 'N' (Púrpura) -->
+    <path
+        android:pathData="M302,160 H352 V360 L302,310 V160 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="302"
+                android:startY="160"
+                android:endX="352"
+                android:endY="360"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FFA855F7" />
+                <item android:offset="1.0" android:color="#FF6366F1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Diamante Superior / Faro de Eventos -->
+    <path
+        android:pathData="M327,100 L357,130 L327,160 L297,130 Z"
+        android:fillColor="#00F2FE" />
+
+    <path
+        android:pathData="M327,112 L345,130 L327,148 L309,130 Z"
+        android:fillColor="#FFFFFF" />
+
+</vector>

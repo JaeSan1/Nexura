@@ -1,184 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0F172A">
+    android:background="#0F172A"
+    android:fillViewport="true"
+    tools:context=".ui.Login">
 
-    <!-- Tarjeta Centrada estilo Modal -->
-    <androidx.cardview.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginHorizontal="24dp"
-        app:cardBackgroundColor="#1E293B"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-        <LinearLayout
+        <!-- LOGO VECTORIAL DE NEXURA -->
+        <ImageView
+            android:id="@+id/ivAppLogo"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="Logo Nexura"
+            android:src="@drawable/ic_logo_nexura" />
+
+        <!-- MODAL DE INICIO DE SESIÓN -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
+            app:cardBackgroundColor="#1E293B"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp">
 
-            <!-- TÍTULO NEXURA -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="24dp"
-                android:letterSpacing="0.1"
-                android:text="NEXURA"
-                android:textColor="#00F2FE"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <!-- Campo Correo (Tu diseño original) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/categoria"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="4dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:contentDescription="Icono Correo"
-                    android:src="@android:drawable/ic_dialog_email"
-                    app:tint="#94A3B8" />
-
-                <EditText
-                    android:id="@+id/etLoginEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:background="@null"
-                    android:hint="Correo electrónico/usuario"
-                    android:inputType="textEmailAddress"
-                    android:paddingStart="12dp"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#64748B"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <!-- Campo Contraseña (Tu diseño original) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/categoria"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="4dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:contentDescription="Icono Lock"
-                    android:src="@android:drawable/ic_lock_idle_lock"
-                    app:tint="#94A3B8" />
-
-                <EditText
-                    android:id="@+id/etLoginPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:background="@null"
-                    android:hint="Contraseña"
-                    android:inputType="textPassword"
-                    android:paddingStart="12dp"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#64748B"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <!-- ENLACES LADO A LADO: Registro y Recuperar Contraseña -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:orientation="vertical"
+                android:padding="24dp">
 
                 <TextView
-                    android:id="@+id/tvGoRegister"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="start"
-                    android:text="Regístrate ahora"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="24dp"
+                    android:text="Iniciar Sesión"
                     android:textColor="#FFFFFF"
-                    android:textSize="12sp"
+                    android:textSize="22sp"
                     android:textStyle="bold" />
 
+                <!-- Campo Correo Electronico -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Correo Electrónico"
+                    app:boxBackgroundColor="#0F172A"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:hintTextColor="#94A3B8">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLoginEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"
+                        android:textColor="#FFFFFF" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Campo Contraseña -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="Contraseña"
+                    app:boxBackgroundColor="#0F172A"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:hintTextColor="#94A3B8"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="#94A3B8">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLoginPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:textColor="#FFFFFF" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Olvidaste Contraseña -->
                 <TextView
                     android:id="@+id/tvForgotPassword"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="end"
+                    android:layout_gravity="end"
+                    android:layout_marginBottom="24dp"
+                    android:padding="4dp"
                     android:text="¿Olvidaste tu contraseña?"
+                    android:textColor="#00F2FE"
+                    android:textSize="13sp" />
+
+                <!-- Botón Principal Iniciar Sesión -->
+                <Button
+                    android:id="@+id/btnLoginAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginBottom="20dp"
+                    android:backgroundTint="#6366F1"
+                    android:text="Ingresar"
                     android:textColor="#FFFFFF"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="12dp" />
 
-            <!-- BOTÓN CONECTARSE (Tu botón cyan original) -->
-            <Button
-                android:id="@+id/btnLoginAction"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="28dp"
-                android:backgroundTint="#00F2FE"
-                android:text="Conectarse"
-                android:textColor="#0F172A"
-                android:textStyle="bold" />
+                <!-- Divisor -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp"
+                    android:text="O ingresa con"
+                    android:textColor="#94A3B8"
+                    android:textSize="12sp" />
 
-            <!-- ESTRUCTURA 3 BOTONES REDES SOCIALES -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
+                <!-- Botones Redes Sociales -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
 
-                <!-- Botón 1: Discord (Adaptado de tu código) -->
-                <ImageButton
-                    android:id="@+id/btnLoginDiscord"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginEnd="20dp"
-                    android:background="@drawable/badge"
-                    android:padding="10dp"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/ic_discord_clean" />
+                    <ImageButton
+                        android:id="@+id/btnLoginDiscord"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Discord"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/discord" />
 
-                <!-- Botón 2: Github -->
-                <ImageButton
-                    android:id="@+id/btnSocialGitHub"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginEnd="20dp"
-                    android:background="@drawable/badge"
-                    android:padding="10dp"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/ic_github_clean" />
+                    <ImageButton
+                        android:id="@+id/btnSocialX"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="X"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_github_clean" />
 
-                <!-- Botón 3: Google -->
-                <ImageButton
-                    android:id="@+id/btnSocialGoogle"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginEnd="20dp"
-                    android:background="@drawable/badge"
-                    android:padding="10dp"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/ic_google_clean" />
+                    <ImageButton
+                        android:id="@+id/btnSocialGoogle"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Google"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_google_clean" />
+                </LinearLayout>
 
             </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</RelativeLayout>
+        <!-- Ir a Registro -->
+        <TextView
+            android:id="@+id/tvGoRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:padding="8dp"
+            android:text="¿No tienes cuenta? Regístrate aquí"
+            android:textColor="#94A3B8"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+</ScrollView>

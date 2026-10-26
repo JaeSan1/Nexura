@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.splashscreen.SplashScreen;
 
 import com.example.nexura.R;
 import com.example.nexura.model.Usuario;
@@ -25,17 +27,21 @@ import retrofit2.Response;
 public class Login extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
-    private Button btnLoginAction, btnLoginDiscord;
+    private Button btnLoginAction;
+    private ImageButton btnLoginDiscord, btnSocialX, btnSocialGoogle;
     private SupabaseApi api;
     private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // 1. OBLIGATORIO: Inicializar Splash Screen antes de super.onCreate
+        SplashScreen.installSplashScreen(this);
+
         super.onCreate(savedInstanceState);
 
         sessionManager = new SessionManager(this);
 
-        // 1. AUTO-LOGIN: Redirigir a Home si la sesión ya está guardada
+        // Auto-login: Redirigir a Home si la sesión ya está guardada
         if (sessionManager.isLogged()) {
             redireccionarAHome();
             return;
@@ -45,10 +51,15 @@ public class Login extends AppCompatActivity {
 
         api = SupabaseCliente.getClient().create(SupabaseApi.class);
 
+        // Vincular componentes de la UI
         etEmail = findViewById(R.id.etLoginEmail);
         etPassword = findViewById(R.id.etLoginPassword);
         btnLoginAction = findViewById(R.id.btnLoginAction);
+
+        // Botones de redes sociales como ImageButton
         btnLoginDiscord = findViewById(R.id.btnLoginDiscord);
+        btnSocialX = findViewById(R.id.btnSocialX);
+        btnSocialGoogle = findViewById(R.id.btnSocialGoogle);
 
         TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
         TextView tvGoRegister = findViewById(R.id.tvGoRegister);
@@ -67,12 +78,20 @@ public class Login extends AppCompatActivity {
             btnLoginAction.setOnClickListener(v -> autenticarUsuario());
         }
 
-        // Evento Botón Discord
         if (btnLoginDiscord != null) {
             btnLoginDiscord.setOnClickListener(v -> iniciarOAuthDiscord());
         }
 
-        // Procesar respuesta si el usuario viene de autenticarse en Discord
+        if (btnSocialX != null) {
+            btnSocialX.setOnClickListener(v ->
+                    Toast.makeText(Login.this, "Inicio con X próximamente", Toast.LENGTH_SHORT).show());
+        }
+
+        if (btnSocialGoogle != null) {
+            btnSocialGoogle.setOnClickListener(v ->
+                    Toast.makeText(Login.this, "Inicio con Google próximamente", Toast.LENGTH_SHORT).show());
+        }
+
         procesarIntentOAuth(getIntent());
     }
 
@@ -113,7 +132,6 @@ public class Login extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     Usuario usuarioLogueado = response.body().get(0);
 
-                    // Guardar usando SessionManager
                     sessionManager.guardarSesion(
                             usuarioLogueado.getId(),
                             usuarioLogueado.getGamertag(),

@@ -1,14 +1,14 @@
 package com.example.nexura.ui;
 
 import android.os.Bundle;
-import android.widget.TextView;
+import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.nexura.R;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 
 public class MapaInteractivoActivity extends AppCompatActivity {
 
@@ -18,26 +18,33 @@ public class MapaInteractivoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Configuración de OSMDroid
-        Configuration.getInstance().load(getApplicationContext(),
-                getSharedPreferences("osmdroid_pref", MODE_PRIVATE));
+        // OBLIGATORIO: Evita el bloqueo HTTP 403 de OpenStreetMap identificando la app
+        Configuration.getInstance().setUserAgentValue(getPackageName());
 
         setContentView(R.layout.activity_mapa_interactivo);
 
-        TextView btnBack = findViewById(R.id.btnBackMapa); // Revisa el ID en tu activity_mapa_interactivo.xml
+        mapView = findViewById(R.id.mapViewFull);
+        ImageButton btnBack = findViewById(R.id.btnBackMap);
+
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        mapView = findViewById(R.id.mapViewFull); // Revisa el ID en tu activity_mapa_interactivo.xml
         if (mapView != null) {
             mapView.setTileSource(TileSourceFactory.MAPNIK);
             mapView.setMultiTouchControls(true);
 
-            // Coordenadas centradas en Chillán, Chile
-            GeoPoint chillanPoint = new GeoPoint(-36.6063, -72.1023);
-            mapView.getController().setZoom(14.5);
-            mapView.getController().setCenter(chillanPoint);
+            // Coordenadas iniciales (Chillán / Universidad del Bío-Bío)
+            GeoPoint startPoint = new GeoPoint(-36.6018, -72.0782);
+            mapView.getController().setZoom(15.0);
+            mapView.getController().setCenter(startPoint);
+
+            // Marcador de ejemplo
+            Marker startMarker = new Marker(mapView);
+            startMarker.setPosition(startPoint);
+            startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            startMarker.setTitle("Fiesta de la Longaniza 2026");
+            mapView.getOverlays().add(startMarker);
         }
     }
 
