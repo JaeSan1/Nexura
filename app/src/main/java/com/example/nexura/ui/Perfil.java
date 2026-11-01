@@ -48,13 +48,15 @@ public class Perfil extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(PerfilViewModel.class);
 
         TextView btnBack = findViewById(R.id.btnBackPerfil);
-        tvGamertag = findViewById(R.id.tvProfileGamertag);
+
+        // CORRECCIÓN DE IDS COINCIDENTES CON activity_perfil.xml
+        tvGamertag = findViewById(R.id.tvGamertagProfile);
         tvVerifiedBadge = findViewById(R.id.tvVerifiedBadge);
         tvUserLevel = findViewById(R.id.tvProfileLevel);
         tvEquippedTitle = findViewById(R.id.tvEquippedTitle);
         tvXpProgress = findViewById(R.id.tvXpProgressText);
-        tvCityLocation = findViewById(R.id.tvProfileLocation);
-        tvProfileBio = findViewById(R.id.tvProfileBio);
+        tvCityLocation = findViewById(R.id.tvCiudadProfile);
+        tvProfileBio = findViewById(R.id.tvBioProfile);
 
         ivProfileAvatar = findViewById(R.id.ivProfileAvatar);
         ivProfileBanner = findViewById(R.id.ivProfileBanner);
@@ -125,7 +127,7 @@ public class Perfil extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        cargarDatos(); // Recargar datos al volver de EditarPerfil
+        cargarDatos(); // Recargar datos automáticamente al volver de EditarPerfil
     }
 
     private void cargarDatos() {
@@ -219,7 +221,9 @@ public class Perfil extends AppCompatActivity {
     private void actualizarUI(Usuario user) {
         if (user == null) return;
 
-        if (tvGamertag != null) tvGamertag.setText(user.getGamertag());
+        if (tvGamertag != null && user.getGamertag() != null) {
+            tvGamertag.setText(user.getGamertag());
+        }
 
         if (tvVerifiedBadge != null) {
             tvVerifiedBadge.setVisibility(user.isEsVerificado() ? View.VISIBLE : View.GONE);
@@ -228,7 +232,7 @@ public class Perfil extends AppCompatActivity {
         if (tvUserLevel != null) tvUserLevel.setText("NIVEL " + user.getNivel());
         if (tvEquippedTitle != null) tvEquippedTitle.setText(user.getTituloEquipado() != null ? user.getTituloEquipado() : "AVENTURERO NOVATO");
         if (tvCityLocation != null) tvCityLocation.setText("📍 " + (user.getCiudad() != null ? user.getCiudad() : "Chillán, Chile"));
-        if (tvProfileBio != null && user.getBiografia() != null) tvProfileBio.setText(user.getBiografia());
+        if (tvProfileBio != null) tvProfileBio.setText(user.getBiografia() != null ? user.getBiografia() : "");
 
         if (tvFollowersCount != null) tvFollowersCount.setText(String.valueOf(user.getSeguidores()));
         if (tvFollowingCount != null) tvFollowingCount.setText(String.valueOf(user.getSeguidos()));
