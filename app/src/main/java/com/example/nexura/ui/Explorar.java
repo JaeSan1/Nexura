@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.nexura.BuildConfig;
 import com.example.nexura.R;
 import com.example.nexura.Viewmodel.ExplorarViewModel;
 import com.example.nexura.model.Evento;
@@ -35,27 +36,40 @@ public class Explorar extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Inicializar configuración de OSMDroid para la vista previa del mapa
-        Configuration.getInstance().load(getApplicationContext(),
-                getSharedPreferences("osmdroid_pref", MODE_PRIVATE));
+        // Configuración obligatoria de OSMDroid antes de setContentView
+        Configuration.getInstance().load(getApplicationContext(), getSharedPreferences("osmdroid_pref", MODE_PRIVATE));
+        Configuration.getInstance().setUserAgentValue(getPackageName() + "/" + BuildConfig.VERSION_NAME);
+        Configuration.getInstance().setOsmdroidBasePath(getFilesDir());
+        Configuration.getInstance().setOsmdroidTileCache(getCacheDir());
 
         setContentView(R.layout.activity_explorar_mapa);
 
         explorarViewModel = new ViewModelProvider(this).get(ExplorarViewModel.class);
 
-        // 1. Configurar Vista Previa del Mapa (mapPreview)
         mapPreview = findViewById(R.id.mapPreview);
         if (mapPreview != null) {
-            mapPreview.setTileSource(TileSourceFactory.MAPNIK);
-            mapPreview.setMultiTouchControls(false); // Deshabilitar gestos en la vista previa
+            mapPreview.getTileProvider().clearTileCache();
 
-            // Coordenadas centradas en Chillán
+            // Forzar servidores HTTPS oficiales de OSM
+            org.osmdroid.tileprovider.tilesource.XYTileSource explicitHttpsMap =
+                    new org.osmdroid.tileprovider.tilesource.XYTileSource(
+                            "OSM_HTTPS",
+                            0, 19, 256, ".png",
+                            new String[]{
+                                    "https://a.tile.openstreetmap.org/",
+                                    "https://b.tile.openstreetmap.org/",
+                                    "https://c.tile.openstreetmap.org/"
+                            }
+                    );
+
+            mapPreview.setTileSource(explicitHttpsMap);
+            mapPreview.setMultiTouchControls(false);
+
             GeoPoint chillanPoint = new GeoPoint(-36.6063, -72.1023);
-            mapPreview.getController().setZoom(13.5);
             mapPreview.getController().setCenter(chillanPoint);
+            mapPreview.getController().setZoom(13.5);
         }
 
-        // 2. Botón para abrir el Mapa Completo
         View btnVerMapaCompleto = findViewById(R.id.btnVerMapaCompleto);
         if (btnVerMapaCompleto != null) {
             btnVerMapaCompleto.setOnClickListener(v -> {
@@ -64,7 +78,6 @@ public class Explorar extends AppCompatActivity {
             });
         }
 
-        // 3. RecyclerView de Eventos
         rvExplorarEventos = findViewById(R.id.rvExplorarEventos);
         if (rvExplorarEventos != null) {
             rvExplorarEventos.setLayoutManager(new LinearLayoutManager(this));
@@ -77,7 +90,6 @@ public class Explorar extends AppCompatActivity {
             rvExplorarEventos.setAdapter(adapter);
         }
 
-        // 4. Suscribirse a LiveData
         explorarViewModel.getEventosFeed().observe(this, eventos -> {
             if (eventos != null) {
                 listaEventos.clear();
@@ -92,10 +104,7 @@ public class Explorar extends AppCompatActivity {
             }
         });
 
-        // Cargar eventos desde Supabase
         explorarViewModel.cargarEventosFeed();
-
-        // 5. Configurar Barra de Navegación Inferior
         configurarNavegacionInferior();
     }
 
@@ -142,5 +151,11 @@ public class Explorar extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         if (mapPreview != null) mapPreview.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mapPreview != null) mapPreview.onDetach();
     }
 }

@@ -4,44 +4,52 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class SessionManager {
-    private static final String PREF_NAME = "NexuraSession";
-    private static final String KEY_USER_ID = "USER_ID";
-    private static final String KEY_GAMERTAG = "USER_GAMERTAG";
-    private static final String KEY_EMAIL = "USER_EMAIL";
-    private static final String KEY_IS_LOGGED = "IS_LOGGED";
 
-    private final SharedPreferences prefs;
+    private static final String PREF_NAME = "NexuraSession";
+    private static final String KEY_IS_LOGGED = "isLogged";
+    private static final String KEY_USER_ID = "userId";
+    private static final String KEY_GAMERTAG = "gamertag";
+    private static final String KEY_EMAIL = "email";
+
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
 
     public SessionManager(Context context) {
-        this.prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        editor = pref.edit();
     }
 
-    public void guardarSesion(String id, String gamertag, String email) {
-        prefs.edit()
-                .putString(KEY_USER_ID, id)
-                .putString(KEY_GAMERTAG, gamertag)
-                .putString(KEY_EMAIL, email)
-                .putBoolean(KEY_IS_LOGGED, true)
-                .apply();
+    // Guarda la sesión localmente en el teléfono
+    public void guardarSesion(String userId, String gamertag, String email) {
+        editor.putBoolean(KEY_IS_LOGGED, true);
+        editor.putString(KEY_USER_ID, userId);
+        editor.putString(KEY_GAMERTAG, gamertag);
+        editor.putString(KEY_EMAIL, email);
+        editor.apply(); // Guarda de forma asíncrona en el disco del teléfono
     }
 
+    // Comprueba si la sesión sigue activa
+    public boolean isLogged() {
+        return pref.getBoolean(KEY_IS_LOGGED, false);
+    }
+
+    // Devuelve el ID del usuario actual (soluciona el error en Detalle_Evento, Perfil, etc.)
     public String getUserId() {
-        return prefs.getString(KEY_USER_ID, "");
+        return pref.getString(KEY_USER_ID, "");
     }
 
+    // Para obtener los datos del usuario en cualquier Activity (Perfil, Home, etc.)
     public String getGamertag() {
-        return prefs.getString(KEY_GAMERTAG, "Usuario");
+        return pref.getString(KEY_GAMERTAG, "Usuario");
     }
 
     public String getEmail() {
-        return prefs.getString(KEY_EMAIL, "");
+        return pref.getString(KEY_EMAIL, "");
     }
 
-    public boolean isLogged() {
-        return prefs.getBoolean(KEY_IS_LOGGED, false);
-    }
-
+    // Método para cuando el usuario presione "Cerrar Sesión" en su Perfil
     public void cerrarSesion() {
-        prefs.edit().clear().apply();
+        editor.clear();
+        editor.apply();
     }
 }

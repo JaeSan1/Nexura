@@ -121,4 +121,13 @@ public interface SupabaseApi {
     // LOGROS
     @GET("logros?select=*")
     Call<List<Logro>> obtenerLogros();
+
+    @POST("eventos")
+    Call<Void> crearEventoMap(@Body Map<String, Object> bodyEvento);
+
+    @DELETE("comentarios")
+    Call<Void> eliminarComentario(
+            @Query("id") String filtroComentarioId,
+            @Query("usuario_id") String filtroUsuarioId
+    );
 }

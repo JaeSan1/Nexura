@@ -14,6 +14,7 @@ import com.example.nexura.R;
 import com.example.nexura.model.Usuario;
 import com.example.nexura.network.SupabaseApi;
 import com.example.nexura.network.SupabaseCliente;
+import com.example.nexura.util.SessionManager;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class Registro extends AppCompatActivity {
     private CheckBox cbTerms;
     private Button btnRegister;
     private SupabaseApi api;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,7 @@ public class Registro extends AppCompatActivity {
         setContentView(R.layout.activity_registro);
 
         api = SupabaseCliente.getClient().create(SupabaseApi.class);
+        sessionManager = new SessionManager(this);
 
         TextView btnBack = findViewById(R.id.btnBackRegister);
         TextView tvGoLogin = findViewById(R.id.tvGoLogin);
@@ -56,6 +59,15 @@ public class Registro extends AppCompatActivity {
         if (btnRegister != null) {
             btnRegister.setOnClickListener(v -> validarYRegistrar());
         }
+
+        // Capturar el email recibido desde Login.java si vino por OAuth social
+        String emailSocial = getIntent().getStringExtra("email_social");
+        if (emailSocial != null && !emailSocial.isEmpty()) {
+            if (etEmail != null) {
+                etEmail.setText(emailSocial);
+                etEmail.setEnabled(false);
+            }
+        }
     }
 
     private void validarYRegistrar() {
@@ -64,7 +76,6 @@ public class Registro extends AppCompatActivity {
         String pass = etPassword != null ? etPassword.getText().toString().trim() : "";
         String confirmPass = etConfirmPassword != null ? etConfirmPassword.getText().toString().trim() : "";
 
-        // Validaciones básicas de formulario
         if (TextUtils.isEmpty(gamertag)) {
             etGamertag.setError("Ingresa tu Gamertag");
             etGamertag.requestFocus();
@@ -138,8 +149,20 @@ public class Registro extends AppCompatActivity {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 btnRegister.setEnabled(true);
                 if (response.isSuccessful()) {
-                    Toast.makeText(Registro.this, "¡Cuenta creada con éxito! Inicia sesión", Toast.LENGTH_LONG).show();
-                    finish(); // Vuelve a Login.java
+                    // 1. Guardar la sesión localmente
+                    sessionManager.guardarSesion(
+                            nuevoUsuario.getId(),
+                            gamertag,
+                            email
+                    );
+
+                    Toast.makeText(Registro.this, "¡Perfil creado con éxito!", Toast.LENGTH_SHORT).show();
+
+                    // 2. Ir directamente a Home limpiando la pila de actividades
+                    Intent intent = new Intent(Registro.this, Home.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
                 } else {
                     Toast.makeText(Registro.this, "Error al registrar en la nube: " + response.code(), Toast.LENGTH_SHORT).show();
                 }

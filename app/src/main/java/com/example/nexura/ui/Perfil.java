@@ -49,18 +49,17 @@ public class Perfil extends AppCompatActivity {
 
         TextView btnBack = findViewById(R.id.btnBackPerfil);
 
-        // CORRECCIÓN DE IDS COINCIDENTES CON activity_perfil.xml
-        tvGamertag = findViewById(R.id.tvGamertagProfile);
+        // VINCULACIÓN CORREGIDA CON LOS IDS REALES DE activity_perfil.xml
+        tvGamertag = findViewById(R.id.tvProfileGamertag);
         tvVerifiedBadge = findViewById(R.id.tvVerifiedBadge);
         tvUserLevel = findViewById(R.id.tvProfileLevel);
         tvEquippedTitle = findViewById(R.id.tvEquippedTitle);
         tvXpProgress = findViewById(R.id.tvXpProgressText);
-        tvCityLocation = findViewById(R.id.tvCiudadProfile);
-        tvProfileBio = findViewById(R.id.tvBioProfile);
+        tvCityLocation = findViewById(R.id.tvProfileLocation);
+        tvProfileBio = findViewById(R.id.tvProfileBio);
 
         ivProfileAvatar = findViewById(R.id.ivProfileAvatar);
         ivProfileBanner = findViewById(R.id.ivProfileBanner);
-
         pbXpBar = findViewById(R.id.pbProfileXp);
 
         tvFollowersCount = findViewById(R.id.tvFollowersCount);
@@ -74,7 +73,6 @@ public class Perfil extends AppCompatActivity {
 
         if (btnBack != null) btnBack.setOnClickListener(v -> finish());
 
-        // Desplegar Modal de Ajustes
         if (btnEditCosmetics != null) {
             btnEditCosmetics.setOnClickListener(v -> {
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(Perfil.this);
@@ -85,12 +83,10 @@ public class Perfil extends AppCompatActivity {
                 TextView optionLogout = sheetView.findViewById(R.id.optionLogout);
                 TextView optionDelete = sheetView.findViewById(R.id.optionDeleteAccount);
 
-                // NAVEGACIÓN A EDITAR PERFIL
                 if (optionEdit != null) {
                     optionEdit.setOnClickListener(view -> {
                         bottomSheetDialog.dismiss();
-                        Intent intent = new Intent(Perfil.this, EditarPerfil.class);
-                        startActivity(intent);
+                        startActivity(new Intent(Perfil.this, EditarPerfil.class));
                     });
                 }
 
@@ -106,7 +102,7 @@ public class Perfil extends AppCompatActivity {
                         bottomSheetDialog.dismiss();
                         new AlertDialog.Builder(Perfil.this)
                                 .setTitle("¿Eliminar tu cuenta?")
-                                .setMessage("Esta acción es irreversible. Se borrarán permanentemente tus eventos, XP, nivel y datos de perfil.")
+                                .setMessage("Esta acción es irreversible.")
                                 .setPositiveButton("Eliminar", (dialog, which) -> procesarEliminacionCuenta())
                                 .setNegativeButton("Cancelar", null)
                                 .show();
@@ -117,7 +113,6 @@ public class Perfil extends AppCompatActivity {
             });
         }
 
-        // Suscribirse al ViewModel
         viewModel.getUsuario().observe(this, this::actualizarUI);
         viewModel.getLogros().observe(this, this::mostrarLogrosEnUI);
 
@@ -127,7 +122,7 @@ public class Perfil extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        cargarDatos(); // Recargar datos automáticamente al volver de EditarPerfil
+        cargarDatos();
     }
 
     private void cargarDatos() {
@@ -140,17 +135,16 @@ public class Perfil extends AppCompatActivity {
     }
 
     private void procesarEliminacionCuenta() {
-        String userId = sessionManager.getUserId();
-        usuarioRepository.eliminarCuenta(userId, new UsuarioRepository.ApiCallback<Void>() {
+        usuarioRepository.eliminarCuenta(sessionManager.getUserId(), new UsuarioRepository.ApiCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
-                Toast.makeText(Perfil.this, "Cuenta eliminada correctamente", Toast.LENGTH_LONG).show();
+                Toast.makeText(Perfil.this, "Cuenta eliminada", Toast.LENGTH_LONG).show();
                 cerrarSesion();
             }
 
             @Override
             public void onError(String mensajeError) {
-                Toast.makeText(Perfil.this, "No se pudo eliminar: " + mensajeError, Toast.LENGTH_SHORT).show();
+                Toast.makeText(Perfil.this, "Error: " + mensajeError, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -166,9 +160,7 @@ public class Perfil extends AppCompatActivity {
         for (Logro logro : listaLogros) {
             CardView card = new CardView(this);
             LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             cardParams.setMargins(0, 0, 0, 12);
             card.setLayoutParams(cardParams);
             card.setCardBackgroundColor(Color.parseColor("#1E293B"));
@@ -186,10 +178,7 @@ public class Perfil extends AppCompatActivity {
 
             LinearLayout layoutTextos = new LinearLayout(this);
             layoutTextos.setOrientation(LinearLayout.VERTICAL);
-            LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
-                    0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f
-            );
-            layoutTextos.setLayoutParams(textParams);
+            layoutTextos.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
 
             TextView tvNombre = new TextView(this);
             tvNombre.setText(logro.getNombre());
@@ -221,14 +210,8 @@ public class Perfil extends AppCompatActivity {
     private void actualizarUI(Usuario user) {
         if (user == null) return;
 
-        if (tvGamertag != null && user.getGamertag() != null) {
-            tvGamertag.setText(user.getGamertag());
-        }
-
-        if (tvVerifiedBadge != null) {
-            tvVerifiedBadge.setVisibility(user.isEsVerificado() ? View.VISIBLE : View.GONE);
-        }
-
+        if (tvGamertag != null && user.getGamertag() != null) tvGamertag.setText(user.getGamertag());
+        if (tvVerifiedBadge != null) tvVerifiedBadge.setVisibility(user.isEsVerificado() ? View.VISIBLE : View.GONE);
         if (tvUserLevel != null) tvUserLevel.setText("NIVEL " + user.getNivel());
         if (tvEquippedTitle != null) tvEquippedTitle.setText(user.getTituloEquipado() != null ? user.getTituloEquipado() : "AVENTURERO NOVATO");
         if (tvCityLocation != null) tvCityLocation.setText("📍 " + (user.getCiudad() != null ? user.getCiudad() : "Chillán, Chile"));

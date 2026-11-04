@@ -141,7 +141,8 @@ public class EditarPerfil extends AppCompatActivity {
 
         mostrarCargando("Cargando perfil...");
 
-        api.obtenerPerfilPorId("eq." + userId).enqueue(new Callback<List<Usuario>>() {
+        // CORRECCIÓN 1: Especificar la columna id=eq.
+        api.obtenerPerfilPorId("id=eq." + userId).enqueue(new Callback<List<Usuario>>() {
             @Override
             public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
                 ocultarCargando();
@@ -199,7 +200,6 @@ public class EditarPerfil extends AppCompatActivity {
                 return;
             }
 
-            // Lectura segura mediante buffer dinámico (evita inputStream.available() == 0)
             ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
             int len;
@@ -225,7 +225,6 @@ public class EditarPerfil extends AppCompatActivity {
                         String urlPublica = "https://wfkzbqhsacitksuwqlei.supabase.co/storage/v1/object/public/eventos-imagenes/" + nombreArchivo;
                         callback.onCompleted(urlPublica);
                     } else {
-                        // Fallback si falla la subida de la imagen
                         callback.onCompleted("");
                     }
                 }
@@ -259,7 +258,8 @@ public class EditarPerfil extends AppCompatActivity {
         if (!TextUtils.isEmpty(urlAvatar)) body.put("foto_perfil_url", urlAvatar);
         if (!TextUtils.isEmpty(urlBanner)) body.put("banner_url", urlBanner);
 
-        String filtro = "eq." + sessionManager.getUserId();
+        // CORRECCIÓN 2: Especificar la columna id=eq. para el filtro UPDATE de Supabase
+        String filtro = "id=eq." + sessionManager.getUserId();
 
         api.actualizarPerfil(filtro, body).enqueue(new Callback<Void>() {
             @Override
@@ -268,12 +268,14 @@ public class EditarPerfil extends AppCompatActivity {
                 if (btnSaveProfile != null) btnSaveProfile.setEnabled(true);
 
                 if (response.isSuccessful()) {
+                    // Actualizar datos locales en SharedPreferences
                     sessionManager.guardarSesion(
                             sessionManager.getUserId(),
                             gamertag,
                             sessionManager.getEmail()
                     );
                     Toast.makeText(EditarPerfil.this, "Perfil actualizado con éxito", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     Toast.makeText(EditarPerfil.this, "Error al actualizar perfil: " + response.code(), Toast.LENGTH_SHORT).show();
