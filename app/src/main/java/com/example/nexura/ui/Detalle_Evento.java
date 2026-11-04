@@ -154,36 +154,39 @@ public class Detalle_Evento extends AppCompatActivity {
         String userId = sessionManager.getUserId();
         if (TextUtils.isEmpty(userId)) return;
 
-        api.obtenerAsistenciasUsuario("eq." + userId, null).enqueue(new Callback<List<Map<String, Object>>>() {
+        api.obtenerAsistenciasUsuario("eq." + userId, null).enqueue(new Callback<List<Object>>() {
             @Override
-            public void onResponse(Call<List<Map<String, Object>>> call, Response<List<Map<String, Object>>> response) {
+            public void onResponse(Call<List<Object>> call, Response<List<Object>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    for (Map<String, Object> reg : response.body()) {
-                        Object evIdObj = reg.get("evento_id");
-                        if (evIdObj != null && evIdObj.toString().equals(eventoActual.getId())) {
-                            isFavorite = true;
-                            if (btnSaveFavorite != null) {
-                                btnSaveFavorite.setText("Guardado");
-                                btnSaveFavorite.setTextColor(ContextCompat.getColor(Detalle_Evento.this, R.color.neon_cyan));
-                            }
-
-                            Object asistioObj = reg.get("asistio");
-                            if (asistioObj != null && Boolean.parseBoolean(asistioObj.toString())) {
-                                yaReclamado = true;
-                                if (btnClaimGps != null) {
-                                    btnClaimGps.setText("Asistencia Validada");
-                                    btnClaimGps.setEnabled(false);
-                                    btnClaimGps.setAlpha(0.5f);
+                    for (Object obj : response.body()) {
+                        if (obj instanceof Map) {
+                            Map<?, ?> reg = (Map<?, ?>) obj;
+                            Object evIdObj = reg.get("evento_id");
+                            if (evIdObj != null && evIdObj.toString().equals(eventoActual.getId())) {
+                                isFavorite = true;
+                                if (btnSaveFavorite != null) {
+                                    btnSaveFavorite.setText("Guardado");
+                                    btnSaveFavorite.setTextColor(ContextCompat.getColor(Detalle_Evento.this, R.color.neon_cyan));
                                 }
+
+                                Object asistioObj = reg.get("asistio");
+                                if (asistioObj != null && Boolean.parseBoolean(asistioObj.toString())) {
+                                    yaReclamado = true;
+                                    if (btnClaimGps != null) {
+                                        btnClaimGps.setText("Asistencia Validada");
+                                        btnClaimGps.setEnabled(false);
+                                        btnClaimGps.setAlpha(0.5f);
+                                    }
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Map<String, Object>>> call, Throwable t) {}
+            public void onFailure(Call<List<Object>> call, Throwable t) {}
         });
     }
 

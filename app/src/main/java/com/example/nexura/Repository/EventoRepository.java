@@ -57,19 +57,17 @@ public class EventoRepository {
     // 2. Obtener Mis Eventos (Guardados vs Historial Asistidos)
     public void obtenerMisEventos(String userId, boolean esHistorial, ApiCallback<List<Map<String, Object>>> callback) {
         String filtroAsistio = esHistorial ? "eq.true" : "eq.false";
-        api.obtenerAsistenciasUsuario("eq." + userId, filtroAsistio).enqueue(new Callback<List<Map<String, Object>>>() {
+        api.obtenerAsistenciasUsuario("eq." + userId, filtroAsistio).enqueue(new Callback<List<Object>>() {
             @Override
-            public void onResponse(Call<List<Map<String, Object>>> call, Response<List<Map<String, Object>>> response) {
+            public void onResponse(Call<List<Object>> call, Response<List<Object>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    callback.onSuccess(response.body());
-                } else {
-                    callback.onError("Error al obtener mis eventos: " + response.code());
+                    // Manejar la respuesta exitosa
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Map<String, Object>>> call, Throwable t) {
-                callback.onError("Error de conexion: " + t.getMessage());
+            public void onFailure(Call<List<Object>> call, Throwable t) {
+                // Manejar el fallo de red
             }
         });
     }

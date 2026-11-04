@@ -141,7 +141,7 @@ public class EditarPerfil extends AppCompatActivity {
 
         mostrarCargando("Cargando perfil...");
 
-        // CORRECCIÓN 1: Especificar la columna id=eq.
+        // Verificamos que se envíe "id=eq." seguido del ID del usuario logueado
         api.obtenerPerfilPorId("id=eq." + userId).enqueue(new Callback<List<Usuario>>() {
             @Override
             public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
@@ -151,12 +151,15 @@ public class EditarPerfil extends AppCompatActivity {
                     if (etGamertagEdit != null) etGamertagEdit.setText(user.getGamertag());
                     if (etCityEdit != null && user.getCiudad() != null) etCityEdit.setText(user.getCiudad());
                     if (etBioEdit != null && user.getBiografia() != null) etBioEdit.setText(user.getBiografia());
+                } else {
+                    android.util.Log.e("ERROR_PERFIL", "No se encontró el perfil o la lista vino vacía para el ID: " + userId);
                 }
             }
 
             @Override
             public void onFailure(Call<List<Usuario>> call, Throwable t) {
                 ocultarCargando();
+                android.util.Log.e("ERROR_PERFIL", "Fallo de red al cargar perfil: " + t.getMessage());
             }
         });
     }
@@ -258,7 +261,7 @@ public class EditarPerfil extends AppCompatActivity {
         if (!TextUtils.isEmpty(urlAvatar)) body.put("foto_perfil_url", urlAvatar);
         if (!TextUtils.isEmpty(urlBanner)) body.put("banner_url", urlBanner);
 
-        // CORRECCIÓN 2: Especificar la columna id=eq. para el filtro UPDATE de Supabase
+        // CORRECCIÓN: Variable nombrada como "filtro" e incluye el texto completo
         String filtro = "id=eq." + sessionManager.getUserId();
 
         api.actualizarPerfil(filtro, body).enqueue(new Callback<Void>() {
@@ -268,7 +271,6 @@ public class EditarPerfil extends AppCompatActivity {
                 if (btnSaveProfile != null) btnSaveProfile.setEnabled(true);
 
                 if (response.isSuccessful()) {
-                    // Actualizar datos locales en SharedPreferences
                     sessionManager.guardarSesion(
                             sessionManager.getUserId(),
                             gamertag,
@@ -278,7 +280,15 @@ public class EditarPerfil extends AppCompatActivity {
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    Toast.makeText(EditarPerfil.this, "Error al actualizar perfil: " + response.code(), Toast.LENGTH_SHORT).show();
+                    try {
+                        String errorExacto = response.errorBody() != null ? response.errorBody().string() : "Sin detalles";
+                        android.util.Log.e("ERROR_SUPABASE", "Detalle del 400: " + errorExacto);
+                        System.out.println("ERROR_SUPABASE: " + errorExacto);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    Toast.makeText(EditarPerfil.this, "Error 400: Revisa el Logcat", Toast.LENGTH_LONG).show();
                 }
             }
 

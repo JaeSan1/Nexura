@@ -19,6 +19,7 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.QueryName;
 
 public interface SupabaseApi {
 
@@ -54,14 +55,16 @@ public interface SupabaseApi {
     Call<List<Usuario>> obtenerPerfilPorGamertag(@Query("gamertag") String filtroGamertag);
 
     @GET("perfiles?select=*")
-    Call<List<Usuario>> obtenerPerfilPorId(@Query("id") String filtroId);
+    Call<List<Usuario>> verificarCredenciales(@Query("correo") String filtroCorreo);
 
     @GET("perfiles?select=*")
-    Call<List<Usuario>> verificarCredenciales(@Query("correo") String filtroCorreo);
+    Call<List<Usuario>> obtenerPerfilPorId(
+            @QueryName(encoded = true) String filtro
+    );
 
     @PATCH("perfiles")
     Call<Void> actualizarPerfil(
-            @Query("id") String filtroId,
+            @QueryName(encoded = true) String filtro,
             @Body Map<String, Object> camposActualizados
     );
 
@@ -77,16 +80,15 @@ public interface SupabaseApi {
             @Body Map<String, Object> camposActualizados
     );
 
-    // ELIMINACIÓN DE PERFIL
     @DELETE("perfiles")
     Call<Void> eliminarUsuario(@Query("id") String filtroId);
 
-    // ASISTENCIAS Y FAVORITOS (MIS EVENTOS)
+    // ASISTENCIAS Y FAVORITOS
     @POST("asistencias")
     Call<Void> agregarAsistencia(@Body Map<String, Object> datosAsistencia);
 
     @GET("asistencias?select=*,eventos(*)")
-    Call<List<Map<String, Object>>> obtenerAsistenciasUsuario(
+    Call<List<Object>> obtenerAsistenciasUsuario(
             @Query("usuario_id") String filtroUsuarioId,
             @Query("asistio") String filtroAsistio
     );

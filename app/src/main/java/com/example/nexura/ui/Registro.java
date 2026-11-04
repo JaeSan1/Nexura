@@ -48,19 +48,10 @@ public class Registro extends AppCompatActivity {
         cbTerms = findViewById(R.id.cbTerms);
         btnRegister = findViewById(R.id.btnRegisterAction);
 
-        if (btnBack != null) {
-            btnBack.setOnClickListener(v -> finish());
-        }
+        if (btnBack != null) btnBack.setOnClickListener(v -> finish());
+        if (tvGoLogin != null) tvGoLogin.setOnClickListener(v -> finish());
+        if (btnRegister != null) btnRegister.setOnClickListener(v -> validarYRegistrar());
 
-        if (tvGoLogin != null) {
-            tvGoLogin.setOnClickListener(v -> finish());
-        }
-
-        if (btnRegister != null) {
-            btnRegister.setOnClickListener(v -> validarYRegistrar());
-        }
-
-        // Capturar el email recibido desde Login.java si vino por OAuth social
         String emailSocial = getIntent().getStringExtra("email_social");
         if (emailSocial != null && !emailSocial.isEmpty()) {
             if (etEmail != null) {
@@ -107,7 +98,6 @@ public class Registro extends AppCompatActivity {
 
         btnRegister.setEnabled(false);
 
-        // 1. Verificar si el correo ya existe en Supabase
         api.verificarCredenciales("eq." + email).enqueue(new Callback<List<Usuario>>() {
             @Override
             public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
@@ -116,7 +106,6 @@ public class Registro extends AppCompatActivity {
                     etEmail.setError("Este correo ya se encuentra registrado");
                     etEmail.requestFocus();
                 } else {
-                    // 2. Si no existe, procedemos a crear el perfil
                     guardarUsuarioEnNube(gamertag, email);
                 }
             }
@@ -147,23 +136,39 @@ public class Registro extends AppCompatActivity {
         api.registrarUsuario(nuevoUsuario).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                btnRegister.setEnabled(true);
                 if (response.isSuccessful()) {
-                    // 1. Guardar la sesión localmente
-                    sessionManager.guardarSesion(
-                            nuevoUsuario.getId(),
-                            gamertag,
-                            email
-                    );
+                    api.verificarCredenciales("eq." + email).enqueue(new Callback<List<Usuario>>() {
+                        @Override
+                        public void onResponse(Call<List<Usuario>> callUser, Response<List<Usuario>> responseUser) {
+                            btnRegister.setEnabled(true);
+                            if (responseUser.isSuccessful() && responseUser.body() != null && !responseUser.body().isEmpty()) {
+                                Usuario usuarioCreado = responseUser.body().get(0);
 
-                    Toast.makeText(Registro.this, "¡Perfil creado con éxito!", Toast.LENGTH_SHORT).show();
+                                sessionManager.guardarSesion(
+                                        usuarioCreado.getId(),
+                                        gamertag,
+                                        email
+                                );
 
-                    // 2. Ir directamente a Home limpiando la pila de actividades
-                    Intent intent = new Intent(Registro.this, Home.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
+                                Toast.makeText(Registro.this, "¡Perfil creado con éxito!", Toast.LENGTH_SHORT).show();
+
+                                Intent intent = new Intent(Registro.this, Home.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(Registro.this, "Perfil creado, pero error al recuperar sesión", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<Usuario>> callUser, Throwable t) {
+                            btnRegister.setEnabled(true);
+                            Toast.makeText(Registro.this, "Error al vincular sesión", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } else {
+                    btnRegister.setEnabled(true);
                     Toast.makeText(Registro.this, "Error al registrar en la nube: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
