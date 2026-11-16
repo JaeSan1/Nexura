@@ -313,7 +313,7 @@ public class EditarPerfil extends AppCompatActivity {
                     finish();
                 } else {
                     try {
-                        String errorExacto = response.errorBody() != null ? response.errorBody().string() : "Sin detalles";
+                        String errorExacto = response.errorBody() != null ? response.errorBody().string() : "Sin det  alles";
                         Log.e("ERROR_SUPABASE", "Detalle del " + response.code() + ": " + errorExacto);
                         Toast.makeText(EditarPerfil.this, "Error " + response.code() + ": " + errorExacto, Toast.LENGTH_LONG).show();
                     } catch (Exception e) {

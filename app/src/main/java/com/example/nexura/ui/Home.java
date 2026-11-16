@@ -19,6 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.media3.common.MediaItem;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.ui.PlayerView;
 
 import com.bumptech.glide.Glide;
 import com.example.nexura.R;
@@ -61,6 +64,10 @@ public class Home extends AppCompatActivity {
 
     private FloatingActionButton btnCreateEvent;
     private TextView navExplore, navMyEvents, navProfile;
+
+    // Reproductor Multimedia Nativo (ExoPlayer)
+    private ExoPlayer exoPlayer;
+    private PlayerView playerViewHome;
 
     private final List<Evento> listaCompletaEventos = new ArrayList<>();
 
@@ -118,7 +125,11 @@ public class Home extends AppCompatActivity {
         navProfile = findViewById(R.id.navProfile);
         configurarNavegacionInferior();
 
-        // 7. Observar LiveData del ViewModel
+        // 7. Reproductor Multimedia Nativo
+        playerViewHome = findViewById(R.id.playerViewHome);
+        inicializarVideoHome();
+
+        // 8. Observar LiveData del ViewModel
         eventoViewModel.getEventos().observe(this, eventos -> {
             listaCompletaEventos.clear();
             if (eventos != null) {
@@ -134,12 +145,53 @@ public class Home extends AppCompatActivity {
         });
     }
 
+    private void inicializarVideoHome() {
+        if (playerViewHome == null) {
+            Toast.makeText(this, "Error: playerViewHome es null en el XML", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        exoPlayer = new ExoPlayer.Builder(this).build();
+        playerViewHome.setPlayer(exoPlayer);
+
+        // Capturar errores exactos de carga o red
+        exoPlayer.addListener(new androidx.media3.common.Player.Listener() {
+            @Override
+            public void onPlayerError(@androidx.annotation.NonNull androidx.media3.common.PlaybackException error) {
+                Toast.makeText(Home.this, "Error video: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.leon;
+
+        MediaItem mediaItem = MediaItem.fromUri(videoPath);
+        exoPlayer.setMediaItem(mediaItem);
+        exoPlayer.prepare();
+        exoPlayer.setPlayWhenReady(true); // Fuerza la carga inmediata al entrar al Home
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        // Refrescar eventos y avatar al volver de crear, editar, eliminar o editar perfil
         eventoViewModel.cargarEventos();
         cargarAvatarHeader();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (exoPlayer != null) {
+            exoPlayer.pause();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (exoPlayer != null) {
+            exoPlayer.release();
+            exoPlayer = null;
+        }
     }
 
     private void cargarAvatarHeader() {
@@ -212,7 +264,6 @@ public class Home extends AppCompatActivity {
 
     private void alternarCategoria(TextView categoriaPulsada, String nombreCategoria) {
         if (categoriaSeleccionadaActual == categoriaPulsada) {
-            // Si toca la misma categoría activa, desactivar filtro para mostrar todos
             resetearEstilosCategorias();
             categoriaSeleccionadaActual = null;
             categoriaFiltroActual = "";
@@ -316,7 +367,6 @@ public class Home extends AppCompatActivity {
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
             );
-            // Insertar directamente en el CardView (índice 0) para ocupar todo el cuadro sin márgenes
             card.addView(ivFondo, 0, params);
         }
 
@@ -329,19 +379,6 @@ public class Home extends AppCompatActivity {
         } else {
             ivFondo.setVisibility(View.GONE);
         }
-    }
-
-    private ImageView buscarImageViewEnCard(ViewGroup parent) {
-        for (int i = 0; i < parent.getChildCount(); i++) {
-            View child = parent.getChildAt(i);
-            if (child instanceof ImageView) {
-                return (ImageView) child;
-            } else if (child instanceof ViewGroup) {
-                ImageView encontrada = buscarImageViewEnCard((ViewGroup) child);
-                if (encontrada != null) return encontrada;
-            }
-        }
-        return null;
     }
 
     private void abrirDetalleEvento(Evento evento) {
