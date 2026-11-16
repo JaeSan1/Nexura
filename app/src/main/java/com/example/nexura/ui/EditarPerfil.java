@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,10 +13,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.nexura.R;
 import com.example.nexura.model.Usuario;
 import com.example.nexura.network.SupabaseApi;
@@ -42,7 +45,6 @@ public class EditarPerfil extends AppCompatActivity {
     private EditText etGamertagEdit, etCityEdit, etBioEdit;
     private Button btnSaveProfile;
 
-    // Referencias al Overlay de Carga
     private View layoutLoadingOverlay;
     private TextView tvLoadingText;
 
@@ -52,35 +54,25 @@ public class EditarPerfil extends AppCompatActivity {
     private SupabaseApi api;
     private SessionManager sessionManager;
 
-    // Launcher para Seleccionar Avatar
     private final ActivityResultLauncher<String> selectAvatarLauncher =
             registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
                 if (uri != null) {
                     uriAvatarSeleccionado = uri;
-                    try {
-                        InputStream is = getContentResolver().openInputStream(uri);
-                        Bitmap bitmap = BitmapFactory.decodeStream(is);
-                        if (ivAvatarEdit != null) ivAvatarEdit.setImageBitmap(bitmap);
-                        Toast.makeText(this, "Avatar seleccionado", Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        if (ivAvatarEdit != null) ivAvatarEdit.setImageURI(uri);
+                    if (ivAvatarEdit != null) {
+                        Glide.with(this).load(uri).circleCrop().into(ivAvatarEdit);
                     }
+                    Toast.makeText(this, "Avatar seleccionado", Toast.LENGTH_SHORT).show();
                 }
             });
 
-    // Launcher para Seleccionar Banner
     private final ActivityResultLauncher<String> selectBannerLauncher =
             registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
                 if (uri != null) {
                     uriBannerSeleccionado = uri;
-                    try {
-                        InputStream is = getContentResolver().openInputStream(uri);
-                        Bitmap bitmap = BitmapFactory.decodeStream(is);
-                        if (ivBannerEdit != null) ivBannerEdit.setImageBitmap(bitmap);
-                        Toast.makeText(this, "Banner seleccionado", Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        if (ivBannerEdit != null) ivBannerEdit.setImageURI(uri);
+                    if (ivBannerEdit != null) {
+                        Glide.with(this).load(uri).centerCrop().into(ivBannerEdit);
                     }
+                    Toast.makeText(this, "Banner seleccionado", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -101,15 +93,28 @@ public class EditarPerfil extends AppCompatActivity {
         etBioEdit = findViewById(R.id.etBioEdit);
         btnSaveProfile = findViewById(R.id.btnSaveProfile);
 
-        // Overlay de Carga
         layoutLoadingOverlay = findViewById(R.id.layoutLoadingOverlay);
         tvLoadingText = findViewById(R.id.tvLoadingText);
 
         if (btnBack != null) btnBack.setOnClickListener(v -> finish());
-        if (ivAvatarEdit != null) ivAvatarEdit.setOnClickListener(v -> selectAvatarLauncher.launch("image/*"));
-        if (containerBannerEdit != null) containerBannerEdit.setOnClickListener(v -> selectBannerLauncher.launch("image/*"));
 
-        // Cargar datos actuales del usuario
+        // Clic para cambiar avatar
+        if (ivAvatarEdit != null) {
+            ivAvatarEdit.setClickable(true);
+            ivAvatarEdit.setOnClickListener(v -> selectAvatarLauncher.launch("image/*"));
+        }
+
+        // Clic en contenedor e imagen del banner para evitar bloqueos táctiles
+        View.OnClickListener abrirGaleriaBanner = v -> selectBannerLauncher.launch("image/*");
+        if (containerBannerEdit != null) {
+            containerBannerEdit.setClickable(true);
+            containerBannerEdit.setOnClickListener(abrirGaleriaBanner);
+        }
+        if (ivBannerEdit != null) {
+            ivBannerEdit.setClickable(true);
+            ivBannerEdit.setOnClickListener(abrirGaleriaBanner);
+        }
+
         cargarDatosActuales();
 
         if (btnSaveProfile != null) {
@@ -141,8 +146,7 @@ public class EditarPerfil extends AppCompatActivity {
 
         mostrarCargando("Cargando perfil...");
 
-        // Verificamos que se envíe "id=eq." seguido del ID del usuario logueado
-        api.obtenerPerfilPorId("id=eq." + userId).enqueue(new Callback<List<Usuario>>() {
+        api.obtenerPerfilPorId("eq." + userId).enqueue(new Callback<List<Usuario>>() {
             @Override
             public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
                 ocultarCargando();
@@ -151,15 +155,29 @@ public class EditarPerfil extends AppCompatActivity {
                     if (etGamertagEdit != null) etGamertagEdit.setText(user.getGamertag());
                     if (etCityEdit != null && user.getCiudad() != null) etCityEdit.setText(user.getCiudad());
                     if (etBioEdit != null && user.getBiografia() != null) etBioEdit.setText(user.getBiografia());
+
+                    if (ivAvatarEdit != null && !TextUtils.isEmpty(user.getFotoPerfilUrl())) {
+                        Glide.with(EditarPerfil.this)
+                                .load(user.getFotoPerfilUrl())
+                                .circleCrop()
+                                .into(ivAvatarEdit);
+                    }
+
+                    if (ivBannerEdit != null && !TextUtils.isEmpty(user.getBannerUrl())) {
+                        Glide.with(EditarPerfil.this)
+                                .load(user.getBannerUrl())
+                                .centerCrop()
+                                .into(ivBannerEdit);
+                    }
                 } else {
-                    android.util.Log.e("ERROR_PERFIL", "No se encontró el perfil o la lista vino vacía para el ID: " + userId);
+                    Log.e("ERROR_PERFIL", "No se encontró el perfil para el ID: " + userId);
                 }
             }
 
             @Override
             public void onFailure(Call<List<Usuario>> call, Throwable t) {
                 ocultarCargando();
-                android.util.Log.e("ERROR_PERFIL", "Fallo de red al cargar perfil: " + t.getMessage());
+                Log.e("ERROR_PERFIL", "Fallo de red al cargar perfil: " + t.getMessage());
             }
         });
     }
@@ -203,22 +221,30 @@ public class EditarPerfil extends AppCompatActivity {
                 return;
             }
 
-            ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = inputStream.read(buffer)) != -1) {
-                byteBuffer.write(buffer, 0, len);
-            }
+            Bitmap original = BitmapFactory.decodeStream(inputStream);
             inputStream.close();
 
-            byte[] bytes = byteBuffer.toByteArray();
-
-            if (bytes.length == 0) {
+            if (original == null) {
                 callback.onCompleted("");
                 return;
             }
 
-            String nombreArchivo = prefijo + System.currentTimeMillis() + ".jpg";
+            int maxDim = 1080;
+            int width = original.getWidth();
+            int height = original.getHeight();
+            Bitmap bitmapFinal = original;
+
+            if (width > maxDim || height > maxDim) {
+                float ratio = Math.min((float) maxDim / width, (float) maxDim / height);
+                bitmapFinal = Bitmap.createScaledBitmap(
+                        original, Math.round(width * ratio), Math.round(height * ratio), true);
+            }
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmapFinal.compress(Bitmap.CompressFormat.JPEG, 82, baos);
+            byte[] bytes = baos.toByteArray();
+
+            String nombreArchivo = prefijo + sessionManager.getUserId() + "_" + System.currentTimeMillis() + ".jpg";
             RequestBody body = RequestBody.create(MediaType.parse("image/jpeg"), bytes);
 
             api.subirImagenBucket("image/jpeg", nombreArchivo, body).enqueue(new Callback<Void>() {
@@ -228,16 +254,23 @@ public class EditarPerfil extends AppCompatActivity {
                         String urlPublica = "https://wfkzbqhsacitksuwqlei.supabase.co/storage/v1/object/public/eventos-imagenes/" + nombreArchivo;
                         callback.onCompleted(urlPublica);
                     } else {
+                        try {
+                            String err = response.errorBody() != null ? response.errorBody().string() : "";
+                            Log.e("SUPABASE_STORAGE", "Error " + response.code() + ": " + err);
+                            Toast.makeText(EditarPerfil.this, "Error subiendo imagen (" + response.code() + ")", Toast.LENGTH_SHORT).show();
+                        } catch (Exception ignored) {}
                         callback.onCompleted("");
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
+                    Log.e("SUPABASE_STORAGE", "Fallo de red en Storage: " + t.getMessage());
                     callback.onCompleted("");
                 }
             });
         } catch (Exception e) {
+            Log.e("SUPABASE_STORAGE", "Excepción al procesar imagen: " + e.getMessage());
             callback.onCompleted("");
         }
     }
@@ -261,8 +294,7 @@ public class EditarPerfil extends AppCompatActivity {
         if (!TextUtils.isEmpty(urlAvatar)) body.put("foto_perfil_url", urlAvatar);
         if (!TextUtils.isEmpty(urlBanner)) body.put("banner_url", urlBanner);
 
-        // CORRECCIÓN: Variable nombrada como "filtro" e incluye el texto completo
-        String filtro = "id=eq." + sessionManager.getUserId();
+        String filtro = "eq." + sessionManager.getUserId();
 
         api.actualizarPerfil(filtro, body).enqueue(new Callback<Void>() {
             @Override
@@ -282,13 +314,11 @@ public class EditarPerfil extends AppCompatActivity {
                 } else {
                     try {
                         String errorExacto = response.errorBody() != null ? response.errorBody().string() : "Sin detalles";
-                        android.util.Log.e("ERROR_SUPABASE", "Detalle del 400: " + errorExacto);
-                        System.out.println("ERROR_SUPABASE: " + errorExacto);
+                        Log.e("ERROR_SUPABASE", "Detalle del " + response.code() + ": " + errorExacto);
+                        Toast.makeText(EditarPerfil.this, "Error " + response.code() + ": " + errorExacto, Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Toast.makeText(EditarPerfil.this, "Error al guardar el perfil", Toast.LENGTH_LONG).show();
                     }
-
-                    Toast.makeText(EditarPerfil.this, "Error 400: Revisa el Logcat", Toast.LENGTH_LONG).show();
                 }
             }
 

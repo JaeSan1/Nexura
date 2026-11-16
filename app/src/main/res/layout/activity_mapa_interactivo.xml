@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0F172A">
+    android:background="#0B0E14">
 
-    <!-- Mapa Interactivo OSMDroid a Pantalla Completa -->
+    <!-- Vista de Mapa OpenStreetMap -->
     <org.osmdroid.views.MapView
-        android:id="@+id/mapViewFull"
+        android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- Barrita Superior Traslúcida con Botón Volver y Título -->
+    <!-- Barra de Navegación Flotante -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_margin="16dp"
-        android:background="@drawable/categoria"
+        android:background="#D90B0E14"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="12dp">
@@ -27,21 +25,25 @@
             android:id="@+id/btnBackMap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="8dp"
-            android:text="←"
-            android:textColor="#00F2FE"
-            android:textSize="24sp"
+            android:padding="4dp"
+            android:text="← Volver"
+            android:textColor="#00FFFF"
+            android:textSize="15sp"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
             android:layout_weight="1"
+            android:gravity="center"
             android:text="Mapa de Eventos"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold" />
+
+        <View
+            android:layout_width="48dp"
+            android:layout_height="1dp" />
     </LinearLayout>
 
 </RelativeLayout>

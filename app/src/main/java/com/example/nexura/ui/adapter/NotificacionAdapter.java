@@ -40,7 +40,7 @@ public class NotificacionAdapter extends RecyclerView.Adapter<NotificacionAdapte
 
         holder.tvTitulo.setText(notif.getTitulo());
         holder.tvMensaje.setText(notif.getMensaje());
-        holder.tvTiempo.setText(notif.getTiempo());
+        holder.tvTiempo.setText(notif.getCreatedAt() != null ? notif.getCreatedAt() : "");
 
         switch (notif.getTipo()) {
             case "URGENTE":

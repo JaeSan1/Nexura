@@ -1,234 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0F172A">
+    android:background="#0B0E14">
 
+    <!-- CONTENIDO PRINCIPAL -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingBottom="40dp">
 
-            <!-- Header / Toolbar Superior -->
-            <LinearLayout
+            <!-- HEADER Y BANNER -->
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_height="220dp"
+                android:layout_marginBottom="50dp">
 
+                <!-- Banner Editable -->
+                <ImageView
+                    android:id="@+id/ivBannerEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="170dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_logo_nexura"
+                    android:contentDescription="Banner de perfil" />
+
+                <!-- Capa oscura para contraste -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="170dp"
+                    android:background="#40000000" />
+
+                <!-- Botón Volver -->
                 <TextView
                     android:id="@+id/btnBackEditProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="←"
-                    android:textColor="#00F2FE"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    android:text="Editar Perfil"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- Sección de Portada / Banner Interactivo -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="6dp"
-                android:text="BANNER / PORTADA DE PERFIL"
-                android:textColor="#00F2FE"
-                android:textSize="11sp"
-                android:textStyle="bold" />
-
-            <FrameLayout
-                android:id="@+id/containerBannerEdit"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/categoria">
-
-                <ImageView
-                    android:id="@+id/ivBannerEdit"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/categoria" />
-
-                <!-- Indicador de cambiar portada -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="#80000000"
-                    android:gravity="center"
-                    android:orientation="horizontal"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="#990B0E14"
                     android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp">
+                    android:paddingVertical="6dp"
+                    android:text="← Volver"
+                    android:textColor="#00FFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-                    <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:src="@android:drawable/ic_menu_camera"
-                        app:tint="#00F2FE" />
+                <!-- Avatar Editable (Contenedor con ID requerido) -->
+                <FrameLayout
+                    android:id="@+id/containerBannerEdit"
+                    android:layout_width="104dp"
+                    android:layout_height="104dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="Cambiar Banner"
-                        android:textColor="#FFFFFF"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </FrameLayout>
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:cardBackgroundColor="#0B0E14"
+                        app:cardCornerRadius="52dp"
+                        app:cardElevation="6dp">
 
-            <!-- Sección de Avatar Interactivo -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
-                android:text="AVATAR / FOTO DE PERFIL"
-                android:textColor="#00F2FE"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+                        <ImageView
+                            android:id="@+id/ivAvatarEdit"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="4dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/avatar"
+                            android:contentDescription="Avatar de perfil" />
+                    </androidx.cardview.widget.CardView>
+                </FrameLayout>
+            </RelativeLayout>
 
-            <FrameLayout
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="24dp">
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/ivAvatarEdit"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#1E293B"
-                    android:padding="2dp"
-                    android:scaleType="centerCrop"
-                    android:src="@mipmap/ic_launcher"
-                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-                    app:strokeColor="#00F2FE"
-                    app:strokeWidth="2dp" />
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="bottom|end"
-                    android:background="@drawable/badge"
-                    android:contentDescription="Cambiar Avatar"
-                    android:padding="6dp"
-                    android:src="@android:drawable/ic_menu_camera"
-                    app:tint="#00F2FE" />
-            </FrameLayout>
-
-            <!-- Formulario de Edición -->
+            <!-- FORMULARIO DE EDICIÓN -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp">
 
                 <!-- Gamertag -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
-                    android:text="GAMERTAG / APODO"
-                    android:textColor="#00F2FE"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
+                    android:text="Gamertag"
+                    android:textColor="#9CA3AF"
+                    android:textSize="13sp" />
 
                 <EditText
                     android:id="@+id/etGamertagEdit"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/categoria"
-                    android:hint="Ej. NexuraPlayer"
-                    android:inputType="textPersonName"
-                    android:paddingHorizontal="16dp"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="#161B26"
+                    android:hint="Tu gamertag"
+                    android:inputType="text"
+                    android:paddingHorizontal="14dp"
                     android:textColor="#FFFFFF"
-                    android:textColorHint="#64748B"
-                    android:textSize="14sp" />
+                    android:textColorHint="#4B5563"
+                    android:textSize="15sp" />
 
-                <!-- Ciudad / Región -->
+                <!-- Ciudad -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
-                    android:text="CIUDAD O REGIÓN"
-                    android:textColor="#00F2FE"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
+                    android:text="Ciudad"
+                    android:textColor="#9CA3AF"
+                    android:textSize="13sp" />
 
                 <EditText
                     android:id="@+id/etCityEdit"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/categoria"
-                    android:hint="Ej. Chillán"
-                    android:inputType="textCapWords"
-                    android:paddingHorizontal="16dp"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="#161B26"
+                    android:hint="Ej: Chillán"
+                    android:inputType="text"
+                    android:paddingHorizontal="14dp"
                     android:textColor="#FFFFFF"
-                    android:textColorHint="#64748B"
-                    android:textSize="14sp" />
+                    android:textColorHint="#4B5563"
+                    android:textSize="15sp" />
 
                 <!-- Biografía -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
-                    android:text="BIOGRAFÍA / PRESENTACIÓN"
-                    android:textColor="#00F2FE"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
+                    android:text="Biografía"
+                    android:textColor="#9CA3AF"
+                    android:textSize="13sp" />
 
                 <EditText
                     android:id="@+id/etBioEdit"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginBottom="32dp"
-                    android:background="@drawable/categoria"
+                    android:layout_height="110dp"
+                    android:layout_marginBottom="24dp"
+                    android:background="#161B26"
                     android:gravity="top|start"
-                    android:hint="Cuéntale a la comunidad sobre tus gustos gaming, eventos que te interesan, etc."
+                    android:hint="Escribe algo sobre ti..."
                     android:inputType="textMultiLine"
-                    android:padding="16dp"
+                    android:padding="14dp"
                     android:textColor="#FFFFFF"
-                    android:textColorHint="#64748B"
-                    android:textSize="14sp" />
+                    android:textColorHint="#4B5563"
+                    android:textSize="15sp" />
 
-                <!-- Botón de Guardar -->
+                <!-- Botón Guardar Cambios -->
                 <Button
                     android:id="@+id/btnSaveProfile"
                     android:layout_width="match_parent"
-                    android:layout_height="54dp"
-                    android:backgroundTint="#00F2FE"
-                    android:text="GUARDAR CAMBIOS"
-                    android:textColor="#0F172A"
-                    android:textSize="14sp"
+                    android:layout_height="52dp"
+                    android:backgroundTint="#00FFFF"
+                    android:text="Guardar Cambios"
+                    android:textColor="#0B0E14"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
-
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
-    <!-- Superposición de Carga (Overlay) -->
-    <include layout="@layout/activity_loading_overlay" />
+    <!-- CAPA DE CARGA (LOADING OVERLAY) -->
+    <FrameLayout
+        android:id="@+id/layoutLoadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CC0B0E14"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="#00FFFF" />
+
+            <TextView
+                android:id="@+id/tvLoadingText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Guardando cambios..."
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </FrameLayout>
 </FrameLayout>

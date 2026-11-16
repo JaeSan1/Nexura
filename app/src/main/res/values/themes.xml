@@ -22,4 +22,9 @@
         <!-- Tema al que pasa la app automáticamente al terminar de cargar -->
         <item name="postSplashScreenTheme">@style/Theme.Nexura</item>
     </style>
+
+    <style name="CircleImageView">
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>

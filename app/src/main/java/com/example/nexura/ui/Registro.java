@@ -53,11 +53,9 @@ public class Registro extends AppCompatActivity {
         if (btnRegister != null) btnRegister.setOnClickListener(v -> validarYRegistrar());
 
         String emailSocial = getIntent().getStringExtra("email_social");
-        if (emailSocial != null && !emailSocial.isEmpty()) {
-            if (etEmail != null) {
-                etEmail.setText(emailSocial);
-                etEmail.setEnabled(false);
-            }
+        if (emailSocial != null && !emailSocial.isEmpty() && etEmail != null) {
+            etEmail.setText(emailSocial);
+            etEmail.setEnabled(false);
         }
     }
 
@@ -131,50 +129,37 @@ public class Registro extends AppCompatActivity {
         nuevoUsuario.setSeguidores(0);
         nuevoUsuario.setSeguidos(0);
         nuevoUsuario.setReputacionLikes(0);
+        nuevoUsuario.setEventosOrganizados(0);
         nuevoUsuario.setEsOrganizador(false);
+        nuevoUsuario.setEsVerificado(false);
 
-        api.registrarUsuario(nuevoUsuario).enqueue(new Callback<Void>() {
+        api.registrarUsuario(nuevoUsuario).enqueue(new Callback<List<Usuario>>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    api.verificarCredenciales("eq." + email).enqueue(new Callback<List<Usuario>>() {
-                        @Override
-                        public void onResponse(Call<List<Usuario>> callUser, Response<List<Usuario>> responseUser) {
-                            btnRegister.setEnabled(true);
-                            if (responseUser.isSuccessful() && responseUser.body() != null && !responseUser.body().isEmpty()) {
-                                Usuario usuarioCreado = responseUser.body().get(0);
+            public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
+                btnRegister.setEnabled(true);
 
-                                sessionManager.guardarSesion(
-                                        usuarioCreado.getId(),
-                                        gamertag,
-                                        email
-                                );
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    Usuario usuarioCreado = response.body().get(0);
 
-                                Toast.makeText(Registro.this, "¡Perfil creado con éxito!", Toast.LENGTH_SHORT).show();
+                    sessionManager.guardarSesion(
+                            usuarioCreado.getId(),
+                            gamertag,
+                            email
+                    );
 
-                                Intent intent = new Intent(Registro.this, Home.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                                finish();
-                            } else {
-                                Toast.makeText(Registro.this, "Perfil creado, pero error al recuperar sesión", Toast.LENGTH_SHORT).show();
-                            }
-                        }
+                    Toast.makeText(Registro.this, "¡Perfil creado con éxito!", Toast.LENGTH_SHORT).show();
 
-                        @Override
-                        public void onFailure(Call<List<Usuario>> callUser, Throwable t) {
-                            btnRegister.setEnabled(true);
-                            Toast.makeText(Registro.this, "Error al vincular sesión", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    Intent intent = new Intent(Registro.this, Home.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
                 } else {
-                    btnRegister.setEnabled(true);
                     Toast.makeText(Registro.this, "Error al registrar en la nube: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<List<Usuario>> call, Throwable t) {
                 btnRegister.setEnabled(true);
                 Toast.makeText(Registro.this, "Falla al conectar con el servidor", Toast.LENGTH_SHORT).show();
             }

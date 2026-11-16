@@ -23,6 +23,9 @@ public class Usuario implements Serializable {
     @SerializedName("foto_perfil_url")
     private String fotoPerfilUrl;
 
+    @SerializedName("banner_url")
+    private String bannerUrl;
+
     @SerializedName("titulo_equipado")
     private String tituloEquipado;
 
@@ -50,13 +53,11 @@ public class Usuario implements Serializable {
     @SerializedName("es_verificado")
     private boolean esVerificado;
 
-    @SerializedName("calificacion_promedio")
-    private float calificacionPromedio;
-
     @SerializedName("eventos_organizados")
     private int eventosOrganizados;
 
-    public Usuario() {}
+    @SerializedName("calificacion_promedio")
+    private double calificacionPromedio;
 
     // Getters y Setters
     public String getId() { return id; }
@@ -76,6 +77,9 @@ public class Usuario implements Serializable {
 
     public String getFotoPerfilUrl() { return fotoPerfilUrl; }
     public void setFotoPerfilUrl(String fotoPerfilUrl) { this.fotoPerfilUrl = fotoPerfilUrl; }
+
+    public String getBannerUrl() { return bannerUrl; }
+    public void setBannerUrl(String bannerUrl) { this.bannerUrl = bannerUrl; }
 
     public String getTituloEquipado() { return tituloEquipado; }
     public void setTituloEquipado(String tituloEquipado) { this.tituloEquipado = tituloEquipado; }
@@ -104,9 +108,9 @@ public class Usuario implements Serializable {
     public boolean isEsVerificado() { return esVerificado; }
     public void setEsVerificado(boolean esVerificado) { this.esVerificado = esVerificado; }
 
-    public float getCalificacionPromedio() { return calificacionPromedio; }
-    public void setCalificacionPromedio(float calificacionPromedio) { this.calificacionPromedio = calificacionPromedio; }
-
     public int getEventosOrganizados() { return eventosOrganizados; }
     public void setEventosOrganizados(int eventosOrganizados) { this.eventosOrganizados = eventosOrganizados; }
+
+    public double getCalificacionPromedio() { return calificacionPromedio; }
+    public void setCalificacionPromedio(double calificacionPromedio) { this.calificacionPromedio = calificacionPromedio; }
 }

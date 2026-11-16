@@ -57,7 +57,7 @@ public class EventoRepository {
     // 2. Obtener Mis Eventos (Guardados vs Historial Asistidos)
     public void obtenerMisEventos(String userId, boolean esHistorial, ApiCallback<List<Map<String, Object>>> callback) {
         String filtroAsistio = esHistorial ? "eq.true" : "eq.false";
-        api.obtenerAsistenciasUsuario("eq." + userId, filtroAsistio).enqueue(new Callback<List<Object>>() {
+        api.obtenerAsistenciasUsuario("eq." + userId + "," + filtroAsistio).enqueue(new Callback<List<Object>>() {
             @Override
             public void onResponse(Call<List<Object>> call, Response<List<Object>> response) {
                 if (response.isSuccessful() && response.body() != null) {

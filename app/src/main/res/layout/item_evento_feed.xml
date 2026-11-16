@@ -22,10 +22,15 @@
             android:orientation="horizontal"
             android:padding="12dp">
 
-            <View
+            <ImageView
+                android:id="@+id/ivFeedOrganizerAvatar"
                 android:layout_width="34dp"
                 android:layout_height="34dp"
-                android:background="@drawable/categoria" />
+                android:background="@drawable/categoria"
+                android:contentDescription="Avatar Organizador"
+                android:padding="2dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_logo_nexura" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -95,8 +100,8 @@
                 android:id="@+id/ivEventImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:contentDescription="Portada Evento" />
+                android:contentDescription="Portada Evento"
+                android:scaleType="centerCrop" />
 
             <TextView
                 android:id="@+id/tvFeedDateBadge"

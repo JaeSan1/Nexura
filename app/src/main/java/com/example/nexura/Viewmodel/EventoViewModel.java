@@ -1,99 +1,130 @@
 package com.example.nexura.Viewmodel;
 
+import android.app.Application;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.example.nexura.Repository.EventoRepository;
 import com.example.nexura.model.Evento;
+import com.example.nexura.network.SupabaseApi;
+import com.example.nexura.network.SupabaseCliente;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class EventoViewModel extends ViewModel {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-    private final EventoRepository eventoRepository;
+public class EventoViewModel extends AndroidViewModel {
 
+    private final SupabaseApi api;
+
+    // LiveData para Mis Eventos
+    private final MutableLiveData<List<Object>> misEventosLiveData = new MutableLiveData<>();
+
+    // LiveData para el Home tipado como List<Evento>
     private final MutableLiveData<List<Evento>> eventosLiveData = new MutableLiveData<>();
-    private final MutableLiveData<List<Evento>> eventosFiltradosLiveData = new MutableLiveData<>();
-    private final MutableLiveData<List<Map<String, Object>>> misEventosLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> cargandoLiveData = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
 
-    private List<Evento> listaEventosCache = new ArrayList<>();
-
-    public EventoViewModel() {
-        this.eventoRepository = new EventoRepository();
+    public EventoViewModel(@NonNull Application application) {
+        super(application);
+        api = SupabaseCliente.getClient().create(SupabaseApi.class);
     }
 
-    public LiveData<List<Evento>> getEventos() {
-        return eventosFiltradosLiveData;
-    }
-
-    public LiveData<List<Map<String, Object>>> getMisEventos() {
+    // --- Métodos para MisEventos ---
+    public LiveData<List<Object>> getMisEventos() {
         return misEventosLiveData;
     }
 
-    public LiveData<Boolean> getCargando() {
-        return cargandoLiveData;
+    public void cargarMisEventos(String userId, boolean esHistorial) {
+        if (userId == null || userId.isEmpty()) return;
+
+        api.obtenerAsistenciasUsuario("eq." + userId).enqueue(new Callback<List<Object>>() {
+            @Override
+            public void onResponse(Call<List<Object>> call, Response<List<Object>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Object> listaFiltrada = new ArrayList<>();
+
+                    for (Object obj : response.body()) {
+                        if (obj instanceof Map) {
+                            @SuppressWarnings("unchecked")
+                            Map<String, Object> reg = (Map<String, Object>) obj;
+
+                            if (esHistorial) {
+                                Object gpsObj = reg.get("validado_gps");
+                                if (gpsObj != null && Boolean.parseBoolean(gpsObj.toString())) {
+                                    listaFiltrada.add(reg);
+                                }
+                            } else {
+                                Object favObj = reg.get("es_favorito");
+                                if (favObj != null && Boolean.parseBoolean(favObj.toString())) {
+                                    listaFiltrada.add(reg);
+                                }
+                            }
+                        }
+                    }
+                    misEventosLiveData.setValue(listaFiltrada);
+                } else {
+                    misEventosLiveData.setValue(new ArrayList<>());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Object>> call, Throwable t) {
+                misEventosLiveData.setValue(new ArrayList<>());
+            }
+        });
+    }
+
+    // --- Métodos para Home y Explorar ---
+    public LiveData<List<Evento>> getEventos() {
+        return eventosLiveData;
     }
 
     public LiveData<String> getError() {
         return errorLiveData;
     }
 
-    // Cargar todos los eventos desde Supabase
     public void cargarEventos() {
-        cargandoLiveData.setValue(true);
-        eventoRepository.obtenerTodosLosEventos(new EventoRepository.ApiCallback<List<Evento>>() {
+        api.obtenerEventos().enqueue(new Callback<List<Evento>>() {
             @Override
-            public void onSuccess(List<Evento> result) {
-                cargandoLiveData.setValue(false);
-                listaEventosCache = result != null ? result : new ArrayList<>();
-                eventosLiveData.setValue(listaEventosCache);
-                eventosFiltradosLiveData.setValue(listaEventosCache);
+            public void onResponse(Call<List<Evento>> call, Response<List<Evento>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    eventosLiveData.setValue(response.body());
+                } else {
+                    errorLiveData.setValue("Error al cargar los eventos");
+                }
             }
 
             @Override
-            public void onError(String mensajeError) {
-                cargandoLiveData.setValue(false);
-                errorLiveData.setValue(mensajeError);
-                eventosFiltradosLiveData.setValue(new ArrayList<>());
+            public void onFailure(Call<List<Evento>> call, Throwable t) {
+                errorLiveData.setValue(t.getMessage());
             }
         });
     }
 
-    // Filtrar localmente por categoría
     public void filtrarPorCategoria(String categoria) {
-        if (categoria == null || categoria.equalsIgnoreCase("Todos")) {
-            eventosFiltradosLiveData.setValue(listaEventosCache);
+        if (categoria == null || categoria.isEmpty()) {
+            cargarEventos();
             return;
         }
 
-        List<Evento> filtrada = new ArrayList<>();
-        for (Evento evento : listaEventosCache) {
-            if (evento.getCategoria() != null && evento.getCategoria().equalsIgnoreCase(categoria)) {
-                filtrada.add(evento);
-            }
-        }
-        eventosFiltradosLiveData.setValue(filtrada);
-    }
-
-    // Cargar Mis Eventos (Guardados vs Historial)
-    public void cargarMisEventos(String userId, boolean esHistorial) {
-        cargandoLiveData.setValue(true);
-        eventoRepository.obtenerMisEventos(userId, esHistorial, new EventoRepository.ApiCallback<List<Map<String, Object>>>() {
+        api.obtenerEventosPorCategoria("eq." + categoria).enqueue(new Callback<List<Evento>>() {
             @Override
-            public void onSuccess(List<Map<String, Object>> result) {
-                cargandoLiveData.setValue(false);
-                misEventosLiveData.setValue(result != null ? result : new ArrayList<>());
+            public void onResponse(Call<List<Evento>> call, Response<List<Evento>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    eventosLiveData.setValue(response.body());
+                } else {
+                    errorLiveData.setValue("Error al filtrar por categoría");
+                }
             }
 
             @Override
-            public void onError(String mensajeError) {
-                cargandoLiveData.setValue(false);
-                misEventosLiveData.setValue(new ArrayList<>());
+            public void onFailure(Call<List<Evento>> call, Throwable t) {
+                errorLiveData.setValue(t.getMessage());
             }
         });
     }

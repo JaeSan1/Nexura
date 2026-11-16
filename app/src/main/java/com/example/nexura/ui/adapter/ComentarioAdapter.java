@@ -1,8 +1,12 @@
 package com.example.nexura.ui.adapter;
 
+import android.graphics.Color;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,10 +19,18 @@ import java.util.List;
 
 public class ComentarioAdapter extends RecyclerView.Adapter<ComentarioAdapter.ComentarioViewHolder> {
 
-    private final List<Comentario> listaComentarios;
+    public interface OnComentarioDeleteListener {
+        void onEliminarComentario(Comentario comentario, int position);
+    }
 
-    public ComentarioAdapter(List<Comentario> listaComentarios) {
+    private final List<Comentario> listaComentarios;
+    private final String currentUserId;
+    private final OnComentarioDeleteListener deleteListener;
+
+    public ComentarioAdapter(List<Comentario> listaComentarios, String currentUserId, OnComentarioDeleteListener deleteListener) {
         this.listaComentarios = listaComentarios;
+        this.currentUserId = currentUserId;
+        this.deleteListener = deleteListener;
     }
 
     @NonNull
@@ -32,12 +44,30 @@ public class ComentarioAdapter extends RecyclerView.Adapter<ComentarioAdapter.Co
     @Override
     public void onBindViewHolder(@NonNull ComentarioViewHolder holder, int position) {
         Comentario comentario = listaComentarios.get(position);
-        if (comentario != null) {
-            String usuario = comentario.getGamertag() != null ? comentario.getGamertag() : "Gamer";
-            String texto = comentario.getContenido() != null ? comentario.getContenido() : "";
+        if (comentario == null) return;
 
-            holder.tvUser.setText(usuario);
-            holder.tvText.setText(texto);
+        String usuario = comentario.getGamertag() != null ? comentario.getGamertag() : "Gamer";
+        String texto = comentario.getContenido() != null ? comentario.getContenido() : "";
+
+        holder.tvUser.setText(usuario);
+        holder.tvText.setText(texto);
+
+        boolean esMio = !TextUtils.isEmpty(currentUserId)
+                && currentUserId.equals(comentario.getUsuarioId());
+
+        if (holder.btnEliminar != null) {
+            if (esMio && deleteListener != null) {
+                holder.btnEliminar.setVisibility(View.VISIBLE);
+                holder.btnEliminar.setOnClickListener(v -> {
+                    int posActual = holder.getAdapterPosition();
+                    if (posActual != RecyclerView.NO_POSITION) {
+                        deleteListener.onEliminarComentario(comentario, posActual);
+                    }
+                });
+            } else {
+                holder.btnEliminar.setVisibility(View.GONE);
+                holder.btnEliminar.setOnClickListener(null);
+            }
         }
     }
 
@@ -47,12 +77,31 @@ public class ComentarioAdapter extends RecyclerView.Adapter<ComentarioAdapter.Co
     }
 
     public static class ComentarioViewHolder extends RecyclerView.ViewHolder {
-        TextView tvUser, tvText;
+        TextView tvUser, tvText, btnEliminar;
 
         public ComentarioViewHolder(@NonNull View itemView) {
             super(itemView);
             tvUser = itemView.findViewById(R.id.tvCommentUser);
             tvText = itemView.findViewById(R.id.tvCommentText);
+
+            // Crear botón de eliminar dinámicamente si no existe en item_comentario.xml
+            if (tvUser != null && tvUser.getParent() instanceof ViewGroup) {
+                ViewGroup parent = (ViewGroup) tvUser.getParent();
+                btnEliminar = new TextView(itemView.getContext());
+                btnEliminar.setText("Eliminar");
+                btnEliminar.setTextColor(Color.parseColor("#FF5252"));
+                btnEliminar.setTextSize(11f);
+                btnEliminar.setPadding(16, 4, 8, 4);
+                btnEliminar.setVisibility(View.GONE);
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                params.gravity = Gravity.END;
+                btnEliminar.setLayoutParams(params);
+                parent.addView(btnEliminar);
+            }
         }
     }
 }

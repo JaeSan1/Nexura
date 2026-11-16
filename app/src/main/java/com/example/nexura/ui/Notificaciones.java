@@ -1,6 +1,7 @@
 package com.example.nexura.ui;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import com.example.nexura.ui.adapter.NotificacionAdapter;
 import com.example.nexura.model.Notificacion;
 import com.example.nexura.network.SupabaseApi;
 import com.example.nexura.network.SupabaseCliente;
+import com.example.nexura.util.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +28,14 @@ public class Notificaciones extends AppCompatActivity {
     private NotificacionAdapter adapter;
     private List<Notificacion> listaNotificaciones;
     private SupabaseApi api;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notificaciones);
 
+        sessionManager = new SessionManager(this);
         api = SupabaseCliente.getClient().create(SupabaseApi.class);
 
         TextView btnBack = findViewById(R.id.btnBackNotificaciones);
@@ -50,24 +54,36 @@ public class Notificaciones extends AppCompatActivity {
             });
             rvNotificaciones.setAdapter(adapter);
         }
+    }
 
-        // Cargar avisos y alertas
+    @Override
+    protected void onResume() {
+        super.onResume();
         cargarNotificacionesDesdeNube();
     }
 
     private void cargarNotificacionesDesdeNube() {
-        api.obtenerNotificaciones().enqueue(new Callback<List<Notificacion>>() {
+        String userId = sessionManager.getUserId();
+        if (TextUtils.isEmpty(userId)) {
+            // Si no hay sesión, cargamos las notificaciones generales
+            api.obtenerNotificaciones().enqueue(new Callback<List<Notificacion>>() {
+                @Override
+                public void onResponse(Call<List<Notificacion>> call, Response<List<Notificacion>> response) {
+                    procesarRespuestaNotificaciones(response);
+                }
+                @Override
+                public void onFailure(Call<List<Notificacion>> call, Throwable t) {
+                    Toast.makeText(Notificaciones.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            return;
+        }
+
+        // Cargar notificaciones específicas dirigidas al usuario actual
+        api.obtenerNotificacionesPorUsuario("eq." + userId).enqueue(new Callback<List<Notificacion>>() {
             @Override
             public void onResponse(Call<List<Notificacion>> call, Response<List<Notificacion>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    listaNotificaciones.clear();
-                    listaNotificaciones.addAll(response.body());
-                    if (adapter != null) {
-                        adapter.notifyDataSetChanged();
-                    }
-                } else {
-                    Toast.makeText(Notificaciones.this, "No se pudieron obtener las alertas: " + response.code(), Toast.LENGTH_SHORT).show();
-                }
+                procesarRespuestaNotificaciones(response);
             }
 
             @Override
@@ -75,5 +91,17 @@ public class Notificaciones extends AppCompatActivity {
                 Toast.makeText(Notificaciones.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void procesarRespuestaNotificaciones(Response<List<Notificacion>> response) {
+        if (response.isSuccessful() && response.body() != null) {
+            listaNotificaciones.clear();
+            listaNotificaciones.addAll(response.body());
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+        } else {
+            Toast.makeText(Notificaciones.this, "No se pudieron obtener las alertas: " + response.code(), Toast.LENGTH_SHORT).show();
+        }
     }
 }

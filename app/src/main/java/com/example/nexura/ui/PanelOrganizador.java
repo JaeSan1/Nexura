@@ -2,20 +2,25 @@ package com.example.nexura.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
-import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nexura.R;
-import com.example.nexura.model.Notificacion;
+import com.example.nexura.model.Evento;
 import com.example.nexura.network.SupabaseApi;
 import com.example.nexura.network.SupabaseCliente;
+import com.example.nexura.ui.adapter.EventoFeedAdapter;
+import com.example.nexura.util.SessionManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,92 +28,132 @@ import retrofit2.Response;
 
 public class PanelOrganizador extends AppCompatActivity {
 
+    private static final int REQUEST_CODE_CREAR_EDITAR = 2001;
+
+    private RecyclerView rvMisEventos;
+    private EventoFeedAdapter adapter;
+    private List<Evento> listaMisEventos = new ArrayList<>();
     private SupabaseApi api;
+    private SessionManager sessionManager;
+    private TextView tvEmptyState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_panel_organizador);
 
+        sessionManager = new SessionManager(this);
         api = SupabaseCliente.getClient().create(SupabaseApi.class);
 
-        TextView btnBack = findViewById(R.id.btnBackOrganizer);
-        Button btnCreateNewEvent = findViewById(R.id.btnCreateNewEvent);
-        Button btnSendBroadcastAlert = findViewById(R.id.btnSendBroadcastAlert);
+        TextView btnBack = findViewById(R.id.btnBackPanel);
+        Button btnCrearNuevo = findViewById(R.id.btnCreateNewEventPanel);
+        rvMisEventos = findViewById(R.id.rvMisEventosOrganizados);
+        tvEmptyState = findViewById(R.id.tvEmptyStateOrganizador);
 
-        if (btnBack != null) {
-            btnBack.setOnClickListener(v -> finish());
+        if (btnBack != null) btnBack.setOnClickListener(v -> finish());
+
+        if (btnCrearNuevo != null) {
+            btnCrearNuevo.setOnClickListener(v -> {
+                Intent intent = new Intent(PanelOrganizador.this, CrearEvento.class);
+                startActivityForResult(intent, REQUEST_CODE_CREAR_EDITAR);
+            });
         }
 
-        // Acceso a creación de un nuevo evento
-        if (btnCreateNewEvent != null) {
-            btnCreateNewEvent.setOnClickListener(v ->
-                    startActivity(new Intent(PanelOrganizador.this, CrearEvento.class)));
-        }
+        setupRecyclerView();
+        cargarMisEventosOrganizados();
+    }
 
-        // aviso urgente a la comunidad
-        if (btnSendBroadcastAlert != null) {
-            btnSendBroadcastAlert.setOnClickListener(v -> mostrarDialogoEmisionAviso());
+    private void setupRecyclerView() {
+        if (rvMisEventos != null) {
+            rvMisEventos.setLayoutManager(new LinearLayoutManager(this));
+
+            // Reutilizamos el adapter asignando click largo o callbacks para Editar / Eliminar
+            adapter = new EventoFeedAdapter(this, listaMisEventos, evento -> {
+                mostrarOpcionesEvento(evento);
+            });
+            rvMisEventos.setAdapter(adapter);
         }
     }
 
-    private void mostrarDialogoEmisionAviso() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("📢 Emitir Comunicado Urgente");
+    private void cargarMisEventosOrganizados() {
+        String userId = sessionManager.getUserId();
+        if (userId.isEmpty()) return;
 
-        // Contenedor dinámico
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(50, 40, 50, 10);
+        api.obtenerEventosPorOrganizador("eq." + userId).enqueue(new Callback<List<Evento>>() {
+            @Override
+            public void onResponse(Call<List<Evento>> call, Response<List<Evento>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listaMisEventos.clear();
+                    listaMisEventos.addAll(response.body());
+                    adapter.notifyDataSetChanged();
 
-        final EditText inputTitulo = new EditText(this);
-        inputTitulo.setHint("Título del comunicado (ej. Cambio de hora)");
-        layout.addView(inputTitulo);
-
-        final EditText inputMensaje = new EditText(this);
-        inputMensaje.setHint("Detalle del mensaje a la comunidad");
-        layout.addView(inputMensaje);
-
-        builder.setView(layout);
-
-        builder.setPositiveButton("Transmitir", (dialog, which) -> {
-            String titulo = inputTitulo.getText().toString().trim();
-            String mensaje = inputMensaje.getText().toString().trim();
-
-            if (TextUtils.isEmpty(titulo) || TextUtils.isEmpty(mensaje)) {
-                Toast.makeText(this, "Completa el título y el mensaje", Toast.LENGTH_SHORT).show();
-                return;
+                    if (tvEmptyState != null) {
+                        tvEmptyState.setVisibility(listaMisEventos.isEmpty() ? View.VISIBLE : View.GONE);
+                    }
+                }
             }
 
-            publicarNotificacionEnNube(titulo, mensaje);
+            @Override
+            public void onFailure(Call<List<Evento>> call, Throwable t) {
+                Toast.makeText(PanelOrganizador.this, "Error de red al cargar eventos", Toast.LENGTH_SHORT).show();
+            }
         });
-
-        builder.setNegativeButton("Cancelar", null);
-        builder.show();
     }
 
-    private void publicarNotificacionEnNube(String titulo, String mensaje) {
-        Notificacion nuevaNotificacion = new Notificacion();
-        nuevaNotificacion.setTitulo(titulo);
-        nuevaNotificacion.setMensaje(mensaje);
-        nuevaNotificacion.setTiempo("Ahora");
-        nuevaNotificacion.setTipo("AVISO");
-        nuevaNotificacion.setLeida(false);
+    private void mostrarOpcionesEvento(Evento evento) {
+        String[] opciones = {"Editar Evento", "Eliminar Evento"};
 
-        api.emitirAvisoOrganizador(nuevaNotificacion).enqueue(new Callback<Void>() {
+        new AlertDialog.Builder(this)
+                .setTitle(evento.getTitulo())
+                .setItems(opciones, (dialog, which) -> {
+                    if (which == 0) {
+                        // Editar
+                        Intent intent = new Intent(PanelOrganizador.this, CrearEvento.class);
+                        intent.putExtra("EVENTO_A_EDITAR", evento);
+                        startActivityForResult(intent, REQUEST_CODE_CREAR_EDITAR);
+                    } else if (which == 1) {
+                        // Eliminar
+                        confirmarEliminacion(evento);
+                    }
+                })
+                .show();
+    }
+
+    private void confirmarEliminacion(Evento evento) {
+        new AlertDialog.Builder(this)
+                .setTitle("Eliminar Evento")
+                .setMessage("¿Estás seguro de que deseas eliminar \"" + evento.getTitulo() + "\"? Esta acción no se puede deshacer.")
+                .setPositiveButton("Eliminar", (dialog, which) -> ejecutarBorrado(evento))
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void ejecutarBorrado(Evento evento) {
+        String userId = sessionManager.getUserId();
+
+        api.eliminarEvento("eq." + evento.getId(), "eq." + userId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(PanelOrganizador.this, "¡Aviso transmitido a todos los usuarios!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(PanelOrganizador.this, "Evento eliminado", Toast.LENGTH_SHORT).show();
+                    cargarMisEventosOrganizados();
                 } else {
-                    Toast.makeText(PanelOrganizador.this, "Error al emitir: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PanelOrganizador.this, "No se pudo eliminar el evento: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(PanelOrganizador.this, "Falla de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PanelOrganizador.this, "Error de red", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_CREAR_EDITAR && resultCode == RESULT_OK) {
+            cargarMisEventosOrganizados();
+        }
     }
 }
