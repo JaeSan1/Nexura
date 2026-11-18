@@ -2,6 +2,7 @@ package com.example.nexura.ui;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -27,6 +28,8 @@ import com.example.nexura.network.SupabaseCliente;
 import com.example.nexura.util.NetworkUtils;
 import com.example.nexura.util.SessionManager;
 
+import org.osmdroid.util.GeoPoint;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -47,7 +50,7 @@ public class CrearEvento extends AppCompatActivity {
 
     private EditText etTitle, etDescription, etCategory, etDate, etCity, etLocation, etXp, etLat, etLng;
     private ImageView ivPreview;
-    private Button btnSave;
+    private Button btnSave, btnSeleccionarMapa;
     private TextView tvHeaderTitle;
 
     private Uri uriImagenSeleccionada = null;
@@ -80,6 +83,28 @@ public class CrearEvento extends AppCompatActivity {
                 }
             });
 
+    private final ActivityResultLauncher<Intent> seleccionarMapaLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Intent data = result.getData();
+                    double lat = data.getDoubleExtra("LATITUD", 0.0);
+                    double lng = data.getDoubleExtra("LONGITUD", 0.0);
+                    String direccion = data.getStringExtra("DIRECCION");
+                    String ciudad = data.getStringExtra("CIUDAD");
+
+                    if (lat != 0.0 && lng != 0.0) {
+                        etLat.setText(String.format(Locale.US, "%.6f", lat));
+                        etLng.setText(String.format(Locale.US, "%.6f", lng));
+                    }
+                    if (!TextUtils.isEmpty(direccion)) {
+                        etLocation.setText(direccion);
+                    }
+                    if (TextUtils.isEmpty(etCity.getText().toString().trim()) && !TextUtils.isEmpty(ciudad)) {
+                        etCity.setText(ciudad);
+                    }
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,12 +125,14 @@ public class CrearEvento extends AppCompatActivity {
         etLng = findViewById(R.id.etEventLng);
         ivPreview = findViewById(R.id.ivEventPreview);
         btnSave = findViewById(R.id.btnSaveEvent);
+        btnSeleccionarMapa = findViewById(R.id.btnSeleccionarMapa);
 
         configurarCamposSoloSeleccion();
 
         TextView btnBack = findViewById(R.id.btnBackCreate);
         if (btnBack != null) btnBack.setOnClickListener(v -> finish());
         if (ivPreview != null) ivPreview.setOnClickListener(v -> selectImageLauncher.launch("image/*"));
+        if (btnSeleccionarMapa != null) btnSeleccionarMapa.setOnClickListener(v -> abrirMapaPantallaCompleta());
 
         if (getIntent().hasExtra("EVENTO_A_EDITAR")) {
             eventoAEditar = (Evento) getIntent().getSerializableExtra("EVENTO_A_EDITAR");
@@ -117,6 +144,62 @@ public class CrearEvento extends AppCompatActivity {
 
         if (btnSave != null) {
             btnSave.setOnClickListener(v -> procesarGuardado());
+        }
+    }
+
+    private void abrirMapaPantallaCompleta() {
+        double latInicial = 0.0;
+        double lngInicial = 0.0;
+        boolean usarGpsAlAbrir = true;
+
+        try {
+            String latTxt = etLat.getText().toString().trim();
+            String lngTxt = etLng.getText().toString().trim();
+            if (!TextUtils.isEmpty(latTxt) && !TextUtils.isEmpty(lngTxt)) {
+                double lat = Double.parseDouble(latTxt);
+                double lng = Double.parseDouble(lngTxt);
+                if (lat != 0 && lng != 0) {
+                    latInicial = lat;
+                    lngInicial = lng;
+                    usarGpsAlAbrir = false;
+                }
+            }
+        } catch (NumberFormatException ignored) {}
+
+        Intent intent = new Intent(this, MapaInteractivoActivity.class);
+        intent.putExtra("MODO_SELECCION", true);
+        intent.putExtra("USAR_GPS_INICIAL", usarGpsAlAbrir);
+        if (!usarGpsAlAbrir) {
+            intent.putExtra("LAT_INICIAL", latInicial);
+            intent.putExtra("LNG_INICIAL", lngInicial);
+        }
+        intent.putExtra("CIUDAD_ACTUAL", etCity.getText().toString().trim());
+        intent.putExtra("DIRECCION_ACTUAL", etLocation.getText().toString().trim());
+        seleccionarMapaLauncher.launch(intent);
+    }
+
+    private GeoPoint obtenerCentroPorCiudad(String ciudad) {
+        if (TextUtils.isEmpty(ciudad)) return new GeoPoint(-36.6066, -72.1033);
+        switch (ciudad) {
+            case "Chillán Viejo":
+                return new GeoPoint(-36.6231, -72.1319);
+            case "San Carlos":
+                return new GeoPoint(-36.4248, -71.9581);
+            case "Bulnes":
+                return new GeoPoint(-36.7423, -72.2985);
+            case "Quillón":
+                return new GeoPoint(-36.7436, -72.4706);
+            case "San Nicolás":
+                return new GeoPoint(-36.5028, -72.2128);
+            case "Concepción":
+                return new GeoPoint(-36.8201, -73.0444);
+            case "Los Ángeles":
+                return new GeoPoint(-37.4689, -72.3527);
+            case "Santiago":
+                return new GeoPoint(-33.4489, -70.6693);
+            case "Chillán":
+            default:
+                return new GeoPoint(-36.6066, -72.1033);
         }
     }
 
@@ -297,6 +380,11 @@ public class CrearEvento extends AppCompatActivity {
         if (TextUtils.isEmpty(titulo) || TextUtils.isEmpty(cat) || TextUtils.isEmpty(fecha)
                 || TextUtils.isEmpty(ciudad) || TextUtils.isEmpty(ubicacion)) {
             Toast.makeText(this, "Completa todos los campos obligatorios", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (TextUtils.isEmpty(latStr) || TextUtils.isEmpty(lngStr)) {
+            Toast.makeText(this, "Selecciona la ubicación del evento en el mapa", Toast.LENGTH_SHORT).show();
             return;
         }
 

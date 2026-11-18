@@ -1,11 +1,15 @@
 package com.example.nexura.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -15,11 +19,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.MediaItem;
+import androidx.media3.common.PlaybackException;
+import androidx.media3.common.Player;
+import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.ui.PlayerView;
 
@@ -41,6 +50,8 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
+import androidx.media3.extractor.DefaultExtractorsFactory;
 
 public class Home extends AppCompatActivity {
 
@@ -69,6 +80,11 @@ public class Home extends AppCompatActivity {
     private ExoPlayer exoPlayer;
     private PlayerView playerViewHome;
 
+    // Efectos de Sonido (SoundPool)
+    private SoundPool soundPool;
+    private int sonidoClickId;
+    private boolean sonidoCargado = false;
+
     private final List<Evento> listaCompletaEventos = new ArrayList<>();
 
     @Override
@@ -80,16 +96,25 @@ public class Home extends AppCompatActivity {
         api = SupabaseCliente.getClient().create(SupabaseApi.class);
         eventoViewModel = new ViewModelProvider(this).get(EventoViewModel.class);
 
+        // 0. Inicializar efectos de sonido
+        configurarSonidos();
+
         // 1. Header
         btnAvisosHeader = findViewById(R.id.btnAvisosHeader);
         ivAvatarHeader = findViewById(R.id.ivAvatarHeader);
 
         if (btnAvisosHeader != null) {
-            btnAvisosHeader.setOnClickListener(v -> startActivity(new Intent(Home.this, Notificaciones.class)));
+            btnAvisosHeader.setOnClickListener(v -> {
+                reproducirSonidoClick(v);
+                startActivity(new Intent(Home.this, Notificaciones.class));
+            });
         }
 
         if (ivAvatarHeader != null) {
-            ivAvatarHeader.setOnClickListener(v -> startActivity(new Intent(Home.this, Perfil.class)));
+            ivAvatarHeader.setOnClickListener(v -> {
+                reproducirSonidoClick(v);
+                startActivity(new Intent(Home.this, Perfil.class));
+            });
         }
 
         // 2. Buscador en tiempo real
@@ -116,7 +141,10 @@ public class Home extends AppCompatActivity {
         // 5. Botón Flotante Crear Evento
         btnCreateEvent = findViewById(R.id.btnCreateEvent);
         if (btnCreateEvent != null) {
-            btnCreateEvent.setOnClickListener(v -> startActivity(new Intent(Home.this, CrearEvento.class)));
+            btnCreateEvent.setOnClickListener(v -> {
+                reproducirSonidoClick(v);
+                startActivity(new Intent(Home.this, CrearEvento.class));
+            });
         }
 
         // 6. Navegación Inferior
@@ -145,29 +173,74 @@ public class Home extends AppCompatActivity {
         });
     }
 
+    private void configurarSonidos() {
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(3)
+                .setAudioAttributes(audioAttributes)
+                .build();
+
+        soundPool.setOnLoadCompleteListener((pool, sampleId, status) -> {
+            if (status == 0) {
+                sonidoCargado = true;
+            }
+        });
+
+        sonidoClickId = soundPool.load(this, R.raw.click_boton, 1);
+    }
+
+    private void reproducirSonidoClick(View view) {
+        if (view != null) {
+            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+        }
+        if (soundPool != null && sonidoCargado) {
+            soundPool.play(sonidoClickId, 1f, 1f, 1, 0, 1f);
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @OptIn(markerClass = UnstableApi.class)
     private void inicializarVideoHome() {
         if (playerViewHome == null) {
             Toast.makeText(this, "Error: playerViewHome es null en el XML", Toast.LENGTH_LONG).show();
             return;
         }
 
-        exoPlayer = new ExoPlayer.Builder(this).build();
+        DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory()
+                .setConstantBitrateSeekingEnabled(true)
+                .setConstantBitrateSeekingAlwaysEnabled(true);
+
+        // Saltos de 10 segundos (10000 ms) para retroceder y adelantar el video de 8 minutos
+        exoPlayer = new ExoPlayer.Builder(this)
+                .setMediaSourceFactory(new DefaultMediaSourceFactory(this, extractorsFactory))
+                .setSeekBackIncrementMs(10000)
+                .setSeekForwardIncrementMs(10000)
+                .build();
+
         playerViewHome.setPlayer(exoPlayer);
 
-        // Capturar errores exactos de carga o red
-        exoPlayer.addListener(new androidx.media3.common.Player.Listener() {
+        // Permite arrastrar la barra de tiempo nativa sin que el ScrollView mueva la pantalla
+        playerViewHome.setOnTouchListener((v, event) -> {
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+            return false;
+        });
+
+        exoPlayer.addListener(new Player.Listener() {
             @Override
-            public void onPlayerError(@androidx.annotation.NonNull androidx.media3.common.PlaybackException error) {
+            public void onPlayerError(@NonNull PlaybackException error) {
                 Toast.makeText(Home.this, "Error video: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 
         String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.leon;
-
         MediaItem mediaItem = MediaItem.fromUri(videoPath);
         exoPlayer.setMediaItem(mediaItem);
         exoPlayer.prepare();
-        exoPlayer.setPlayWhenReady(true); // Fuerza la carga inmediata al entrar al Home
+        exoPlayer.setPlayWhenReady(true);
     }
 
     @Override
@@ -191,6 +264,10 @@ public class Home extends AppCompatActivity {
         if (exoPlayer != null) {
             exoPlayer.release();
             exoPlayer = null;
+        }
+        if (soundPool != null) {
+            soundPool.release();
+            soundPool = null;
         }
     }
 
@@ -263,6 +340,8 @@ public class Home extends AppCompatActivity {
     }
 
     private void alternarCategoria(TextView categoriaPulsada, String nombreCategoria) {
+        reproducirSonidoClick(categoriaPulsada);
+
         if (categoriaSeleccionadaActual == categoriaPulsada) {
             resetearEstilosCategorias();
             categoriaSeleccionadaActual = null;
@@ -329,7 +408,10 @@ public class Home extends AppCompatActivity {
             }
             if (tvXpEvent1 != null) tvXpEvent1.setText("+" + e1.getXpRecompensa() + " XP");
             cargarPortadaEnCard(cardFeaturedEvent1, e1.getPortadaUrl());
-            cardFeaturedEvent1.setOnClickListener(v -> abrirDetalleEvento(e1));
+            cardFeaturedEvent1.setOnClickListener(v -> {
+                reproducirSonidoClick(v);
+                abrirDetalleEvento(e1);
+            });
         }
 
         if (cardFeaturedEvent2 != null) {
@@ -346,7 +428,10 @@ public class Home extends AppCompatActivity {
                 }
                 if (tvXpEvent2 != null) tvXpEvent2.setText("+" + e2.getXpRecompensa() + " XP");
                 cargarPortadaEnCard(cardFeaturedEvent2, e2.getPortadaUrl());
-                cardFeaturedEvent2.setOnClickListener(v -> abrirDetalleEvento(e2));
+                cardFeaturedEvent2.setOnClickListener(v -> {
+                    reproducirSonidoClick(v);
+                    abrirDetalleEvento(e2);
+                });
             } else {
                 cardFeaturedEvent2.setVisibility(View.GONE);
             }

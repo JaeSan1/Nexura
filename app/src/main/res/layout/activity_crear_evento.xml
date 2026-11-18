@@ -17,9 +17,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:layout_marginBottom="20dp">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/btnBackCreate"
@@ -250,6 +250,19 @@
                     android:textColorHint="#4B5563"
                     android:textSize="14sp" />
 
+                <!-- Botón Selector de Mapa -->
+                <Button
+                    android:id="@+id/btnSeleccionarMapa"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_marginBottom="14dp"
+                    android:backgroundTint="#1E293B"
+                    android:text="📍 Seleccionar ubicación en el mapa"
+                    android:textAllCaps="false"
+                    android:textColor="#00FFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
                 <!-- Dirección / Recinto -->
                 <TextView
                     android:layout_width="wrap_content"
@@ -264,8 +277,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:background="#222B3D"
-                    android:hint="Ej: Parque Deportivo Quilamapu"
-                    android:inputType="text"
+                    android:hint="Se completa con el mapa o escríbelo manualmente"
+                    android:inputType="textCapSentences"
                     android:paddingHorizontal="14dp"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#4B5563"
@@ -297,7 +310,7 @@
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
-                <!-- Recompensa XP (Restaurado) -->
+                <!-- Recompensa XP -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -312,14 +325,14 @@
                     android:layout_height="48dp"
                     android:layout_marginBottom="14dp"
                     android:background="#222B3D"
-                    android:hint="150"
+                    android:hint="100"
                     android:inputType="number"
                     android:paddingHorizontal="14dp"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#4B5563"
                     android:textSize="14sp" />
 
-                <!-- Coordenadas Lat/Lng -->
+                <!-- Coordenadas Lat/Lng (completadas por el mapa) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -328,8 +341,8 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
@@ -345,10 +358,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
                             android:background="#222B3D"
+                            android:focusable="false"
                             android:hint="-36.6066"
-                            android:inputType="numberSigned|numberDecimal"
+                            android:inputType="none"
                             android:paddingHorizontal="14dp"
-                            android:textColor="#FFFFFF"
+                            android:textColor="#94A3B8"
                             android:textColorHint="#4B5563"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -356,8 +370,8 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:layout_marginStart="6dp"
+                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
@@ -373,10 +387,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
                             android:background="#222B3D"
+                            android:focusable="false"
                             android:hint="-72.1033"
-                            android:inputType="numberSigned|numberDecimal"
+                            android:inputType="none"
                             android:paddingHorizontal="14dp"
-                            android:textColor="#FFFFFF"
+                            android:textColor="#94A3B8"
                             android:textColorHint="#4B5563"
                             android:textSize="14sp" />
                     </LinearLayout>

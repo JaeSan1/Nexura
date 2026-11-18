@@ -285,7 +285,14 @@
                     android:id="@+id/playerViewHome"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    app:played_color="#00F2FE"
+                    app:resize_mode="zoom"
+                    app:scrubber_color="#00F2FE"
                     app:show_buffering="when_playing"
+                    app:show_fastforward_button="true"
+                    app:show_next_button="false"
+                    app:show_previous_button="false"
+                    app:show_rewind_button="true"
                     app:use_controller="true" />
             </androidx.cardview.widget.CardView>
 

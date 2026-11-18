@@ -21,7 +21,6 @@ android {
             properties.load(project.rootProject.file('local.properties').newDataInputStream())
         }
 
-        // Se agregan comillas dobles explícitas ("\"...\"") para que Java las reconozca como String
         buildConfigField "String", "SUPABASE_URL", "\"${properties.getProperty('SUPABASE_URL', '')}\""
         buildConfigField "String", "SUPABASE_ANON_KEY", "\"${properties.getProperty('SUPABASE_ANON_KEY', '')}\""
     }
@@ -58,19 +57,16 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
 
-    // OpenStreetMap para Android (osmdroid)
+    // OpenStreetMap gratuito (osmdroid) y GPS del dispositivo
     implementation 'org.osmdroid:osmdroid-android:6.1.18'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
 
     implementation 'com.google.android.gms:play-services-safetynet:18.0.1'
-
     implementation 'androidx.core:core-splashscreen:1.0.1'
-
     implementation 'com.github.bumptech.glide:glide:4.16.0'
-    implementation 'com.google.android.gms:play-services-maps:18.2.0'
 
+    // Reproductor multimedia (Media3 ExoPlayer)
     implementation "androidx.media3:media3-exoplayer:1.2.0"
     implementation "androidx.media3:media3-ui:1.2.0"
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0'
-
 }
